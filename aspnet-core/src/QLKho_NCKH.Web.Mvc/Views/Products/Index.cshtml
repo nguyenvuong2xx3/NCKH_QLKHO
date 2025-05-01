@@ -1,0 +1,91 @@
+﻿@using QLKho_NCKH.Web.Startup
+
+
+@* @model TopicsType0ViewModel *@
+@{
+  ViewBag.Title = L("Products");
+  ViewBag.CurrentPageName = PageNames.Products;
+}
+
+@* @section Styles *@
+@* { *@
+@*   <link rel="stylesheet" href="/themes/canvas/css/components/timepicker.css" asp-append-version="true" /> *@
+@*   <link rel="stylesheet" href="/themes/canvas/css/components/datepicker.css" asp-append-version="true" /> *@
+@* } *@
+
+@section Scripts {
+  <script abp-src="/view-resources/Views/Products/index.js" asp-append-version="true"></script>
+}
+
+
+<div class="card bg-white border-0 rounded-3 mb-4">
+  <div class="card-body p-0">
+
+    @* <div class="card-form-filter common-f p-4 pb-0"> *@
+    @*   <div class="input-group-f input-group "> *@
+    @*     <div class="input-group-f input-group "> *@
+    @*       <input type="text" id="SearchTerm" class="form-control" placeholder="@L("SearchWithThreeDot")" /> *@
+    @*       <button id="Search" class="btn btn-primary"> *@
+    @*         <i class="fa fa-search" aria-label="Tìm kiếm"></i> *@
+    @*       </button> *@
+    @*     </div> *@
+    @*   </div> *@
+    @*   <button id="CreateNewButtonShiftPeriods" class="btn btn-primary"> *@
+    @*     <i class="fa fa-plus btn-md-icon"></i> *@
+    @*     <span class="d-none d-md-inline-block"> *@
+    @*       @L("Create") *@
+    @*     </span> *@
+    @*   </button> *@
+    @*   <div class="btn-group"> *@
+    @*     <button type="button" class="btn btn-outline btn-success btn-active-light-success dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> *@
+    @*       <i class="far fa-file-excel btn-md-icon"></i> *@
+    @*       <span class="d-none d-md-inline-block mb-md-0"> *@
+    @*         @L("Import/ExportData") *@
+    @*       </span> *@
+    @*     </button> *@
+    @*     <div class="dropdown-menu"> *@
+    @*       <a class="dropdown-item" id="ExportShiftPeriodData" href="javascript:void(0);">@L("ExportData")</a> *@
+    @*       <a class="dropdown-item" id="ImportShiftPeriodData" href="javascript:void(0);"> *@
+    @*         @L("ImportData") *@
+    @*       </a> *@
+    @*       <div class="dropdown-divider"></div> *@
+    @*       <span class="dropdown-item-text text-muted pl-3" href="#"> *@
+    @*         <small class="pl-2"> *@
+    @*           <small class="pl-2"> @Html.Raw((@L("DownloadExcelTemplate"), "<a href='" + (ApplicationPath) + "view-resources/Hrm/ShiftPeriods/Biểu mẫu nhập dữ liệu bảng thời gian.xlsx" + "'>" + L("ClickHere") + "</a>"))</small> *@
+    @*         </small> *@
+    @*       </span> *@
+    @*     </div> *@
+    @*   </div> *@
+    @* </div> *@
+    <div class="pt-4 default-table-area all-products">
+      <div class="table-responsive card-table">
+        <table id="productList" class="table table-striped table-bordered w-100">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Barcode</th>
+              <th>Unit</th>
+              <th>Weight</th>
+              <th>Volume</th>
+              <th>Supplier</th>
+              <th>Is Active</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+        </table>
+
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  #shiftPeriod th:not(:first-child),
+  #shiftPeriod td:not(:first-child) {
+    text-align: center !important;
+    vertical-align: middle !important;
+  }
+</style>
+
