@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QLKho_NCKH.EntityFrameworkCore;
 
@@ -11,9 +12,11 @@ using QLKho_NCKH.EntityFrameworkCore;
 namespace QLKho_NCKH.Migrations
 {
     [DbContext(typeof(QLKho_NCKHDbContext))]
-    partial class QLKho_NCKHDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250501092303_kho")]
+    partial class kho
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
