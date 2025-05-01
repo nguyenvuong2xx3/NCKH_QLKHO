@@ -9,7 +9,7 @@
         paging: true,
         serverSide: true,
         listAction: {
-            ajaxFunction: _userService.getAll,
+            ajaxFunction: _userService.getAllAsync,
             inputFilter: function () {
                 return $('#UsersSearchForm').serializeFormToObject(true);
             }

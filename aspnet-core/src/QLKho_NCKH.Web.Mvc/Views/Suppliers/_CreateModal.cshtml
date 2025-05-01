@@ -1,0 +1,85 @@
+﻿@using Abp.Authorization.Users
+@using QLKho_NCKH.Web.Models.Common.Modals
+@using QLKho_NCKH.Web.Models.Suppliers
+@model SuppliersListViewModel
+@{
+	Layout = null;
+}
+<div class="modal fade" id="SupplierCreateModal" tabindex="-1" role="dialog" aria-labelledby="SupplierCreateModalLabel" data-backdrop="static">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewSupplier")))
+			<form name="upplierCreateForm" role="form" class="form-horizontal">
+				<div class="modal-body">
+					@* <ul class="nav nav-tabs" role="tablist"> *@
+					@* 	<li class="nav-item"> *@
+					@* 		<a class="nav-link active" data-toggle="tab" role="tab" href="#create-user-details">@L("SupplierDetails")</a> *@
+					@* 	</li> *@
+					@* 	<li class="nav-item"> *@
+					@* 		<a class="nav-link" data-toggle="tab" role="tab" href="#create-user-roles">@L("UserRoles")</a> *@
+					@* 	</li> *@
+					@* </ul> *@
+          <div class="tab-content mt-4">
+            <div role="tabpanel" class="tab-pane container active" id="create-supplier-details">
+              <!-- Tên nhà cung cấp -->
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label">@L("Name")</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="Name" required maxlength="256">
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label">@L("Code")</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="Code" required maxlength="256">
+                </div>
+              </div>
+
+
+              <!-- Địa chỉ -->
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label">@L("Address")</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="Address" maxlength="500">
+                </div>
+              </div>
+
+              <!-- Số điện thoại -->
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label">@L("PhoneNumber")</label>
+                <div class="col-md-9">
+                  <input type="tel" class="form-control" name="PhoneNumber" required maxlength="20">
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label">@L("Email")</label>
+                <div class="col-md-9">
+                  <input type="email" class="form-control" name="Email" maxlength="256">
+                </div>
+              </div>
+
+              <!-- Mã số thuế -->
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label">@L("TaxCode")</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="TaxCode" maxlength="50">
+                </div>
+              </div>
+
+              <!-- Trạng thái hoạt động -->
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label">@L("IsActive")</label>
+                <div class="col-md-9">
+                  <input type="checkbox" name="IsActive" value="true" checked />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+				@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+			</form>
+		</div>
+	</div>
+</div>
