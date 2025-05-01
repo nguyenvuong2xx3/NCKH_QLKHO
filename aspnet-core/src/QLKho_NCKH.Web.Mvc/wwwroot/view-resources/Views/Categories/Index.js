@@ -1,5 +1,5 @@
 ﻿(function ($) {
-	var _productService = abp.services.app.product,
+	var _categoryService = abp.services.app.category,
 
 		l = abp.localization.getSource('QLKho_NCKH'),
 		_$modal = $('#CategoryCreateModal'),
