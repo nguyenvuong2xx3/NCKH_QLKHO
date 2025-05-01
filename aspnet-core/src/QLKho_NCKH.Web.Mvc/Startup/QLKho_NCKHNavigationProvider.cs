@@ -141,8 +141,8 @@ namespace QLKho_NCKH.Web.Startup
                   PageNames.Products,
                   L("Products"),
                   url: "Products",
-                  icon: "fas fa-theater-masks",
-                  permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
+                  icon: "fas fa-theater-masks"
+                  //permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
               )
           );
 
