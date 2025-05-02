@@ -15,7 +15,10 @@ namespace QLKho_NCKH.Products.Dtos
 
 		public string Barcode { get; set; }
 		public bool IsActive { get; set; }
-
+		public string Image { get; set; }
+		public string Unit { get; set; }
+		public decimal Weight { get; set; }
+		public decimal Volume { get; set; }
 		public int? SupplierId { get; set; }
 		public string SupplierName { get; set; }
 	}

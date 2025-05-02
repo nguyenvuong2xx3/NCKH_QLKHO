@@ -1,0 +1,32 @@
+﻿@using QLKho_NCKH.Web.Models.Common.Modals
+@using QLKho_NCKH.Web.Models.Categories
+@model CategoryViewModel
+
+<div class="modal fade AddCategoryModal" id="AddCategoryModal" tabindex="-1" role="dialog" aria-labelledby="AddCategoryModalLabel" data-backdrop="static">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			@await Html.PartialAsync("~/Areas/App/Views/Common/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(@L("SelectCategory")))
+
+			<div class="modal-body">
+				<form>
+					<div class="input-group">
+						<input id="Filter" name="Filter" class="form-control add-user-filter-text" placeholder="@L("SearchNameCategory")" type="text">
+						<button class="btn btn-primary add-member-filter-button" type="button"><i class="fa fa-search" aria-label="@L("Search")"></i></button>
+					</div>
+				</form>
+				<table id="addCategoryModalTable" width="100%" class="table align-middle table-row-dashed fs-6 gy-5 dataTable dtr-inline no-footer">
+					<thead>
+						<tr>
+							<th>@L("Select")</th>
+							<th>@L("Name")</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+
+			@await Html.PartialAsync("~/Areas/App/Views/Common/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+		</div>
+	</div>
+</div>

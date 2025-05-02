@@ -26,9 +26,11 @@ namespace QLKho_NCKH.Products.Dtos
 		public string Unit { get; set; }
 
 		public decimal Weight { get; set; }
-		public decimal Volume { get; set; }
+		public decimal Volume { get; set; } = 0;
 		public bool IsActive { get; set; } = true;
 
 		public int? SupplierId { get; set; }
+		public string Image { get; set; }
+		public IFormFile ImageFile { get; set; }
 	}
 }
