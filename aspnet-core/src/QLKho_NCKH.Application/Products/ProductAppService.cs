@@ -12,6 +12,7 @@ using System;
 using QLKho_NCKH.Products.Dtos;
 using System.Collections.Generic;
 using Abp.Collections.Extensions;
+using Abp.Extensions;
 //using Abp.Authorization;
 //using Acme.SimpleTaskApp.Authorization;
 namespace QLKho_NCKH.Products
@@ -49,7 +50,7 @@ namespace QLKho_NCKH.Products
 
 			};
 
-			 await  _productRepository.InsertAsync(product);
+			await _productRepository.InsertAsync(product);
 
 			return new ProductListDto
 			{
@@ -78,9 +79,42 @@ namespace QLKho_NCKH.Products
 			throw new NotImplementedException();
 		}
 
-		public Task<ProductListDto> UpdateProducts(UpdateProductDto input)
+		public async Task<ProductListDto> Update(UpdateProductDto input)
 		{
-			throw new NotImplementedException();
+			var product = await _productRepository.GetAsync(input.Id);
+			if (product == null)
+			{
+				throw new UserFriendlyException("Product not found");
+			}
+			product.Code = input.Code;
+			product.Name = input.Name;
+			product.Description = input.Description;
+			product.Image = input.Image;
+			product.CategoryId = input.CategoryId;
+			product.Barcode = input.Barcode;
+			product.Unit = input.Unit;
+			product.Weight = input.Weight;
+			product.Volume = input.Volume;
+			product.IsActive = input.IsActive;
+			product.SupplierId = input.SupplierId;
+
+			await _productRepository.UpdateAsync(product);
+
+			return new ProductListDto
+			{
+				Id = product.Id,
+				Code = product.Code,
+				Name = product.Name,
+				Description = product.Description,
+				Image = product.Image,
+				CategoryId = product.CategoryId,
+				Barcode = product.Barcode,
+				Unit = product.Unit,
+				Weight = product.Weight,
+				Volume = product.Volume,
+				IsActive = product.IsActive,
+				SupplierId = product.SupplierId,
+			};
 		}
 
 		public Task<PagedResultDto<ProductListDto>> SearchProducts(GetAllProductsInput input)
@@ -95,36 +129,73 @@ namespace QLKho_NCKH.Products
 
 		public async Task<PagedResultDto<ProductListDto>> GetAllProducts(ProductInput input)
 		{
-			var query = _productRepository.GetAll()
-				.WhereIf(!input.Filter.IsNullOrEmpty(), x => x.Name.Contains(input.Filter) || x.Description.Contains(input.Filter));
+			// Xây dựng truy vấn cơ sở dữ liệu
+			var query = _productRepository.GetAllIncluding(x => x.Category, x => x.Supplier)
+					.WhereIf(!input.Filter.IsNullOrWhiteSpace(), x => x.Name.Contains(input.Filter) || x.Description.Contains(input.Filter));
+			//.WhereIf(input.CategoryId.HasValue,
+			//				 x => x.CategoryId == input.CategoryId.Value)
+			//.WhereIf(input.State.HasValue,
+			//				 x => x.State == input.State.Value);
 
-			//.WhereIf(input.CategoryId.HasValue, x => x.CategoryId == input.CategoryId.Value)
-			//.WhereIf(input.State.HasValue, x => x.State == input.State.Value);
-			query = query.OrderByDescending(x => x.CreationTime).OrderBy(input.Sorting).ThenBy(x => x.Id);
+			// Sắp xếp dữ liệu
+			query = query.OrderBy(input.Sorting ?? "CreationTime DESC");
+
+			// Đếm tổng số bản ghi
+			var totalCount = await query.CountAsync();
+
+			// Phân trang
 			var items = await query.PageBy(input).ToListAsync();
-			var itemsCount = await query.CountAsync();
-			var result = new List<ProductListDto>();
-			foreach (var item in items)
+
+			// Chuyển đổi sang DTO
+			var result = items.Select(item => new ProductListDto
 			{
-				var product = new ProductListDto
-				{
-					Id = item.Id,
-					Code = item.Code,
-					Name = item.Name,
-					Description = item.Description,
-					CategoryName = item.Category.Name,
-					Barcode = item.Barcode,
-					IsActive = item.IsActive,
-					SupplierName = item.Supplier.Name,
-					CreationTime = item.CreationTime,
-				};
-				result.Add(product);
-			}
-			return new PagedResultDto<ProductListDto>()
+				Id = item.Id,
+				Code = item.Code,
+				Name = item.Name,
+				Unit = item.Unit,
+				Weight = item.Weight,
+				Volume = item.Volume,
+				Description = item.Description,
+				CategoryName = item.Category?.Name,
+				Barcode = item.Barcode,
+				IsActive = item.IsActive,
+				SupplierName = item.Supplier?.Name,
+				CreationTime = item.CreationTime,
+				Image = item.Image
+			}).ToList();
+
+			// Trả về kết quả
+			return new PagedResultDto<ProductListDto>
 			{
 				Items = result,
-				TotalCount = itemsCount,
+				TotalCount = totalCount
 			};
 		}
+
+		public async Task<ProductListDto> GetProductById(int productId)
+		{
+			var product = await _productRepository.GetAllIncluding(x => x.Category, x => x.Supplier)
+				.FirstOrDefaultAsync(x => x.Id == productId);
+			if (product == null)
+			{
+				throw new UserFriendlyException("Product not found");
+			}
+			return new ProductListDto
+			{
+				Id = product.Id,
+				Code = product.Code,
+				Name = product.Name,
+				Description = product.Description,
+				Image = product.Image,
+				CategoryId = product.CategoryId,
+				Barcode = product.Barcode,
+				Unit = product.Unit,
+				Weight = product.Weight,
+				Volume = product.Volume,
+				IsActive = product.IsActive,
+				SupplierId = product.SupplierId
+			};
+		}
+
 	}
 }

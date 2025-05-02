@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Abp.Domain.Entities.Auditing;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace QLKho_NCKH.Products.Dtos
 {
-	public class CreateProductDto
+	public class CreateProductDto : FullAuditedEntity<int>
 	{
 		[Required]
 		[StringLength(50)]

@@ -20,9 +20,11 @@ namespace QLKho_NCKH.Products
 
 		Task DeleteProducts(EntityDto<int> input);
 
-		Task<ProductListDto> UpdateProducts(UpdateProductDto input);
+		Task<ProductListDto> Update(UpdateProductDto input);
 
 		Task<PagedResultDto<ProductListDto>> SearchProducts(GetAllProductsInput input);
+
+		Task<ProductListDto> GetProductById(int productId);
 
 
 

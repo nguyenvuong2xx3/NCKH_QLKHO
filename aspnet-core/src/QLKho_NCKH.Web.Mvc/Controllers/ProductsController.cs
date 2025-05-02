@@ -10,6 +10,7 @@ using QLKho_NCKH.Products;
 using QLKho_NCKH.Web.Models.Products;
 using QLKho_NCKH.Categories;
 using QLKho_NCKH.Suppliers;
+using Abp.Application.Services.Dto;
 
 namespace QLKho_NCKH.Web.Controllers
 {
@@ -26,7 +27,6 @@ namespace QLKho_NCKH.Web.Controllers
 		}
 		public async Task<ActionResult> Index(ProductInput input)
 		{
-
 			var output = await _productAppService.GetAllProducts(input);
 			var Categories = await _categoryAppService.GetAllCategories();
 			var Suppliers = await _supplierAppService.GetAllSupplier();
@@ -35,6 +35,17 @@ namespace QLKho_NCKH.Web.Controllers
 			model.Suppliers = Suppliers;
 			return View(model);
 		}//Test
+
+		public async Task<ActionResult> EditModal(int productId)
+		{
+			var product = await _productAppService.GetProductById(productId);
+
+			var model = new EditProductViewModel
+			{
+				Product = product
+			};
+			return PartialView("_EditModal", model);
+		}
 
 		public async Task<IActionResult> Create(CreateProductDto model)
 		{
@@ -80,21 +91,148 @@ namespace QLKho_NCKH.Web.Controllers
 					throw new ArgumentException("Định dạng ảnh không hợp lệ. Vui lòng chọn ảnh có định dạng hợp lệ.");
 				}
 
-				string uploadsFolder = @"E:\Uploads\";
+				// Đường dẫn thư mục lưu trữ ảnh trong dự án
+				string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "Products");
 				Directory.CreateDirectory(uploadsFolder); // Tạo thư mục nếu chưa có
 
+				// Tạo tên file duy nhất
 				string uniqueFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "_" + Guid.NewGuid().ToString("N") + fileExtension;
 				string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
+				// Lưu file vào thư mục
 				using (var fileStream = new FileStream(filePath, FileMode.Create))
 				{
 					ImageFile.CopyTo(fileStream);
 				}
 
-				return "/products/" + uniqueFileName;
+				// Trả về đường dẫn để hiển thị trên giao diện
+				return "/img/Products/" + uniqueFileName;
 			}
 
-			return "/products/default.png"; // Trả về ảnh mặc định nếu không có ảnh upload
+			return "/img/Products/default.png"; // Trả về ảnh mặc định nếu không có ảnh upload
 		}
+
+		public async Task<IActionResult> EditAndUploadDeleteImage(UpdateProductDto model)
+		{
+			try
+			{
+				// Kiểm tra xem dữ liệu đầu vào có hợp lệ không
+				if (!ModelState.IsValid)
+				{
+					// Lấy danh sách lỗi nếu có
+					var errors = ModelState.Values.SelectMany(v => v.Errors)
+																				.Select(e => e.ErrorMessage)
+																				.ToList();
+					return Json(new { success = false, errors }); // Trả về lỗi dưới dạng JSON
+				}
+
+				// Kiểm tra xem sản phẩm có tồn tại trong hệ thống không
+				var existingProduct = await _productAppService.GetProductById(model.Id);
+				if (existingProduct == null)
+				{
+					return Json(new { success = false, message = "Không tìm thấy sản phẩm." }); // Trả về lỗi nếu không tìm thấy
+				}
+
+				// Kiểm tra xem người dùng có tải lên ảnh mới không
+				if (model.ImageFile != null && model.ImageFile.Length > 0)
+				{
+					// Danh sách các định dạng ảnh được phép tải lên
+					string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".jfif" };
+					string fileExtension = Path.GetExtension(model.ImageFile.FileName).ToLower();
+
+					// Kiểm tra xem ảnh có thuộc định dạng hợp lệ không
+					if (!allowedExtensions.Contains(fileExtension))
+					{
+						return Json(new { success = false, message = "Định dạng ảnh không hợp lệ. Vui lòng chọn file .jpg, .png, .gif." });
+					}
+
+					// Nếu sản phẩm đã có ảnh trước đó, xóa ảnh cũ trước khi cập nhật ảnh mới
+					if (!string.IsNullOrEmpty(existingProduct.Image))
+					{
+						DeleteFile(existingProduct.Image); // Gọi hàm xóa ảnh cũ
+					}
+
+					// Upload ảnh mới và cập nhật đường dẫn vào model
+					model.Image = UploadImage(model.ImageFile);
+				}
+				else
+				{
+					// Nếu người dùng không chọn ảnh mới, giữ nguyên ảnh cũ
+					model.Image = existingProduct.Image;
+				}
+
+				// Gọi service để cập nhật thông tin sản phẩm trong database
+				await _productAppService.Update(model);
+
+				// Trả về kết quả thành công kèm theo đường dẫn ảnh mới (nếu có thay đổi)
+				return Json(new { success = true, message = "Cập nhật sản phẩm thành công", imagePath = model.Image });
+			}
+			catch (Exception ex)
+			{
+				// Xử lý ngoại lệ nếu có lỗi xảy ra trong quá trình cập nhật
+				return Json(new { success = false, message = ex.Message });
+			}
+		}
+
+
+		private void DeleteFile(string fileName)
+		{
+			if (string.IsNullOrEmpty(fileName)) return; // Kiểm tra tên file hợp lệ
+
+			string folderPath = @"E:\Uploads"; // Thư mục chứa ảnh
+			string fullPath = Path.Combine(folderPath, fileName); // Đường dẫn đầy đủ
+
+			if (System.IO.File.Exists(fullPath)) // Kiểm tra file có tồn tại không
+			{
+				System.IO.File.Delete(fullPath); // Xóa file
+				Console.WriteLine($"Đã xóa file: {fullPath}");
+			}
+			else
+			{
+				Console.WriteLine("File không tồn tại!");
+			}
+		}
+
+
+		//public async Task<IActionResult> DeleteImage(int productId)
+		//{
+		//	var existingProduct = await _productAppService.GetAsync(new EntityDto<int>(productId));
+
+		//	if (existingProduct == null)
+		//	{
+		//		return Json(new { success = false, message = "Sản phẩm không tồn tại." });
+		//	}
+
+		//	if (string.IsNullOrEmpty(existingProduct.Image))
+		//	{
+		//		return Json(new { success = false, message = "Sản phẩm này không có ảnh để xóa." });
+		//	}
+
+		//	try
+		//	{
+		//		// Xóa file ảnh trên server
+		//		DeleteFile(existingProduct.Image);
+
+		//		// Cập nhật lại sản phẩm trong DB (xóa đường dẫn ảnh)
+		//		var updateProductDto = new UpdateProductDto()
+		//		{
+		//			Id = existingProduct.Id,
+		//			Name = existingProduct.Name,
+		//			Description = existingProduct.Description,
+		//			Price = existingProduct.Price,
+		//			State = existingProduct.State,
+		//			CategoryId = existingProduct.CategoryId,
+		//			Image = null,
+		//		};
+		//		await _productAppService.Update(updateProductDto);
+
+		//		return Json(new { success = true, message = "Ảnh đã được xóa thành công." });
+		//	}
+		//	catch (Exception)
+		//	{
+		//		return Json(new { success = false, message = "Đã xảy ra lỗi khi xóa ảnh. Vui lòng thử lại." });
+		//	}
+		//}
+
 	}
 }
