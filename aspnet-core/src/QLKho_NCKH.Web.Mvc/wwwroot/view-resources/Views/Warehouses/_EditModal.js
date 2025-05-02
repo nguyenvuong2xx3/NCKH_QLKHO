@@ -1,7 +1,7 @@
 ﻿(function ($) {
-  var _supplierService = abp.services.app.supplier,
-        l = abp.localization.getSource('QLKho_NCKH'),
-    _$modal = $('#SupplierEditModal'),
+  var _warehouseService = abp.services.app.warehouse,
+    l = abp.localization.getSource('QLKho_NCKH'),
+    _$modal = $('#WarehouseEditModal'),
         _$form = _$modal.find('form');
 
     function save() {
@@ -9,13 +9,13 @@
             return;
         }
 
-      var supplier = _$form.serializeFormToObject();
+      var warehouse = _$form.serializeFormToObject();
 
         abp.ui.setBusy(_$form);
-      _supplierService.update(supplier).done(function () {
+      _warehouseService.update(warehouse).done(function () {
             _$modal.modal('hide');
         abp.notify.info(l('SavedSuccessfully'));
-        abp.event.trigger('supplier.edited', supplier);
+        abp.event.trigger('supplier.edited', warehouse);
         }).always(function () {
           abp.ui.clearBusy(_$form);
         });

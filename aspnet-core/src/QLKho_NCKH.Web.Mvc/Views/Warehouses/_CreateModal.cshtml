@@ -1,14 +1,12 @@
 ﻿@using Abp.Authorization.Users
 @using QLKho_NCKH.Web.Models.Common.Modals
-@using QLKho_NCKH.Web.Models.Suppliers
-@model SuppliersListViewModel
 @{
 	Layout = null;
 }
-<div class="modal fade" id="SupplierCreateModal" tabindex="-1" role="dialog" aria-labelledby="SupplierCreateModalLabel" data-backdrop="static">
+<div class="modal fade" id="WarehouseCreateModal" tabindex="-1" role="dialog" aria-labelledby="WarehouseCreateModalLabel" data-backdrop="static">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
-			@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewSupplier")))
+      @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewWarehouse")))
 			<form name="upplierCreateForm" role="form" class="form-horizontal">
 				<div class="modal-body">
 					@* <ul class="nav nav-tabs" role="tablist"> *@
@@ -20,51 +18,37 @@
 					@* 	</li> *@
 					@* </ul> *@
           <div class="tab-content mt-4">
-            <div role="tabpanel" class="tab-pane container active" id="create-supplier-details">
-              <!-- Tên nhà cung cấp -->
-              <div class="form-group row required">
-                <label class="col-md-3 col-form-label">@L("Name")</label>
-                <div class="col-md-9">
-                  <input type="text" class="form-control" name="Name" required maxlength="256">
-                </div>
-              </div>
+            <div role="tabpanel" class="tab-pane container active" id="create-warehouse-details">
+
+              <!-- Mã kho -->
               <div class="form-group row required">
                 <label class="col-md-3 col-form-label">@L("Code")</label>
                 <div class="col-md-9">
-                  <input type="text" class="form-control" name="Code" required maxlength="256">
+                  <input type="text" class="form-control" name="Code" required maxlength="50" />
                 </div>
               </div>
 
-
-              <!-- Địa chỉ -->
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label">@L("Address")</label>
-                <div class="col-md-9">
-                  <input type="text" class="form-control" name="Address" maxlength="500">
-                </div>
-              </div>
-
-              <!-- Số điện thoại -->
+              <!-- Tên kho -->
               <div class="form-group row required">
-                <label class="col-md-3 col-form-label">@L("PhoneNumber")</label>
+                <label class="col-md-3 col-form-label">@L("Name")</label>
                 <div class="col-md-9">
-                  <input type="tel" class="form-control" name="PhoneNumber" required maxlength="20">
+                  <input type="text" class="form-control" name="Name" required maxlength="256" />
                 </div>
               </div>
 
-              <!-- Email -->
+              <!-- Vị trí -->
               <div class="form-group row">
-                <label class="col-md-3 col-form-label">@L("Email")</label>
+                <label class="col-md-3 col-form-label">@L("Location")</label>
                 <div class="col-md-9">
-                  <input type="email" class="form-control" name="Email" maxlength="256">
+                  <input type="text" class="form-control" name="Location" maxlength="500" />
                 </div>
               </div>
 
-              <!-- Mã số thuế -->
+              <!-- Diện tích -->
               <div class="form-group row">
-                <label class="col-md-3 col-form-label">@L("TaxCode")</label>
+                <label class="col-md-3 col-form-label">@L("TotalArea")</label>
                 <div class="col-md-9">
-                  <input type="text" class="form-control" name="TaxCode" maxlength="50">
+                  <input type="number" step="0.01" class="form-control" name="TotalArea" min="0" />
                 </div>
               </div>
 
@@ -75,9 +59,10 @@
                   <input type="checkbox" name="IsActive" value="true" checked />
                 </div>
               </div>
+
             </div>
           </div>
-        </div>
+
 				@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
 			</form>
 		</div>

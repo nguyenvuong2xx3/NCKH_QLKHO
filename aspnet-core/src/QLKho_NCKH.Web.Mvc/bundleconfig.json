@@ -163,5 +163,11 @@
     "inputFiles": [
       "wwwroot/view-resources/Views/Warehouses/index.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/view-resources/Views/Warehouses/_EditModal.min.js",
+    "inputFiles": [
+      "wwwroot/view-resources/Views/Warehouses/_EditModal.js"
+    ]
   }
 ]
