@@ -20,6 +20,10 @@ namespace QLKho_NCKH.Web.Controllers
 		{
 			return View();
 		}
+		public async Task<IActionResult> AddWarehoses()
+		{
+			return PartialView("_AddWarehosesModal");
+		}
 
 		public IActionResult Edit(int warehouseId)
 		{

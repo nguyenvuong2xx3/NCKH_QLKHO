@@ -169,5 +169,29 @@
     "inputFiles": [
       "wwwroot/view-resources/Views/Warehouses/_EditModal.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/view-resources/Views/StorageLocations/index.min.js",
+    "inputFiles": [
+      "wwwroot/view-resources/Views/StorageLocations/index.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/view-resources/Views/StorageLocations/_EditModal.min.js",
+    "inputFiles": [
+      "wwwroot/view-resources/Views/StorageLocations/_EditModal.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/view-resources/Views/Warehouses/_AddWarehosesModal.min.js",
+    "inputFiles": [
+      "wwwroot/view-resources/Views/Warehouses/_AddWarehosesModal.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/libs/abp-web-resources/abp/framework/scripts/libs/ResourceLoader.min.js",
+    "inputFiles": [
+      "wwwroot/libs/abp-web-resources/abp/framework/scripts/libs/ResourceLoader.js"
+    ]
   }
 ]

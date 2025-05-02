@@ -11,5 +11,6 @@
         public const string Categories = "Categories";
 		    public const string Suppliers = "Suppliers";
 		    public const string Warehouses = "Warehouses";
+		    public const string StorageLocations = "StorageLocations";
 	}
 }
