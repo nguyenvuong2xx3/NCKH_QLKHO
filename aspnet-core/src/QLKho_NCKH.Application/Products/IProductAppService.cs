@@ -9,7 +9,7 @@ namespace QLKho_NCKH.Products
 {
 	public interface IProductAppService : IApplicationService
 	{
-		Task<ProductListDto> CreateProducts(CreateProductDto input);
+		Task<ProductListDto> Create(CreateProductDto input);
 		Task<PagedResultDto<ProductListDto>> GetAllProducts(ProductInput input);
 
 		Task<ProductListDto> GetProductByCode(string code);

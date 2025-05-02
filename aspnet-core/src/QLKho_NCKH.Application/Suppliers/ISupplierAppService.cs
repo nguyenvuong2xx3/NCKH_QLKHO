@@ -17,5 +17,7 @@ namespace QLKho_NCKH.Suppliers
 		Task DeleteAsync(int id);
 		Task<List<SupplierDto>> SearchAsync(string searchTerm);
 		Task<List<SupplierDto>> GetSuppliersByCategoryIdAsync(int categoryId);
+		Task<List<SupplierDto>> GetAllSupplier();
+
 	}
 }

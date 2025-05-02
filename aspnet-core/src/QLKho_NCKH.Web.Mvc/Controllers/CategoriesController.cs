@@ -43,5 +43,6 @@ namespace QLKho_NCKH.Web.Controllers
 
 			return PartialView("_DetailModal", model);
 		}
+
 	}
 }

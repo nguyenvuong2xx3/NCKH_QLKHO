@@ -23,8 +23,7 @@ namespace QLKho_NCKH.Products
 		//private readonly IRepository<Category> _categoryRepository;
 		private readonly IWebHostEnvironment _env;
 
-		public ProductAppService(IRepository<Product> productRepository,
-															 IWebHostEnvironment env) // IRepository<Category> categoryRepository,
+		public ProductAppService(IRepository<Product> productRepository, IWebHostEnvironment env) // IRepository<Category> categoryRepository,
 		{
 			_productRepository = productRepository;
 			//_categoryRepository = categoryRepository;
@@ -32,9 +31,41 @@ namespace QLKho_NCKH.Products
 		}
 
 
-		public Task<ProductListDto> CreateProducts(CreateProductDto input)
+		public async Task<ProductListDto> Create(CreateProductDto input)
 		{
-			throw new NotImplementedException();
+			var product = new Product
+			{
+				Code = input.Code,
+				Name = input.Name,
+				Description = input.Description,
+				Image = input.Image,
+				CategoryId = input.CategoryId,
+				Barcode = input.Barcode,
+				Unit = input.Unit,
+				Weight = input.Weight,
+				Volume = input.Volume,
+				IsActive = input.IsActive,
+				SupplierId = input.SupplierId,
+
+			};
+
+			 await  _productRepository.InsertAsync(product);
+
+			return new ProductListDto
+			{
+				Id = product.Id,
+				Code = product.Code,
+				Name = product.Name,
+				Description = product.Description,
+				Image = product.Image,
+				CategoryId = product.CategoryId,
+				Barcode = product.Barcode,
+				Unit = product.Unit,
+				Weight = product.Weight,
+				Volume = product.Volume,
+				IsActive = product.IsActive,
+				SupplierId = product.SupplierId,
+			};
 		}
 
 		public Task<ProductListDto> GetProductByCode(string code)

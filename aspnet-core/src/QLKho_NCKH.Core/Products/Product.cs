@@ -15,7 +15,6 @@ namespace QLKho_NCKH.Products
 		[ForeignKey(nameof(CategoryId))]
 		public Category Category { get; set; }
 		public int? CategoryId { get; set; }
-
 		public string Barcode { get; set; }
 		public string Unit { get; set; }
 		public decimal Weight { get; set; }
@@ -24,5 +23,6 @@ namespace QLKho_NCKH.Products
 		[ForeignKey(nameof(SupplierId))]
 		public Supplier Supplier { get; set; }
 		public int? SupplierId { get; set; }
+		public string Image { get; set; }
 	}
 }

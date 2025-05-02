@@ -103,5 +103,17 @@ namespace QLKho_NCKH.Categories
 			await _categoryRepository.DeleteAsync(category);
 		}
 
+		public async Task<List<CategoryListDto>> GetAllCategories()
+		{
+			var categories = await _categoryRepository.GetAllListAsync();
+			return categories.Select(c => new CategoryListDto
+			{
+				Id = c.Id,
+				Name = c.Name,
+				Description = c.Description,
+				CreateTime = c.CreationTime,
+			}).ToList();
+		}
+
 	}
 }

@@ -16,5 +16,6 @@ namespace QLKho_NCKH.Categories
 		Task<CategoryListDto> GetCategoryById(int? categoryId);
 		Task<CategoryListDto> Update(UpdateCategoryDto input);
 		Task Delete(int id);
+		Task<List<CategoryListDto>> GetAllCategories();
 	}
 }
