@@ -160,6 +160,14 @@ namespace QLKho_NCKH.Web.Startup
 									icon: "fas fa-theater-masks"
 							//permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
 							)
+					).AddItem(
+							new MenuItemDefinition(
+									PageNames.Warehouses,
+									L("Warehouses"),
+									url: "Warehouses",
+									icon: "fas fa-theater-masks"
+							//permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
+							)
 					);
 
 		}
