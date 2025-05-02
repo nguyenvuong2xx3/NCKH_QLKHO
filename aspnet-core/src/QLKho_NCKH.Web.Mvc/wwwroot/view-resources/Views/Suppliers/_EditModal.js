@@ -9,21 +9,21 @@
             return;
         }
 
-      var supplier = _$form.serializeFormToObject();
+        var supplier = _$form.serializeFormToObject();
 
         abp.ui.setBusy(_$form);
-      _supplierService.update(supplier).done(function () {
+        _supplierService.update(supplier).done(function () {
             _$modal.modal('hide');
-        abp.notify.info(l('SavedSuccessfully'));
-        abp.event.trigger('supplier.edited', supplier);
+            abp.notify.info(l('SavedSuccessfully'));
+            abp.event.trigger('supplier.edited', supplier);
         }).always(function () {
-          abp.ui.clearBusy(_$form);
+            abp.ui.clearBusy(_$form);
         });
     }
 
-    _$form.closest('div.modal-content').find(".save-button").click(function (e) {
+    _$form.closest('div.modal-content').find(".save-button").on("click", function (e) {
         e.preventDefault();
-      save();
+        save();
     });
 
     _$form.find('input').on('keypress', function (e) {
@@ -34,6 +34,6 @@
     });
 
     _$modal.on('shown.bs.modal', function () {
-        _$form.find('input[type=text]:first').focus();
+        _$form.find('input[type=text]').first().trigger('focus');
     });
 })(jQuery);
