@@ -34,7 +34,7 @@ namespace QLKho_NCKH.Web.Controllers
 			model.Categories = Categories;
 			model.Suppliers = Suppliers;
 			return View(model);
-		}
+		}//Test
 
 		public async Task<IActionResult> Create(CreateProductDto model)
 		{
