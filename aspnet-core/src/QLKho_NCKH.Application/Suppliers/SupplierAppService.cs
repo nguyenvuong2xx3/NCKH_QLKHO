@@ -150,5 +150,22 @@ namespace QLKho_NCKH.Suppliers
 				IsActive = supplier.IsActive
 			};
 		}
+
+		public async Task<List<SupplierDto>> GetAllSupplier()
+		{
+			var suppliers = await _supplierRepository.GetAllListAsync();
+			var supplierDtos = suppliers.Select(s => new SupplierDto
+			{
+				Id = s.Id,
+				Code = s.Code,
+				Name = s.Name,
+				Address = s.Address,
+				PhoneNumber = s.PhoneNumber,
+				Email = s.Email,
+				TaxCode = s.TaxCode,
+				IsActive = s.IsActive
+			}).ToList();
+			return supplierDtos;
+		}
 	}
 }

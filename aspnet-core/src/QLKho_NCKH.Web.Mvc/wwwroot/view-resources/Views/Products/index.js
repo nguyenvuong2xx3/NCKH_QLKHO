@@ -1,297 +1,322 @@
-﻿(function () {
-  $(function () {
-    var _productService = abp.services.app.product,  
-      _$table = $('#productList');
+﻿(function ($) {
+	var _productService = abp.services.app.product,
+
+		l = abp.localization.getSource('QLKho_NCKH'),
+		_$modal = $('#ProductCreateModal'),
+		_$form = _$modal.find('form'),
+		_$table = $('#ProductsTable');
+
+	var _$productTable = _$table.DataTable({
+		paging: true,
+		serverSide: true,
+		listAction: {
+			ajaxFunction: _productService.getAllProducts,
+			inputFilter: function () {
+				//return $('#ProductSearchForm').serializeFormToObject(true);
+			}
+		},
+		buttons: [
+			{
+				name: 'refresh',
+				text: '<i class="fas fa-redo-alt"></i>',
+				action: () => _$productTable.draw(false)
+			}
+		],
+		responsive: {
+			details: {
+				type: 'column'
+			}
+		},
+		columnDefs: [
+			{
+				targets: 0,
+				data: 'code',
+				sortable: false
+			},
+			{
+				targets: 1,
+				data: 'name',
+				sortable: false
+			},
+			{
+				targets: 2,
+				data: 'image',
+				sortable: false,
+				render: function (data, type, row) {
+					if (data) {
+						return `<img src="${data}" alt="Ảnh sản phẩm" class="img-thumbnail d-block mx-auto" width="80" height="80" style="object-fit: cover;">`;
+					}
+					return '<span class="text-muted">Không có ảnh</span>';
+				}
+			},
+			{
+				targets: 3,
+				data: 'description',
+				sortable: false,
+				render: data => new Date(data).toLocaleDateString('vi-VN')
+			},
+			{
+				targets: 4,
+				data: 'category',
+				sortable: false
+			},
+			{
+				targets: 5,
+				data: 'barcode',
+				sortable: false
+			},
+			{
+				targets: 6,
+				data: 'unit',
+				sortable: false
+			},
+			{
+				targets: 7,
+				data: 'weight',
+				sortable: false
+			},
+			{
+				targets: 8,
+				data: 'volume',
+				sortable: false
+			},
+			{
+				targets: 9,
+				data: 'supplier',
+				sortable: false
+			},
+			{
+				targets: 10,
+				data: 'isActive',
+				sortable: false
+			},
+			{
+				targets: 11,
+				data: null,
+				sortable: false,
+				autoWidth: true,
+				defaultContent: '',
+				render: (data, type, row, meta) => {
+					return [
+						`   <button type="button" class="btn btn-sm bg-secondary edit-product" data-product-id="${row.id}" data-toggle="modal" data-target="#ProductEditModal">`,
+						`       <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
+						'   </button>',
+						`   <button type="button" class="btn btn-sm bg-danger delete-product" data-product-id="${row.id}" data-product-name="${row.name}">`,
+						`       <i class="fas fa-trash"></i> ${l('Delete')}`,
+						'   </button>',
+						`   <button type="button" class="btn btn-sm bg-info detail-product" data-product-id="${row.id}" data-toggle="modal" >`,
+						`       <i class="fas fa-eye"></i> ${l('Details')}`,
+						'   </button>'
+					].join('');
+				}
+			}
+		]
+	});
 
 
 
-    //var _createModal = new app.ModalManager({
-    //  viewUrl: abp.appPath + 'Hrm/ShiftPeriods/CreateShiftPeriodModal',
-    //  scriptUrl: abp.appPath + 'view-resources/Hrm/ShiftPeriods/_CreateShiftPeriodModal.js',
-    //  modalClass: 'CreateShiftPeriodModal',
-    //});
 
-    //$('#CreateNewButtonShiftPeriods').click(function () {
-    //  _createModal.open();
-    //});
-
-    //var _editModal = new app.ModalManager({
-    //  viewUrl: abp.appPath + 'Hrm/ShiftPeriods/EditShiftPeriodModal',
-    //  scriptUrl: abp.appPath + 'view-resources/Hrm/ShiftPeriods/_EditShiftPeriodModal.js',
-    //  modalClass: 'EditShiftPeriodModal',
-    //});
-    //// detail
-    //var _detailModal = new app.ModalManager({
-    //  viewUrl: abp.appPath + 'Hrm/ShiftPeriods/DetailShiftPeriodModal',
-    //  scriptUrl: abp.appPath + 'view-resources/Hrm/ShiftPeriods/_DetailShiftPeriodModal.js',
-    //  modalClass: 'DetailShiftPeriodModal',
-    //  modalType: 'modal-xl'
-    //});
-
-    ////export
-    //var _exportShiftPeriodModal = new app.ModalManager({
-    //  viewUrl: abp.appPath + 'Hrm/ShiftPeriods/ExportDataModal',
-    //  scriptUrl: abp.appPath + 'view-resources/Hrm/ShiftPeriods/_ExportShiftperiodDataModal.js',
-    //  modalClass: 'ExportShiftperiodDataModal',
-    //  modalSize: 'modal-xl'
-    //});
-
-    //$('#ExportShiftPeriodData').click(function (e) {
-    //  e.preventDefault();
-
-    //  var filterData = getFilter(); // Lấy search từ view chính
-    //  _exportShiftPeriodModal.open({
-    //    filter: filterData
-    //  });
-    //});
-
-    ////import
-    //var _importShiftPeriodModal = new app.ModalManager({
-    //  viewUrl: abp.appPath + 'Hrm/ShiftPeriods/ImportDataModal',
-    //  scriptUrl: abp.appPath + 'view-resources/Hrm/ShiftPeriods/_ImportShiftperiodDataModal.js',
-    //  modalClass: 'ImportShiftperiodDataModal',
-    //  modalSize: 'modal-xl'
-    //});
-
-    //$('#ImportShiftPeriodData').click(function (e) {
-    //  e.preventDefault();
-    //  _importShiftPeriodModal.open();
-    //});
-
-    ///
-    //function deleteShiftPeriod(data) {
-    //  abp.message.confirm(
-    //    app.localize('Delete'),
-    //    app.localize('AreYouSure'),
-    //    function (isConfirmed) {
-    //      if (isConfirmed) {
-    //        _shiftPeriodService.deleteShiftPeriod(
-    //          data.record.id
-    //        ).done(function () {
-    //          getShiftPeriods(true);
-    //          abp.notify.success(app.localize('SuccessfullyDeleted'));
-    //        });
-    //      }
-    //    },
-    //    { confirmButtonText: 'Xóa', confirmButtonColor: '#dc3545', cancelButtonText: 'Hủy' }
-    //  );
-    //}
-
-    //let dataFilter = {};
-
-    //if (_selectedCalcDateRange?.startDate) {
-    //  dataFilter.calcDateStart = _selectedCalcDateRange.startDate.format('YYYY-MM-DD');
-    //}
-    //if (_selectedCalcDateRange?.endDate) {
-    //  dataFilter.calcDateEnd = _selectedCalcDateRange.endDate.format('YYYY-MM-DD');
-    //}
-
-    //if (_selectedUserIds?.length > 0) {
-    //  dataFilter.userIds = _selectedUserIds;
-    //}
-
-    //return dataFilter;
-    //function getFilter() {
-    //  let dataFilter = {};
-    //  dataFilter.filter = $('#SearchTerm').val()
-    //  //return {
-    //  //  search: $('#SearchTerm').val() // Lấy giá trị từ ô input tìm kiếm
-    //  //};
-    //  return dataFilter;
-
-    //}
+	//_$form.validate({
+	//	rules: {
+	//		Name: {
+	//			required: true,
+	//			validName: true
+	//		},
+	//		Description: {
+	//			required: true
+	//		},
+	//		Price: {
+	//			required: true,
+	//			validPrice: true,
+	//			min: 1000
+	//		},
+	//		State: {
+	//			required: true
+	//		},
+	//		Image: {
+	//			required: true,
+	//			validImage: true
+	//		},
+	//		CategoryId: {
+	//			required: true
+	//		}
+	//	},
+	//	messages: {
+	//		Name: {
+	//			required: "Vui lòng nhập tên sản phẩm.",
+	//			validName: "Tên sản phẩm không hợp lệ. Không được chỉ chứa số hoặc dấu cách."
+	//		},
+	//		Description: {
+	//			required: "Vui lòng nhập mô tả sản phẩm."
+	//		},
+	//		State: {
+	//			required: "Vui lòng chọn trạng thái sản phẩm."
+	//		},
+	//		Price: {
+	//			required: "Vui lòng nhập giá sản phẩm.",
+	//			validPrice: "Giá không hợp lệ",
+	//			number: "Giá phải là số.",
+	//			min: "Giá phải lớn hơn 1000."
+	//		},
+	//		Image: {
+	//			required: "Vui lòng chọn ảnh"
+	//		},
+	//		CategoryId: {
+	//			required: "Vui lòng chọn danh mục sản phẩm."
+	//		},
+	//		errorPlacement: function (error, element) {
+	//			error.insertAfter(element); // Hiển thị lỗi ngay bên dưới ô input
+	//		},
+	//		highlight: function (element) {
+	//			$(element).addClass("is-invalid"); // Thêm viền đỏ khi có lỗi
+	//		},
+	//		unhighlight: function (element) {
+	//			$(element).removeClass("is-invalid"); // Xóa viền đỏ khi nhập đúng
+	//		}
+	//	}
+	//});
 
 
+	_$form.find('.save-button').on('click', (e) => {
+		e.preventDefault();
 
-    var dataTable = _$table.DataTable({
-      paging: true,
-      serverSide: true,
-      processing: true,
-      info: true,
-      listAction: {
-        ajaxFunction: _productService.getAllProducts, // Gọi AppService
-        inputFilter: function () {
-          return getFilter(); // Hàm filter tuỳ bạn định nghĩa
-        },
-      },
-      columnDefs: [
-        {
-          targets: 0,
-          data: 'code',
-          className: 'dt-center',
-          orderable: false
-        },
-        {
-          targets: 1,
-          data: 'name',
-          className: 'dt-left',
-          orderable: false
-        },
-        {
-          targets: 2,
-          data: 'category.name',
-          className: 'dt-center',
-          orderable: false
-        },
-        {
-          targets: 3,
-          data: 'barcode',
-          className: 'dt-center',
-          orderable: false
-        },
-        {
-          targets: 4,
-          data: 'unit',
-          className: 'dt-center',
-          orderable: false
-        },
-        {
-          targets: 5,
-          data: 'weight',
-          className: 'dt-right',
-          orderable: false,
-          render: $.fn.dataTable.render.number(',', '.', 2, '', ' kg')
-        },
-        {
-          targets: 6,
-          data: 'volume',
-          className: 'dt-right',
-          orderable: false,
-          render: $.fn.dataTable.render.number(',', '.', 2, '', ' m³')
-        },
-        {
-          targets: 7,
-          data: 'supplier.name',
-          className: 'dt-center',
-          orderable: false
-        },
-        {
-          targets: 8,
-          data: 'isActive',
-          className: 'dt-center',
-          orderable: false,
-          render: function (isActive) {
-            return isActive ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-secondary">Inactive</span>';
-          }
-        },
-        {
-          targets: 9,
-          data: null,
-          className: 'dt-center',
-          orderable: false,
-          autoWidth: false,
-          defaultContent: '',
-          rowAction: {
-            cssClass: 'btn btn-brand dropdown-toggle',
-            text:
-              '<i class="fa fa-cog"></i> <span class="d-none d-md-inline-block">' +
-              app.localize('Actions') +
-              '</span>',
-            items: [
-              {
-                text: app.localize('Edit'),
-                action: function (data) {
-                  _editModal.open({ id: data.record.id });
-                },
-              },
-              {
-                text: app.localize('Detail'),
-                action: function (data) {
-                  _detailModal.open({ id: data.record.id });
-                },
-              },
-              {
-                text: app.localize('Delete'),
-                action: function (data) {
-                  deleteProduct(data.record); // Viết hàm deleteProduct riêng
-                },
-              },
-            ],
-          },
-        },
-      ]
-    });
+		if (!_$form.valid()) {
+			return;
+		}
+
+		var product = _$form.serializeFormToObject(); // Lấy dữ liệu từ form
+		var formData = new FormData(_$form[0]);
+		abp.ui.setBusy(_$modal);
+		$.ajax({
+
+			url: abp.appPath + 'Products/Create', // Đường dẫn đến phương thức trong controller
+			type: 'POST',
+			processData: false, // Important! Không xử lý dữ liệu
+			contentType: false, // Important!  Không đặt kiểu dữ liệu
+			data: formData,
+			error: function (xhr, textStatus, errorThrown) {
+				var errorMessage;
+				if (xhr.responseJSON && xhr.responseJSON.errors && xhr.responseJSON.errors.length > 0) {
+					errorMessage = xhr.responseJSON.errors.join("<br/>");
+				}
+				else {
+					errorMessage = "Có lỗi xảy ra khi tạo mới khách hàng (Có thể do upload ảnh không đúng định dạng (.jpg, .jpeg, .png, .gif)";
+				}
+				$("#error-message").html(errorMessage).show();
+			}
+		}).done(function () {
+			/*resetDefaultImage();*/
+			_$modal.modal('hide');
+			_$form[0].reset();
+			abp.notify.info(l('Lưu thành công'));
+			_$productTable.ajax.reload();
+
+		}).always(function () {
+
+			abp.ui.clearBusy(_$modal);
+
+		});
+	});
+
+	//$(document).on('click', '.delete-product', function () {
+	//	var productId = $(this).attr("data-product-id");
+	//	var productName = $(this).attr('data-product-name');
+
+	//	deleteProduct(productId, productName);
+	//});
+
+	//function deleteProduct(productId, productName) {
+	//	abp.message.confirm(
+	//		abp.utils.formatString(
+	//			l('Bạn có chắc chắn muốn xóa sản phẩm {0}'),
+	//			productName),
+	//		null,
+	//		(isConfirmed) => {
+	//			if (isConfirmed) {
+	//				_productService.delete({
+	//					id: productId
+	//				}).done(() => {
+	//					abp.notify.info(l('SuccessfullyDeleted'));
+	//					_$productTable.ajax.reload();
+	//				});
+	//			}
+	//		}
+	//	);
+	//}
+
+	//$(document).on('click', '.edit-product', function (e) {
+	//	var productId = $(this).attr("data-product-id");
+
+	//	e.preventDefault();
+	//	abp.ajax({
+	//		url: abp.appPath + 'Products/EditModal?productId=' + productId,
+	//		type: 'POST',
+	//		dataType: 'html',
+	//		success: function (content) {
+	//			$('#ProductEditModal div.modal-content').html(content);
+	//		},
+	//		error: function (e) {
+	//		}
+	//	});
+	//});
+
+	////$(document).on('click', 'a[data-target="#ProductCreateModal"]', (e) => {
+	////	$('.nav-tabs a[href="#product-details"]').tab('show')
+	////});
+
+	//abp.event.on('product.edited', (data) => {
+	//	_$productTable.ajax.reload();
+	//});
+
+	//_$modal.on('shown.bs.modal', () => {
+	//	_$modal.find('input:not([type=hidden]):first').focus();
+	//}).on('hidden.bs.modal', () => {
+	//	_$form.clearForm(); // Xóa toàn bộ dữ liệu trong form
+	//	$('#previewImage').attr('src', '/img/products/default_product.png'); // Đặt lại ảnh về mặc định
+	//});
 
 
-    //$('#shiftPeriod').on('click', '.edit-action', function (e) {
-    //  e.preventDefault();
-    //  var id = $(this).data('id');
-    //  _editModal.open({ id: id });
-    //});
+	//$('.btn-search').on('click', (e) => {
+	//	_$productTable.ajax.reload();
+	//});
 
-    //$('#shiftPeriod').on('click', '.delete-action', function (e) {
-    //  e.preventDefault();
-    //  var id = $(this).data('id');
-    //  deleteShiftPeriod({ record: { id: id } });
-    //});
-
-    //function getShiftPeriods() {
-    //  dataTable.ajax.reload();
-    //}
-    //abp.event.on('app.updateShiftPeriodModalSaved', function () {
-    //  getShiftPeriods(true);
-    //});
-
-    //$('#Search').click(function (e) {
-    //  e.preventDefault();
-    //  getShiftPeriods();
-    //});
-
-    //$('#SearchTerm').on('keydown', function (e) {
-    //  if (e.keyCode !== 13) {
-    //    return;
-    //  }
-    //  e.preventDefault();
-    //  getShiftPeriods();
-    //});
-
-    //abp.event.on('app.reloadDocTable', function () {
-    //  getDocs();
-    //});
+	//$('.txt-search').on('keypress', (e) => {
+	//	if (e.which == 13) {
+	//		_$productTable.ajax.reload();
+	//		return false;
+	//	}
+	//});
 
 
-    //StatusShow = {
-    //  _inputcheckbox: null,
-    //  init: function () {
-    //    StatusShow._inputcheckbox = $('#PollVoteTable tbody input[name="checkshow"]'),
-    //      StatusShow._inputcheckbox.change(function () {
-    //        var inputchange = $(this);
-    //        var data = {}
-    //        data.id = inputchange.attr('data-id');
-    //        if (inputchange.is(':checked')) {
-    //          data.status = 1;
-    //        }
-    //        else {
-    //          data.status = 0;
-    //        }
-    //        _pollVoteService.activeStatus(data).done(function () {
-    //          abp.notify.success(app.localize('Cập nhật thành công'));
-    //          getDocs(true);
-    //        })
-    //      })
-    //  }
-    //}
+	////hiện thị ảnh để xem trước trong create modal
+	//document.getElementById('imageUpload').addEventListener('change', function (event) {
+	//	const file = event.target.files[0]; // Lấy file ảnh
+	//	const previewImage = document.getElementById('previewImage');
+
+	//	if (file) {
+	//		const reader = new FileReader();
+	//		reader.onload = function (e) {
+	//			previewImage.src = e.target.result; // Gán ảnh vào thẻ <img>
+	//			previewImage.style.display = 'block'; // Hiển thị ảnh
+	//		};
+	//		reader.readAsDataURL(file); // Đọc file ảnh dưới dạng URL
+	//	} else {
+	//		previewImage.src = ''; // Xóa ảnh nếu không có file
+	//		previewImage.style.display = 'none';
+	//	}
+	//});
 
 
-    //$('#ShowAdvancedFiltersSpan').click(function () {
-    //  $('#ShowAdvancedFiltersSpan').hide();
-    //  $('#HideAdvancedFiltersSpan').show();
-    //  $('#AdvacedAuditFiltersArea').slideDown();
-    //});
+	//$(document).on("click", ".detail-product", function () {
+	//	var productId = $(this).attr("data-product-id");
+	//	window.location.href = "/Products/Detail?productId=" + productId;
+	//});
 
-    //$('#HideAdvancedFiltersSpan').click(function () {
-    //  $('#HideAdvancedFiltersSpan').hide();
-    //  $('#ShowAdvancedFiltersSpan').show();
-    //  $('#AdvacedAuditFiltersArea').slideUp();
-    //});
 
-    //function getDocs() {
-    //  dataTable.ajax.reload();
-    //}
 
-    //jQuery(document).ready(function () {
-    //  $("#SearchTerm").focus();
-    //});
 
-  });
-})();
+
+
+})(jQuery);
+
+
