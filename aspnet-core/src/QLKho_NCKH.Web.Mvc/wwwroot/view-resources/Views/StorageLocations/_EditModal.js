@@ -1,21 +1,35 @@
 ﻿(function ($) {
-  var _supplierService = abp.services.app.supplier,
+  var _storageLocationService = abp.services.app.storageLocation,
         l = abp.localization.getSource('QLKho_NCKH'),
-    _$modal = $('#SupplierEditModal'),
+    _$modal = $('#StorageLocationEditModal'),
         _$form = _$modal.find('form');
+
+  $('#EditWarehouseBtn').on('click', function () {
+    _addWarehouseEditModal.open({}, function (result) {
+      if (result) {
+				//console.log(result);
+        $('#WarehouseDisplayEdit').val(result.warehouseName.trim());
+        $('#WarehouseIdEdit').val(result.warehouseId);
+      }
+    });
+  });
+
+  var _addWarehouseEditModal = new app.ModalManager({
+    viewUrl: abp.appPath + 'Warehouses/AddWarehoses',
+    scriptUrl: abp.appPath + 'view-resources/Views/Warehouses/_AddWarehousesModal.js',
+    modalClass: 'AddWarehousesModal',
+  });
 
     function save() {
         if (!_$form.valid()) {
             return;
         }
-
-        var supplier = _$form.serializeFormToObject();
-
+      var storageLocation = _$form.serializeFormToObject();
         abp.ui.setBusy(_$form);
-        _supplierService.update(supplier).done(function () {
+      _storageLocationService.update(storageLocation).done(function () {
             _$modal.modal('hide');
             abp.notify.info(l('SavedSuccessfully'));
-            abp.event.trigger('supplier.edited', supplier);
+        abp.event.trigger('storageLocation.edited', storageLocation);
         }).always(function () {
             abp.ui.clearBusy(_$form);
         });

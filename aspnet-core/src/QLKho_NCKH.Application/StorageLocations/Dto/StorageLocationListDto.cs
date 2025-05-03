@@ -12,7 +12,8 @@ namespace QLKho_NCKH.StorageLocations.Dto
 	public class StorageLocationListDto : FullAuditedEntity<int>
 	{
 		public string Code { get; set; }
-		public int WarehouseId { get; set; }
+		//public int WarehouseId { get; set; }
+		public string WarehouseName { get; set; }
 		public decimal Capacity { get; set; }
 		public decimal CurrentVolume { get; set; }
 		public bool IsAvailable { get; set; }

@@ -53,6 +53,7 @@ namespace QLKho_NCKH.StorageLocations
 		public async Task<PagedResultDto<StorageLocationListDto>> GetAllAsync(StorageLocationInput input)
 		{
 			var query = await _storageLocationRepository.GetAllAsync();
+			query = query.Include(x => x.Warehouse);
 			var storageLocations = query
 				.WhereIf(!input.Filter.IsNullOrEmpty(), x => x.Code.Contains(input.Filter))
 				.OrderBy(x => x.CreationTime)
@@ -66,7 +67,7 @@ namespace QLKho_NCKH.StorageLocations
 				{
 					Id = storageLocation.Id,
 					Code = storageLocation.Code,
-					WarehouseId = storageLocation.WarehouseId,
+					WarehouseName = storageLocation.Warehouse.Name,
 					Capacity = storageLocation.Capacity,
 					CurrentVolume = storageLocation.CurrentVolume,
 					IsAvailable = storageLocation.IsAvailable
@@ -79,14 +80,18 @@ namespace QLKho_NCKH.StorageLocations
 			};
 		}
 
-		public async Task<StorageLocationListDto> GetByIdAsync(int id)
+		public async Task<storageLocationDto> GetByIdAsync(int id)
 		{
-			var query = await _storageLocationRepository.GetAsync(id);
-			return new StorageLocationListDto
+			var query = await _storageLocationRepository
+		.GetAll()
+		.Include(x => x.Warehouse)
+		.FirstOrDefaultAsync(x => x.Id == id);
+			return new storageLocationDto
 			{
 				Id = query.Id,
 				Code = query.Code,
 				WarehouseId = query.WarehouseId,
+				WarehouseName = query.Warehouse.Name,
 				Capacity = query.Capacity,
 				CurrentVolume = query.CurrentVolume,
 				IsAvailable = query.IsAvailable
@@ -110,7 +115,7 @@ namespace QLKho_NCKH.StorageLocations
 			{
 				Id = storageLocation.Id,
 				Code = storageLocation.Code,
-				WarehouseId = storageLocation.WarehouseId,
+				//WarehouseId = storageLocation.WarehouseId,
 				Capacity = storageLocation.Capacity,
 				CurrentVolume = storageLocation.CurrentVolume,
 				IsAvailable = storageLocation.IsAvailable

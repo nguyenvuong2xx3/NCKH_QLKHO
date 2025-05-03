@@ -27,10 +27,10 @@ namespace QLKho_NCKH.Web.Controllers
 				Capacity = storageLocation.Result.Capacity,
 				CurrentVolume = storageLocation.Result.CurrentVolume,
 				IsAvailable = storageLocation.Result.IsAvailable,
-				//WarehouseName = storageLocation.Warehouse.Name,
+				WarehouseName = storageLocation.Result.WarehouseName,
 				//WarehouseCode = storageLocation.Warehouse.Code,
 			};
-			return PartialView("_EditStorageLocationsModal", viewmodel);
+			return PartialView("_EditStorageLocationModal", viewmodel);
 		}
 	}
 }
