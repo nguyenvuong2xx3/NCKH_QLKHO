@@ -9,6 +9,6 @@
 		public decimal CurrentVolume { get; set; }
 		public bool IsAvailable { get; set; }
 		public string WarehouseName { get; set; }
-		public string WarehouseCode { get; set; }
+		//public string WarehouseCode { get; set; }
 	}
 }

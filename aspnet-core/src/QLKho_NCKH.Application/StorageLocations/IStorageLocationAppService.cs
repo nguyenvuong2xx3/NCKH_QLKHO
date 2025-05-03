@@ -11,7 +11,7 @@ namespace QLKho_NCKH.StorageLocations
 	public interface IStorageLocationAppService
 	{
 		Task<PagedResultDto<StorageLocationListDto>> GetAllAsync(StorageLocationInput input);
-		Task<StorageLocationListDto> GetByIdAsync(int id);
+		Task<storageLocationDto> GetByIdAsync(int id);
 		Task<storageLocationDto> CreateAsync(CreateStorageLocationDto input);
 
 		Task<StorageLocationListDto> UpdateAsync(UpdateStorageLocationDto input);

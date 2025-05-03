@@ -19,7 +19,7 @@ namespace QLKho_NCKH.EnumCustom
 		Import,     // Nhập kho
 		Export,     // Xuất kho
 		Transfer,   // Điều chuyển kho
-		Adjustment  // Điều chỉnh tồn kho
+		Adjustment  // Điều chỉnh tồn kho	
 	}
 
 	public enum TransactionStatus

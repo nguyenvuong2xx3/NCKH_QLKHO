@@ -8,10 +8,10 @@
 
 	$('#CreateWarehouseBtn').on('click', function () {
 		_addWarehouseCreateModal.open({}, function (result) {
-			//if (result) {
-			//  //$('#WarehouseDisplay').val(result.roleNameDisplay.trim());
-			//  //$('#WarehouseIdCreate').val(result.roleId);
-			//}
+			if (result) {
+				$('#WarehouseDisplay').val(result.warehouseName.trim());
+				$('#WarehouseIdCreate').val(result.warehouseId);
+			}
 		});
 	});
 
@@ -49,7 +49,7 @@
 			{ targets: 3, data: 'currentVolume', className: 'dt-center', orderable: false },
 			{
 				targets: 4,
-				data: 'isActive',
+				data: 'isAvailable',
 				className: 'dt-center',
 				orderable: false,
 				render: function (data) {
@@ -83,7 +83,7 @@
 		}
 
 		var storageLocation = _$form.serializeFormToObject();
-
+		console.log(storageLocation);
 		abp.ui.setBusy(_$modal);
 		_storageLocationService
 			.create(storageLocation)
