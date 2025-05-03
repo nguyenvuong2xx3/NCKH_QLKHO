@@ -20,26 +20,30 @@ namespace QLKho_NCKH.Web.Controllers
 		{
 			return View();
 		}
-
-		public async Task<IActionResult> Edit(int warehouseId)
+		public async Task<IActionResult> AddWarehoses()
 		{
-			var warehouse = await _warehouseAppService.GetByIdAsync(warehouseId);
+			return PartialView("_AddWarehosesModal");
+		}
+
+		public IActionResult Edit(int warehouseId)
+		{
+			var warehouse =  _warehouseAppService.GetByIdAsync(warehouseId);
 			if (warehouse == null)
 			{
 				return NotFound();
 			}
 
-			var model = new WarehouseEditViewModel
+			var viewmodel = new WarehouseEditViewModel
 			{
-				Id = warehouse.Id,
-				Code = warehouse.Code,
-				Name = warehouse.Name,
-				Location = warehouse.Location,
-				TotalArea = warehouse.TotalArea,
-				IsActive = warehouse.IsActive
+				Id = warehouse.Result.Id,
+				Code = warehouse.Result.Code,
+				Name = warehouse.Result.Name,
+				Location = warehouse.Result.Location,
+				TotalArea = warehouse.Result.TotalArea,
+				IsActive = warehouse.Result.IsActive
 			};
 
-			return PartialView("_EditWarehouseModal", model);
+			return PartialView("_EditWarehouseModal", viewmodel);
 		}
 	}
 }

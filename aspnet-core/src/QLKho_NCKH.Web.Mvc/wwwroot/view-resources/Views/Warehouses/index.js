@@ -121,17 +121,15 @@
     var warehouseId = $(this).attr("data-warehouse-id");
 
     e.preventDefault();
-    abp.ui.setBusy($(this)); // Hiển thị trạng thái loading
     abp.ajax({
-      url: abp.appPath + 'Warehouses/Edit?warehouseId=' + warehouseId,
+      url: abp.appPath + 'Warehouses/Edit?WarehouseId=' + warehouseId,
       type: 'POST',
       dataType: 'html',
       success: function (content) {
         $('#WarehouseEditModal div.modal-content').html(content);
       },
       error: function (e) {
-        abp.notify.error('Could not load warehouse edit form');
       }
-    });
+    })
   });
 })(jQuery);

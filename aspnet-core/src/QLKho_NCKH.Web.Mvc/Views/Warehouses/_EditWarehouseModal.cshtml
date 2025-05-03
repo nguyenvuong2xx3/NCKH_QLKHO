@@ -1,9 +1,7 @@
 ﻿@using Abp.Authorization.Users
 @using QLKho_NCKH.Web.Models.Common.Modals
 @using QLKho_NCKH.Web.Models.Warehouses
-
 @model WarehouseEditViewModel
-
 @{
 	Layout = null;
 }
@@ -14,39 +12,35 @@
 	<input type="hidden" name="Id" value="@Model.Id" />
 	<div class="modal-body">
 		<div class="tab-content mt-4">
-			<div role="tabpanel" class="tab-pane container active" id="create-warehouse-details">
-
-				<!-- Mã kho -->
+			<div role="tabpanel" class="tab-pane container active" id="create-warehouses-details">
 				<div class="form-group row required">
 					<label class="col-md-3 col-form-label">@L("Code")</label>
 					<div class="col-md-9">
-						<input type="text" class="form-control" name="Code" value="@Model.Code" required maxlength="50" />
+						<input type="text" class="form-control" name="Code" value="@Model.Code" required maxlength="256">
 					</div>
 				</div>
-
-				<!-- Tên kho -->
 				<div class="form-group row required">
 					<label class="col-md-3 col-form-label">@L("Name")</label>
 					<div class="col-md-9">
-						<input type="text" class="form-control" name="Name" value="@Model.Name" required maxlength="256" />
+						<input type="text" class="form-control" name="Name" value="@Model.Name" required maxlength="256">
 					</div>
 				</div>
-
-				<!-- Vị trí -->
-				<div class="form-group row">
+				<div class="form-group row required">
 					<label class="col-md-3 col-form-label">@L("Location")</label>
 					<div class="col-md-9">
-						<input type="text" class="form-control" name="Location" value="@Model.Location" maxlength="500" />
+						<input type="text" class="form-control" name="Location" value="@Model.Location" required maxlength="256">
 					</div>
 				</div>
 
-				<!-- Diện tích -->
-				<div class="form-group row">
+				<!-- Số điện thoại -->
+				<div class="form-group row required">
 					<label class="col-md-3 col-form-label">@L("TotalArea")</label>
 					<div class="col-md-9">
-						<input type="number" step="0.01" class="form-control" value="@Model.TotalArea" name="TotalArea" min="0" />
+						<input type="tel" class="form-control" name="TotalArea" value="@Model.TotalArea" required maxlength="20">
 					</div>
 				</div>
+
+				<!-- Trạng thái hoạt động -->
 				<div class="form-group row">
 					<label class="col-md-3 col-form-label">@L("IsActive")</label>
 					<div class="col-md-9">
