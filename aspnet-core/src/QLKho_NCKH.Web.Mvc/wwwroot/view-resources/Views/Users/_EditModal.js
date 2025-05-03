@@ -1,6 +1,6 @@
 ﻿(function ($) {
     var _userService = abp.services.app.user,
-        l = abp.localization.getSource('QLKho_NCKH'),
+        l = abp.localization.getSource('SimpleTaskApp'),
         _$modal = $('#UserEditModal'),
         _$form = _$modal.find('form');
 

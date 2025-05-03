@@ -1,6 +1,6 @@
 ﻿(function ($) {
     var _userService = abp.services.app.user,
-        l = abp.localization.getSource('QLKho_NCKH'),
+        l = abp.localization.getSource('SimpleTaskApp'),
         _$modal = $('#UserCreateModal'),
         _$form = _$modal.find('form'),
         _$table = $('#UsersTable');
@@ -9,7 +9,7 @@
         paging: true,
         serverSide: true,
         listAction: {
-            ajaxFunction: _userService.getAllAsync,
+            ajaxFunction: _userService.getAll,
             inputFilter: function () {
                 return $('#UsersSearchForm').serializeFormToObject(true);
             }
