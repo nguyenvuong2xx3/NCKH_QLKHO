@@ -1,10 +1,13 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Abp.AspNetCore.Mvc.Authorization;
+
 //using Abp.Collections.Extensions;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
 using Microsoft.EntityFrameworkCore;
+using QLKho_NCKH.Authorization;
 using QLKho_NCKH.Warehouses.Dto;
 using System;
 using System.Collections.Generic;
@@ -14,6 +17,8 @@ using System.Threading.Tasks;
 
 namespace QLKho_NCKH.Warehouses
 {
+	[AbpMvcAuthorize(PermissionNames.Pages_Warehouses)]
+
 	public class WarehouseAppService : IWarehouseAppService, IApplicationService
 	{
 		private readonly IRepository<Warehouse, int> _warehouseRepository;

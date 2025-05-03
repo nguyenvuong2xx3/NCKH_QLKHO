@@ -4,13 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
+using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Microsoft.EntityFrameworkCore;
+using QLKho_NCKH.Authorization;
 using QLKho_NCKH.Categories.Dto;
 
 namespace QLKho_NCKH.Categories
 {
+	[AbpAuthorize(PermissionNames.Pages_Categories)]
+
 	public class CategoryAppService : QLKho_NCKHAppServiceBase, ICategoryAppService
 	{
 		private readonly IRepository<Category> _categoryRepository;

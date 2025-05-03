@@ -12,5 +12,6 @@
 		    public const string Suppliers = "Suppliers";
 		    public const string Warehouses = "Warehouses";
 		    public const string StorageLocations = "StorageLocations";
+		    public const string StockTransactions = "StockTransactions";
 	}
 }

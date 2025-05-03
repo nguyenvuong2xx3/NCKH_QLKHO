@@ -1,9 +1,11 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Abp.AspNetCore.Mvc.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
 using Microsoft.EntityFrameworkCore;
+using QLKho_NCKH.Authorization;
 using QLKho_NCKH.Suppliers.Dtos;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,8 @@ using System.Threading.Tasks;
 
 namespace QLKho_NCKH.Suppliers
 {
+	[AbpMvcAuthorize(PermissionNames.Pages_Suppliers)]
+
 	public class SupplierAppService : ISupplierAppService, IApplicationService
 	{
 		private readonly IRepository<Supplier, int> _supplierRepository;

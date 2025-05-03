@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Abp.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using QLKho_NCKH.Authorization;
 using QLKho_NCKH.Controllers;
 using QLKho_NCKH.Suppliers;
 using QLKho_NCKH.Warehouses;
@@ -8,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace QLKho_NCKH.Web.Controllers
 {
+	[AbpMvcAuthorize(PermissionNames.Pages_Warehouses)]
 	public class WarehousesController : QLKho_NCKHControllerBase
 	{
 		private readonly IWarehouseAppService _warehouseAppService;

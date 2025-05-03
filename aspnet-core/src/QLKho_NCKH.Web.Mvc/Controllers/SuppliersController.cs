@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Abp.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using QLKho_NCKH.Authorization;
 using QLKho_NCKH.Controllers;
 using QLKho_NCKH.Suppliers;
 using QLKho_NCKH.Web.Models.Suppliers;
 
 namespace QLKho_NCKH.Web.Controllers
 {
+	[AbpMvcAuthorize(PermissionNames.Pages_Suppliers)]
+
 	public class SuppliersController : QLKho_NCKHControllerBase
 	{
 		private readonly ISupplierAppService _supplierRepository;

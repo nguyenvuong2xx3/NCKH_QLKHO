@@ -48,7 +48,5 @@ namespace QLKho_NCKH.StockTransactions
 		public string BatchNumber { get; set; }
 		public DateTime? ExpiryDate { get; set; }
 
-		// Các trường audit (đã kế thừa từ FullAuditedEntity)
-		// CreationTime, CreatorId, LastModificationTime,...
 	}
 }

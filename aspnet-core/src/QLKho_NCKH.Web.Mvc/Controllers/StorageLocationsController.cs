@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Abp.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using QLKho_NCKH.Authorization;
 using QLKho_NCKH.Controllers;
 using QLKho_NCKH.StorageLocations;
 using QLKho_NCKH.Web.Models.storageLocations;
 
 namespace QLKho_NCKH.Web.Controllers
 {
+	[AbpMvcAuthorize(PermissionNames.Pages_StorageLocations)]
+
 	public class StorageLocationsController : QLKho_NCKHControllerBase
 	{
 		private readonly IStorageLocationAppService _storageLocationRepository;

@@ -11,6 +11,12 @@ namespace QLKho_NCKH.Authorization
             context.CreatePermission(PermissionNames.Pages_Users, L("Users"));
             context.CreatePermission(PermissionNames.Pages_Users_Activation, L("UsersActivation"));
             context.CreatePermission(PermissionNames.Pages_Roles, L("Roles"));
+            context.CreatePermission(PermissionNames.Pages_Products, L("Products"));
+            context.CreatePermission(PermissionNames.Pages_Suppliers, L("Suppliers"));
+            context.CreatePermission(PermissionNames.Pages_Categories, L("Categories"));
+            context.CreatePermission(PermissionNames.Pages_Warehouses, L("Warehouses"));
+            context.CreatePermission(PermissionNames.Pages_StorageLocations, L("StorageLocations"));
+            context.CreatePermission(PermissionNames.Pages_StockTransactions, L("StockTransactions"));
             context.CreatePermission(PermissionNames.Pages_Tenants, L("Tenants"), multiTenancySides: MultiTenancySides.Host);
         }
 

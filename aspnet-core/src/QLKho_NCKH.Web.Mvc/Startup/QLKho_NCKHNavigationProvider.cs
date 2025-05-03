@@ -141,43 +141,50 @@ namespace QLKho_NCKH.Web.Startup
 									PageNames.Products,
 									L("Products"),
 									url: "Products",
-									icon: "fas fa-theater-masks"
-							//permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
+									icon: "fas fa-theater-masks",
+							permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Products)
 							)
 					).AddItem(
 							new MenuItemDefinition(
 									PageNames.Categories,
 									L("Categories"),
 									url: "Categories",
-									icon: "fas fa-theater-masks"
-							//permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
+									icon: "fas fa-theater-masks",
+							permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Categories)
 							)
 					).AddItem(
 							new MenuItemDefinition(
 									PageNames.Suppliers,
 									L("Suppliers"),
 									url: "Suppliers",
-									icon: "fas fa-theater-masks"
-							//permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
+									icon: "fas fa-theater-masks",
+							permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Suppliers)
 							)
 					).AddItem(
 							new MenuItemDefinition(
 									PageNames.Warehouses,
 									L("Warehouses"),
 									url: "Warehouses",
-									icon: "fas fa-theater-masks"
-							//permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
+									icon: "fas fa-theater-masks",
+							permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Warehouses)
 							)
 					).AddItem(
 							new MenuItemDefinition(
 									PageNames.StorageLocations,
 									L("StorageLocations"),
 									url: "StorageLocations",
-									icon: "fas fa-theater-masks"
-							//permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
+									icon: "fas fa-theater-masks",
+							permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_StorageLocations)
+							)
+					).AddItem(
+							new MenuItemDefinition(
+									PageNames.StockTransactions,
+									L("StockTransactions"),
+									url: "StockTransactions",
+									icon: "fas fa-theater-masks",
+							permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_StockTransactions)
 							)
 					);
-
 		}
 
 		private static ILocalizableString L(string name)

@@ -10,9 +10,13 @@ using QLKho_NCKH.Products;
 using QLKho_NCKH.Web.Models.Products;
 using QLKho_NCKH.Categories;
 using QLKho_NCKH.Suppliers;
+using Abp.AspNetCore.Mvc.Authorization;
+using QLKho_NCKH.Authorization;
 
 namespace QLKho_NCKH.Web.Controllers
 {
+	[AbpMvcAuthorize(PermissionNames.Pages_Products)]
+
 	public class ProductsController : QLKho_NCKHControllerBase
 	{
 		private readonly IProductAppService _productAppService;

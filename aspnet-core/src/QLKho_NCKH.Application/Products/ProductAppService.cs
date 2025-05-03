@@ -11,12 +11,13 @@ using System.Threading.Tasks;
 using System;
 using QLKho_NCKH.Products.Dtos;
 using System.Collections.Generic;
+using QLKho_NCKH.Authorization;
 using Abp.Collections.Extensions;
-//using Abp.Authorization;
-//using Acme.SimpleTaskApp.Authorization;
+using Abp.AspNetCore.Mvc.Authorization;
 namespace QLKho_NCKH.Products
 {
-	//[AbpAuthorize]
+	[AbpMvcAuthorize(PermissionNames.Pages_Products)]
+
 	public class ProductAppService : ApplicationService, IProductAppService
 	{
 		private readonly IRepository<Product> _productRepository;
