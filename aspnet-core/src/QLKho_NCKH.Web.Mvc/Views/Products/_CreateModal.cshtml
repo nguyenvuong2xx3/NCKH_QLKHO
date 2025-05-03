@@ -49,20 +49,15 @@
 						</div>
 					</div>
 
-					<div class="form-group row mb-3 required">
-						<label class="col-md-3 col-form-label fw-bold">@L("Category")</label>
-						<div class="col-md-9">
-							<select class="form-control select2" name="CategoryId" required>
-								<option value="">-- Chọn danh mục --</option>
-								@if (Model.Categories != null)
-								{
-									foreach (var category in Model.Categories)
-									{
-										<option value="@category.Id">@category.Name</option>
-									}
-								}
-							</select>
+					<div class="form-group row required">
+						<label class="col-md-3 col-form-label">@L("Category")</label>
+						<div class="input-group">
+							<input type="text" id="CategoryDisplay" class="form-control" readonly required />
+							<button type="button" id="CreateCategoryBtn" class="btn btn-success btn-sm" title="@L("Category")">
+								<i class="fa fa-id-card"></i>
+							</button>
 						</div>
+						<input type="hidden" id="CategoryIdCreate" name="CategoryId" />
 					</div>
 
 					<div class="form-group row mb-3">
@@ -96,20 +91,15 @@
 						</div>
 					</div>
 
-					<div class="form-group row mb-3">
-						<label class="col-md-3 col-form-label fw-bold">@L("Supplier")</label>
-						<div class="col-md-9">
-							<select class="form-control select2" name="SupplierId">
-								<option value="">-- Chọn nhà cung cấp --</option>
-								@if (Model.Suppliers != null)
-								{
-									foreach (var supplier in Model.Suppliers)
-									{
-										<option value="@supplier.Id">@supplier.Name</option>
-									}
-								}
-							</select>
+					<div class="form-group row required">
+						<label class="col-md-3 col-form-label">@L("Supplier")</label>
+						<div class="input-group">
+							<input type="text" id="SupplierDisplay" class="form-control" readonly required />
+							<button type="button" id="AddSupplierBtn" class="btn btn-success btn-sm" title="@L("Supplier")">
+								<i class="fa fa-id-card"></i>
+							</button>
 						</div>
+						<input type="hidden" id="SupplierIdCreate" name="SupplierId" />
 					</div>
 
 					<div class="row mb-3 form-group">
@@ -139,3 +129,13 @@
 		</div>
 	</div>
 </div>
+<style>
+	.modal.show {
+		z-index: 1060 !important; /* Z-index của modal con */
+	}
+
+	.modal-backdrop.show {
+		z-index: 1055 !important; /* Z-index của backdrop modal con */
+	}
+
+</style>

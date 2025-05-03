@@ -2,132 +2,140 @@
 @using QLKho_NCKH.Web.Models.Products
 @model EditProductViewModel;
 
+@section scripts
+{
+	<environment names="Development">
+		<script src="~/view-resources/Views/Products/_EditModal.js" asp-append-version="true"></script>
+	</environment>
+}
+
+
 @{
-    Layout = null;
+	Layout = null;
 }
 
 <div class="modal fade" id="ProductEditModal" tabindex="-1" role="dialog" aria-labelledby="ProductEditModalLabel" data-backdrop="static">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditProduct")))
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditProduct")))
 
-            <form name="productEditForm" role="form" class="form-horizontal">
-                <input type="hidden" name="Id" value="@Model.Product.Id" />
+			<form name="productEditForm" role="form" class="form-horizontal">
+				<input type="hidden" name="Id" value="@Model.Product.Id" />
 
-                <div class="modal-body">
-                    <div class="form-group row mb-3 required">
-                        <label class="col-md-3 col-form-label fw-bold">@L("Code")</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" name="Code" value="@Model.Product.Code" required maxlength="256" placeholder="Nhập mã sản phẩm...">
-                        </div>
-                    </div>
+				<div class="modal-body">
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("Code")</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="Code" value="@Model.Product.Code" required maxlength="256" placeholder="Nhập mã sản phẩm...">
+						</div>
+					</div>
 
-                    <div class="form-group row mb-3 required">
-                        <label class="col-md-3 col-form-label fw-bold">@L("ProductName")</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" name="Name" value="@Model.Product.Name" required maxlength="256" placeholder="Nhập tên sản phẩm...">
-                        </div>
-                    </div>
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("ProductName")</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="Name" value="@Model.Product.Name" required maxlength="256" placeholder="Nhập tên sản phẩm...">
+						</div>
+					</div>
 
-                    <div class="form-group row mb-3 required">
-                        <label class="col-md-3 col-form-label fw-bold">@L("Description")</label>
-                        <div class="col-md-9">
-                            <textarea class="form-control" name="Description" required maxlength="500" rows="3">@Model.Product.Description</textarea>
-                        </div>
-                    </div>
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("Description")</label>
+						<div class="col-md-9">
+							<textarea class="form-control" name="Description" required maxlength="500" rows="3">@Model.Product.Description</textarea>
+						</div>
+					</div>
 
-                    <div class="form-group row mb-3">
-                        <label class="col-md-3 col-form-label fw-bold">@L("Barcode")</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" name="Barcode" value="@Model.Product.Barcode" maxlength="256" placeholder="Nhập mã vạch...">
-                        </div>
-                    </div>
+					<div class="form-group row mb-3">
+						<label class="col-md-3 col-form-label fw-bold">@L("Barcode")</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="Barcode" value="@Model.Product.Barcode" maxlength="256" placeholder="Nhập mã vạch...">
+						</div>
+					</div>
 
-                    <div class="form-group row mb-3 required">
-                        <label class="col-md-3 col-form-label fw-bold">@L("Category")</label>
-                        <div class="col-md-9">
-                            <select class="form-control select2" name="CategoryId" required>
-                                <option value="">-- Chọn danh mục --</option>
-                                @if (Model.Categories != null)
-                                {
-                                    foreach (var category in Model.Categories)
-                                    {
-                                        <option value="@category.Id" @(category.Id == Model.Product.CategoryId ? "selected" : "")>@category.Name</option>
-                                    }
-                                }
-                            </select>
-                        </div>
-                    </div>
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("Category")</label>
+						<div class="col-md-9">
+							<select class="form-control select2" name="CategoryId" required>
+								<option value="">-- Chọn danh mục --</option>
+								@if (Model.Category != null)
+								{
 
-                    <div class="form-group row mb-3">
-                        <label class="col-md-3 col-form-label fw-bold">@L("Supplier")</label>
-                        <div class="col-md-9">
-                            <select class="form-control select2" name="SupplierId">
-                                <option value="">-- Chọn nhà cung cấp --</option>
-                                @if (Model.Suppliers != null)
+									<option value="@Model.Category.Id">@Model.Category.Name</option>
+
+								}
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group row mb-3">
+						<label class="col-md-3 col-form-label fw-bold">@L("Supplier")</label>
+						<div class="col-md-9">
+							<select class="form-control select2" name="SupplierId">
+								<option value="">-- Chọn nhà cung cấp --</option>
+								@*  @if (Model.Suppliers != null)
                                 {
                                     foreach (var supplier in Model.Suppliers)
                                     {
                                         <option value="@supplier.Id" @(supplier.Id == Model.Product.SupplierId ? "selected" : "")>@supplier.Name</option>
                                     }
-                                }
-                            </select>
-                        </div>
-                    </div>
+                                } *@
+							</select>
+						</div>
+					</div>
 
-                    <div class="form-group row mb-3">
-                        <label class="col-md-3 col-form-label fw-bold">@L("Unit")</label>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control" name="Unit" value="@Model.Product.Unit" maxlength="100" placeholder="Nhập đơn vị tính...">
-                        </div>
-                    </div>
+					<div class="form-group row mb-3">
+						<label class="col-md-3 col-form-label fw-bold">@L("Unit")</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="Unit" value="@Model.Product.Unit" maxlength="100" placeholder="Nhập đơn vị tính...">
+						</div>
+					</div>
 
-                    <div class="form-group row mb-3">
-                        <label class="col-md-3 col-form-label fw-bold">@L("Weight")</label>
-                        <div class="col-md-9">
-                            <input type="number" class="form-control" name="Weight" value="@Model.Product.Weight" step="0.01" placeholder="Nhập trọng lượng...">
-                        </div>
-                    </div>
+					<div class="form-group row mb-3">
+						<label class="col-md-3 col-form-label fw-bold">@L("Weight")</label>
+						<div class="col-md-9">
+							<input type="number" class="form-control" name="Weight" value="@Model.Product.Weight" step="0.01" placeholder="Nhập trọng lượng...">
+						</div>
+					</div>
 
-                    <div class="form-group row mb-3">
-                        <label class="col-md-3 col-form-label fw-bold">@L("Volume")</label>
-                        <div class="col-md-9">
-                            <input type="number" class="form-control" name="Volume" value="@Model.Product.Volume" step="0.01" placeholder="Nhập thể tích...">
-                        </div>
-                    </div>
+					<div class="form-group row mb-3">
+						<label class="col-md-3 col-form-label fw-bold">@L("Volume")</label>
+						<div class="col-md-9">
+							<input type="number" class="form-control" name="Volume" value="@Model.Product.Volume" step="0.01" placeholder="Nhập thể tích...">
+						</div>
+					</div>
 
-                    <div class="form-group row mb-3 required">
-                        <label class="col-md-3 col-form-label fw-bold">@L("IsActive")</label>
-                        <div class="col-md-9">
-                            <select class="form-control" name="IsActive" required>
-                                <option value="true" @(Model.Product.IsActive ? "selected" : "")>Hoạt động</option>
-                                <option value="false" @(!Model.Product.IsActive ? "selected" : "")>Không hoạt động</option>
-                            </select>
-                        </div>
-                    </div>
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("IsActive")</label>
+						<div class="col-md-9">
+							<div class="col-md-9">
+								<input id="active" type="checkbox" name="IsActive" value="@Model.Product.IsActive" @(Model.Product.IsActive ? "checked" : "") />
+							</div>
+						</div>
+					</div>
 
-                    <div class="form-group row mb-3">
-                        <label class="col-md-3 col-form-label fw-bold">@L("ProductImage")</label>
-                        <div class="col-md-9">
-                            <div class="d-flex align-items-center">
-                                <div class="border rounded shadow-sm p-2 text-center"
-                                     style="width: 200px; height: 100px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
-                                    <img id="previewImage" src="@Model.Product.Image" class="img-fluid rounded" style="max-width: 100%; height: auto; object-fit: cover;">
-                                </div>
-                                <div class="ms-3">
-                                    <input type="file" id="imageUpload" class="d-none" name="ImageFile" accept="image/*">
-                                    <label for="imageUpload" class="btn btn-outline-primary">
-                                        <i class="fas fa-upload"></i> Chọn ảnh
-                                    </label>
-                                    <div id="imageError" class="text-danger mt-2"></div> <!-- Thông báo lỗi -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
-            </form>
-        </div>
-    </div>
+
+					<div class="form-group row mb-3">
+						<label class="col-md-3 col-form-label fw-bold">@L("ProductImage")</label>
+						<div class="col-md-9">
+							<div class="d-flex align-items-center">
+								<div class="border rounded shadow-sm p-2 text-center"
+										 style="width: 200px; height: 100px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+									<img id="previewImage" src="@Model.Product.Image" class="img-fluid rounded" style="max-width: 100%; height: auto; object-fit: cover;">
+								</div>
+								<div class="ms-3">
+									<input type="file" id="imageUpload" class="d-none" name="ImageFile" accept="image/*">
+									<label for="imageUpload" class="btn btn-outline-primary">
+										<i class="fas fa-upload"></i> Chọn ảnh
+									</label>
+									<div id="imageError" class="text-danger mt-2"></div> <!-- Thông báo lỗi -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+			</form>
+		</div>
+	</div>
 </div>

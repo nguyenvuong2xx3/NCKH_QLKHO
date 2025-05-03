@@ -193,5 +193,11 @@
     "inputFiles": [
       "wwwroot/libs/abp-web-resources/abp/framework/scripts/libs/ResourceLoader.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/libs/abp-web-resources/abp/framework/scripts/libs/ModalManager.min.js",
+    "inputFiles": [
+      "wwwroot/libs/abp-web-resources/abp/framework/scripts/libs/ModalManager.js"
+    ]
   }
 ]

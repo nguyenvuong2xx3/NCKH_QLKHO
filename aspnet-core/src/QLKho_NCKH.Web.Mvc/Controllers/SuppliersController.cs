@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using QLKho_NCKH.Controllers;
 using QLKho_NCKH.Suppliers;
 using QLKho_NCKH.Web.Models.Suppliers;
@@ -34,6 +35,11 @@ namespace QLKho_NCKH.Web.Controllers
 				IsActive = supplier.Result.IsActive
 			};
 			return PartialView("_EditSupplierModal", viewmodel);
+		}
+
+		public async Task<IActionResult> AddSupplier()
+		{
+			return PartialView("_AddSupplierModal");
 		}
 	}
 }

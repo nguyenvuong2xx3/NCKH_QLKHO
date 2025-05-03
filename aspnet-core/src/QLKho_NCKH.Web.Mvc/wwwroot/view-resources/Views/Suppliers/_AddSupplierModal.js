@@ -1,7 +1,7 @@
 ﻿(function () {
-  app.modals.AddCategoryModal = function () {
+  app.modals.AddSupplierModal = function () {
     var _modalManager;
-    var _categoryService = abp.services.app.category;
+    var _supplierService = abp.services.app.supplier;
     var _$table;
     var _$filterInput;
     var dataTable;
@@ -23,10 +23,10 @@
         return;
       }
 
-      var selectedCategory = _$table.find('input[name="selectedCategory"]:checked');
+      var selectedSupplier = _$table.find('input[name="selectedSupplier"]:checked');
       var $saveButton = _modalManager.getModal().find('.save-button');
 
-      if (selectedCategory.length > 0) {
+      if (selectedSupplier.length > 0) {
         $saveButton.removeAttr('disabled');
       } else {
         $saveButton.attr('disabled', 'disabled');
@@ -37,15 +37,15 @@
       _modalManager = modalManager;
 
       // Lấy các phần tử từ modal
-      _$table = _modalManager.getModal().find('#addCategoryModalTable');
-      _$filterInput = _modalManager.getModal().find('#CategoryFilter');
+      _$table = _modalManager.getModal().find('#addSupplierModalTable');
+      _$filterInput = _modalManager.getModal().find('#SupplierFilter');
 
       // Khởi tạo DataTable
       dataTable = _$table.DataTable({
         paging: true,
         serverSide: true,
         listAction: {
-          ajaxFunction: _categoryService.getAll,
+          ajaxFunction: _supplierService.getAll,
           inputFilter: getFilter
         },
         columns: [
@@ -58,7 +58,7 @@
                 '<label for="radio_' +
                 data.id +
                 '" class="radio form-check">' +
-                '<input type="radio" name="selectedCategory" id="radio_' +
+                '<input type="radio" name="selectedSupplier" id="radio_' +
                 data.id +
                 '" class="form-check-input" />&nbsp;' +
                 '<span class="form-check-label"></span>' +
@@ -67,7 +67,15 @@
             }
           },
           { data: "name", orderable: false },
-          { data: "description", orderable: false }
+          { data: "address", orderable: false },
+          { data: "phoneNumber", orderable: false },
+          {
+            data: "isActive",
+            orderable: false,
+            render: function (data) {
+              return data ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
+            }
+          }
         ],
         buttons: [
           {
@@ -86,7 +94,7 @@
       });
 
       // Sự kiện change cho radio button
-      _$table.on('change', 'input[name="selectedCategory"]', function () {
+      _$table.on('change', 'input[name="selectedSupplier"]', function () {
         updateSaveButtonState();
       });
 
@@ -97,7 +105,7 @@
       updateSaveButtonState();
 
       // Sự kiện tìm kiếm
-      _modalManager.getModal().find('.add-category-filter-button').click(function () {
+      _modalManager.getModal().find('.add-supplier-filter-button').click(function () {
         refreshTable();
       });
 
@@ -119,16 +127,16 @@
     };
 
     this.save = function () {
-      var selectedRow = dataTable.row($('input[name="selectedCategory"]:checked').closest('tr')).data();
+      var selectedRow = dataTable.row($('input[name="selectedSupplier"]:checked').closest('tr')).data();
 
       if (!selectedRow) {
-        abp.message.warn(abp.localization.localize('PleaseSelectACategory', 'QLKho_NCKH'));
+        abp.message.warn(abp.localization.localize('PleaseSelectASupplier', 'QLKho_NCKH'));
         return;
       }
 
       _modalManager.setResult({
-        categoryId: selectedRow.id,
-        categoryName: selectedRow.name
+        supplierId: selectedRow.id,
+        supplierName: selectedRow.name
       });
 
       _modalManager.close();

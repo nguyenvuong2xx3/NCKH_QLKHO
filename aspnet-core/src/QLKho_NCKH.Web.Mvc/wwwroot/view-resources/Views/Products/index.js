@@ -6,6 +6,46 @@
 		_$form = _$modal.find('form'),
 		_$table = $('#ProductsTable');
 
+	//category
+	$('#CreateCategoryBtn').on('click', function () {
+		_addCategoryCreateModal.open({}, function (result) {
+			if (result) {
+				$('#CategoryDisplay').val(result.categoryName.trim());
+				$('#CategoryIdCreate').val(result.categoryId);
+			}
+		});
+	});
+
+	var _addCategoryCreateModal = new app.ModalManager({
+		viewUrl: abp.appPath + 'Categories/AddCategory',
+		scriptUrl: abp.appPath + 'view-resources/Views/Categories/_AddCategoryModal.js',
+		modalClass: 'AddCategoryModal',
+	});
+
+	//supplier
+	$('#AddSupplierBtn').on('click', function () {
+		_addSupplierCreateModal.open({}, function (result) {
+			if (result) {
+				$('#SupplierDisplay').val(result.supplierName.trim());
+				$('#SupplierIdCreate').val(result.supplierId);
+			}
+		});
+	});
+
+	var _addSupplierCreateModal = new app.ModalManager({
+		viewUrl: abp.appPath + 'Suppliers/AddSupplier',
+		scriptUrl: abp.appPath + 'view-resources/Views/Suppliers/_AddSupplierModal.js',
+		modalClass: 'AddSupplierModal',
+	});
+
+	$('#AddCategoryModal, #AddSupplierModal').on('hidden.bs.modal', function () {
+		$('body').addClass('modal-open'); // Khôi phục khả năng cuộn cho modal chính
+	});
+	$('#AddCategoryModal, #AddSupplierModal').on('hidden.bs.modal', function () {
+		$('.modal-backdrop').last().remove(); // Xóa backdrop của modal con
+	});
+
+
 	var _$productTable = _$table.DataTable({
 		paging: true,
 		serverSide: true,
@@ -285,16 +325,16 @@
 	//});
 
 
-	//$('.btn-search').on('click', (e) => {
-	//	_$productTable.ajax.reload();
-	//});
+	$('.btn-search').on('click', (e) => {
+		_$productTable.ajax.reload();
+	});
 
-	//$('.txt-search').on('keypress', (e) => {
-	//	if (e.which == 13) {
-	//		_$productTable.ajax.reload();
-	//		return false;
-	//	}
-	//});
+	$('.txt-search').on('keypress', (e) => {
+		if (e.which == 13) {
+			_$productTable.ajax.reload();
+			return false;
+		}
+	});
 
 
 	//hiện thị ảnh để xem trước trong create modal

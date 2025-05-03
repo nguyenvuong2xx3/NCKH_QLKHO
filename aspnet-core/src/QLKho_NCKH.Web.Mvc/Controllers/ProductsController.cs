@@ -40,6 +40,11 @@ namespace QLKho_NCKH.Web.Controllers
 		{
 			var product = await _productAppService.GetProductById(productId);
 
+			var category = await _categoryAppService.GetCategoryById(product.CategoryId);
+			var supplier = product.SupplierId.HasValue
+					? await _supplierAppService.GetByIdAsync(product.SupplierId.Value)
+					: null;
+
 			var model = new EditProductViewModel
 			{
 				Product = product

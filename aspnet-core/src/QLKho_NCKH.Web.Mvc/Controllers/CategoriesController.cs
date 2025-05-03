@@ -44,5 +44,10 @@ namespace QLKho_NCKH.Web.Controllers
 			return PartialView("_DetailModal", model);
 		}
 
+		public async Task<IActionResult> AddCategory()
+		{
+			return PartialView("_AddCategoryModal");
+		}
+
 	}
 }
