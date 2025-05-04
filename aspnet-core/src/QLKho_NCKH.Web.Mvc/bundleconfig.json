@@ -199,5 +199,17 @@
     "inputFiles": [
       "wwwroot/libs/abp-web-resources/abp/framework/scripts/libs/ModalManager.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/view-resources/Views/StockTransactions/_ImportModal.min.js",
+    "inputFiles": [
+      "wwwroot/view-resources/Views/StockTransactions/_ImportModal.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/view-resources/Views/StockTransactions/CreateImport.min.js",
+    "inputFiles": [
+      "wwwroot/view-resources/Views/StockTransactions/CreateImport.js"
+    ]
   }
 ]

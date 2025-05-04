@@ -14,7 +14,15 @@
   <environment names="Staging,Production">
     <script src="~/view-resources/Views/StockTransactions/Index.min.js" asp-append-version="true"></script>
   </environment>
+  <environment names="Development">
+    <script src="~/view-resources/Views/StockTransactions/_ImportModal.js" asp-append-version="true"></script>
+  </environment>
+
+  <environment names="Staging,Production">
+    <script src="~/view-resources/Views/StockTransactions/_ImportModal.min.js" asp-append-version="true"></script>
+  </environment>
 }
+
 <section class="content-header">
   <div class="container-fluid">
     <div class="row">

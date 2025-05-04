@@ -6,18 +6,18 @@
 		_$table = $('#StorageLocationsTable');
 
 
-	$('#ImportModal').on('click', function () {
-		_createImportModalModal.open({}, function (result) {
+	$('#CreateWarehouseBtn').on('click', function () {
+		_addWarehouseCreateModal.open({}, function (result) {
 			if (result) {
-				//$('#WarehouseDisplay').val(result.warehouseName.trim());
-				//$('#WarehouseIdCreate').val(result.warehouseId);
+				$('#WarehouseDisplay').val(result.warehouseName.trim());
+				$('#WarehouseIdCreate').val(result.warehouseId);
 			}
 		});
 	});
 
-	var _createImportModalModal = new app.ModalManager({
-		viewUrl: abp.appPath + 'StorageLocations/CreateImport',
-		scriptUrl: abp.appPath + 'view-resources/Views/StorageLocations/CreateImport.js',
+	var _addWarehouseCreateModal = new app.ModalManager({
+		viewUrl: abp.appPath + 'Warehouses/AddWarehoses',
+		scriptUrl: abp.appPath + 'view-resources/Views/Warehouses/_AddWarehousesModal.js',
 		modalClass: 'AddWarehousesModal',
 	});
 

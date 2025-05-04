@@ -11,6 +11,8 @@ using QLKho_NCKH.Web.Models.Products;
 using QLKho_NCKH.Categories;
 using QLKho_NCKH.Suppliers;
 using Abp.Application.Services.Dto;
+using QLKho_NCKH.Authorization;
+using Abp.AspNetCore.Mvc.Authorization;
 
 namespace QLKho_NCKH.Web.Controllers
 {
@@ -52,6 +54,11 @@ namespace QLKho_NCKH.Web.Controllers
 				Product = product
 			};
 			return PartialView("_EditModal", model);
+		}
+
+		public async Task<IActionResult> AddProduct()
+		{
+			return PartialView("_AddProductModal");
 		}
 
 		public async Task<IActionResult> Create(CreateProductDto model)

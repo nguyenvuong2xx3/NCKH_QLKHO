@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using QLKho_NCKH.Authorization;
 using Abp.Collections.Extensions;
 using Abp.AspNetCore.Mvc.Authorization;
+using Abp.Extensions;
 namespace QLKho_NCKH.Products
 {
 	[AbpMvcAuthorize(PermissionNames.Pages_Products)]
