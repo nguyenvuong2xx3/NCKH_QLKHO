@@ -1,6 +1,9 @@
 ﻿using Abp.Application.Services;
 using Abp.Domain.Repositories;
+using Abp.Domain.Uow;
 using Castle.MicroKernel.Registration;
+using Microsoft.AspNetCore.Mvc;
+using QLKho_NCKH.EnumCustom;
 using QLKho_NCKH.StockTransactions.Dtos;
 using System;
 using System.Collections.Generic;
@@ -14,9 +17,11 @@ namespace QLKho_NCKH.StockTransactions
 	public class StockTransactionAppService : IStockTransactionAppService, IApplicationService
 	{
 		private readonly IRepository<StockTransaction, int> _stockTransactionRepository;
-		public StockTransactionAppService(IRepository<StockTransaction, int> stockTransactionRepository)
+		private readonly IRepository<StockTransactionDetail, int> _stockTransactionDetailRepository;
+		public StockTransactionAppService(IRepository<StockTransaction, int> stockTransactionRepository, IRepository<StockTransactionDetail, int> stockTransactionDetailRepository)
 		{
 			_stockTransactionRepository = stockTransactionRepository;
+			_stockTransactionDetailRepository = stockTransactionDetailRepository;
 		}
 		public async Task<StockTransactionDto> CreateStockTransactionImport(CreateStockTransactionImportDto input)
 		{
@@ -42,5 +47,55 @@ namespace QLKho_NCKH.StockTransactions
 				Note = stockTransaction.Note
 			};
 		}
+		[HttpPost]
+		public async Task<IActionResult> CreateImportRequest([FromBody] CreateImportRequestDto input)
+		{
+			//using (var transaction = await _unitOfWork.BeginTransactionAsync())
+			//{
+			//	try
+			//	{
+					// 1. Lưu master (StockTransaction)
+					var master = new StockTransaction
+					{
+						TransactionType = TransactionType.Import,
+						//Status = RequestStatus.Draft,
+						ToWarehouseId = input.WarehouseId,
+						SupplierId = input.SupplierId
+					};
+					await _stockTransactionRepository.InsertAsync(master);
+
+					// 2. Lưu details (StockTransactionDetail)
+					foreach (var detailDto in input.Details)
+					{
+						var detail = new StockTransactionDetail
+						{
+							StockTransactionId = master.Id,
+							ProductId = detailDto.ProductId,
+							Quantity = detailDto.Quantity,
+							StorageLocationId = detailDto.StorageLocationId,
+							BatchNumber = detailDto.BatchNumber
+						};
+						await _stockTransactionDetailRepository.InsertAsync(detail);
+					}
+
+					//await _unitOfWork.CompleteAsync();
+					//await transaction.CommitAsync();
+
+					return new OkObjectResult(new
+					{
+						TransactionCode = master.TransactionCode,
+						TransactionDate = master.TransactionDate,
+						FromWarehouseName = master.FromWarehouse?.Name,
+						ToWarehouseName = master.ToWarehouse?.Name,
+						ReferenceNumber = master.ReferenceNumber,
+						Note = master.Note
+					});
+		}
+				//catch (Exception)
+				//{
+				//	await transaction.RollbackAsync();
+				//	throw;
+				//}
+			//}
 	}
 }

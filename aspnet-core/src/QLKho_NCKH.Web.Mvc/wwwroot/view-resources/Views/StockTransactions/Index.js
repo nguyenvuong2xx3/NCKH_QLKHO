@@ -1,27 +1,29 @@
 ﻿(function ($) {
-	var _storageLocationService = abp.services.app.storageLocation,
+	var _stockTransactionService = abp.services.app.stockTransaction,
 		l = abp.localization.getSource('QLKho_NCKH'),
-		_$modal = $('#StorageLocationCreateModal'),
+		_$modalimport = $('#ImportModal'),
+		_$modalexport = $('#ExportModal'),
+		_$modaltransfer = $('#TransferModal'),
 		_$form = _$modal.find('form'),
-		_$table = $('#StorageLocationsTable');
+		_$table = $('#StockTransactionsTable');
 
 
-	$('#CreateWarehouseBtn').on('click', function () {
-		_addWarehouseCreateModal.open({}, function (result) {
-			if (result) {
-				$('#WarehouseDisplay').val(result.warehouseName.trim());
-				$('#WarehouseIdCreate').val(result.warehouseId);
-			}
-		});
-	});
+	//$('#CreateWarehouseBtn').on('click', function () {
+	//	_addWarehouseCreateModal.open({}, function (result) {
+	//		if (result) {
+	//			$('#WarehouseDisplay').val(result.warehouseName.trim());
+	//			$('#WarehouseIdCreate').val(result.warehouseId);
+	//		}
+	//	});
+	//});
 
-	var _addWarehouseCreateModal = new app.ModalManager({
-		viewUrl: abp.appPath + 'Warehouses/AddWarehoses',
-		scriptUrl: abp.appPath + 'view-resources/Views/Warehouses/_AddWarehousesModal.js',
-		modalClass: 'AddWarehousesModal',
-	});
+	//var _addWarehouseCreateModal = new app.ModalManager({
+	//	viewUrl: abp.appPath + 'Warehouses/AddWarehoses',
+	//	scriptUrl: abp.appPath + 'view-resources/Views/Warehouses/_AddWarehousesModal.js',
+	//	modalClass: 'AddWarehousesModal',
+	//});
 
-	var _$storageLocationTable = _$table.DataTable({
+	var _$stockTransactionTable = _$table.DataTable({
 		paging: true,
 		serverSide: true,
 		listAction: {

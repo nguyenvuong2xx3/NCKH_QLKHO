@@ -11,21 +11,17 @@
       @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewImportStorageLocation")))
       <form name="StorageLocationCreateForm" role="form" class="form-horizontal">
 				<div class="modal-body">
-					@* <ul class="nav nav-tabs" role="tablist"> *@
-					@* 	<li class="nav-item"> *@
-					@* 		<a class="nav-link active" data-toggle="tab" role="tab" href="#create-user-details">@L("SupplierDetails")</a> *@
-					@* 	</li> *@
-					@* 	<li class="nav-item"> *@
-					@* 		<a class="nav-link" data-toggle="tab" role="tab" href="#create-user-roles">@L("UserRoles")</a> *@
-					@* 	</li> *@
-					@* </ul> *@
           <div class="tab-content mt-4">
             <div role="tabpanel" class="tab-pane container active" id="create-supplier-details">
               <div class="form-group row required">
-                <label class="col-md-3 col-form-label">@L("Code")</label>
-                <div class="col-md-9">
-                  <input type="text" class="form-control" name="Code" required maxlength="256">
+                <label class="col-md-3 col-form-label">@L("WarehouseName")</label>
+                <div class="input-group">
+                  <input type="text" id="WarehouseDisplay" class="form-control" readonly required />
+                  <button type="button" id="CreateWarehouseBtn" class="btn btn-success btn-sm" title="@L("WarehouseName")">
+                    <i class="fa fa-id-card"></i>
+                  </button>
                 </div>
+                <input type="hidden" id="WarehouseIdCreate" name="WarehouseId" />
               </div>
               <div class="form-group row required">
                 <label class="col-md-3 col-form-label">@L("WarehouseName")</label>
