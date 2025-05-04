@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Abp.Domain.Entities.Auditing;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace QLKho_NCKH.Products.Dtos
 {
-	public class CreateProductDto
+	public class CreateProductDto : FullAuditedEntity<int>
 	{
 		[Required]
 		[StringLength(50)]
@@ -17,7 +18,7 @@ namespace QLKho_NCKH.Products.Dtos
 		[StringLength(500)]
 		public string Description { get; set; }
 
-		public int? CategoryId { get; set; }
+		public int CategoryId { get; set; }
 
 		[StringLength(100)]
 		public string Barcode { get; set; }
@@ -29,7 +30,7 @@ namespace QLKho_NCKH.Products.Dtos
 		public decimal Volume { get; set; } = 0;
 		public bool IsActive { get; set; } = true;
 
-		public int? SupplierId { get; set; }
+		public int SupplierId { get; set; }
 		public string Image { get; set; }
 		public IFormFile ImageFile { get; set; }
 	}

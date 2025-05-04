@@ -39,5 +39,10 @@ namespace QLKho_NCKH.Web.Controllers
 			};
 			return PartialView("_EditSupplierModal", viewmodel);
 		}
+
+		public async Task<IActionResult> AddSupplier()
+		{
+			return PartialView("_AddSupplierModal");
+		}
 	}
 }
