@@ -211,5 +211,23 @@
     "inputFiles": [
       "wwwroot/view-resources/Views/StockTransactions/CreateImport.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/view-resources/Views/Products/_EditModal.min.js",
+    "inputFiles": [
+      "wwwroot/view-resources/Views/Products/_EditModal.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/view-resources/Views/Products/index.min.js",
+    "inputFiles": [
+      "wwwroot/view-resources/Views/Products/index.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/view-resources/Views/Products/Create.min.js",
+    "inputFiles": [
+      "wwwroot/view-resources/Views/Products/Create.js"
+    ]
   }
 ]

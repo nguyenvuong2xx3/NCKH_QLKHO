@@ -1,189 +1,226 @@
 ﻿(function ($) {
-	var _stockTransactionService = abp.services.app.stockTransaction,
-		l = abp.localization.getSource('QLKho_NCKH'),
-		_$modalimport = $('#ImportModal'),
-		_selectedProductsId = null;
-		//_$modalexport = $('#ExportModal'),
-		//_$modaltransfer = $('#TransferModal'),
-		_$form = _$modalimport.find('form'),
-		_$table = $('#StockTransactionsTable');
+  var _stockTransactionService = abp.services.app.stockTransaction,
+    l = abp.localization.getSource('QLKho_NCKH'),
+    _$modalimport = $('#ImportModal'),
+    _selectedProducts = []; // Thay đổi từ _selectedProductsId sang mảng object chứa đầy đủ thông tin
+  _$form = _$modalimport.find('form'),
+    _$table = $('#StockTransactionsTable');
 
-	//warehouse
-	$('#CreateWarehouseImportBtn').on('click', function () {
-		_addWarehouseCreateModal.open({}, function (result) {
-			if (result) {
-				$('#WarehouseImportDisplay').val(result.warehouseName.trim());
-				$('#WarehouseIdImportCreate').val(result.warehouseId);
-			}
-		});
-	});
+  // Warehouse
+  $('#CreateWarehouseImportBtn').on('click', function () {
+    _addWarehouseCreateModal.open({}, function (result) {
+      if (result) {
+        $('#WarehouseImportDisplay').val(result.warehouseName.trim());
+        $('#WarehouseIdImportCreate').val(result.warehouseId);
+        loadStorageLocations(result.warehouseId); // Load vị trí lưu trữ khi chọn kho
+      }
+    });
+  });
 
-	var _addWarehouseCreateModal = new app.ModalManager({
-		viewUrl: abp.appPath + 'Warehouses/AddWarehoses',
-		scriptUrl: abp.appPath + 'view-resources/Views/Warehouses/_AddWarehousesModal.js',
-		modalClass: 'AddWarehousesModal',
-	});
-	//suplier
-	$('#AddSupplierImportBtn').on('click', function () {
-		_addSupplierCreateModal.open({}, function (result) {
-			if (result) {
-				$('#SupplierImportDisplay').val(result.supplierName.trim());
-				$('#SupplierIdImportCreate').val(result.supplierId);
-			}
-		});
-	});
+  var _addWarehouseCreateModal = new app.ModalManager({
+    viewUrl: abp.appPath + 'Warehouses/AddWarehoses',
+    scriptUrl: abp.appPath + 'view-resources/Views/Warehouses/_AddWarehousesModal.js',
+    modalClass: 'AddWarehousesModal',
+  });
 
-	var _addSupplierCreateModal = new app.ModalManager({
-		viewUrl: abp.appPath + 'Suppliers/AddSupplier',
-		scriptUrl: abp.appPath + 'view-resources/Views/Suppliers/_AddSupplierModal.js',
-		modalClass: 'AddSupplierModal',
-	});
-	// products
-	$('#AddProductsImportBtn').click(function () {
-		_addProductCreateModal.open({ _selectedProductsId }, function (result) {
-			// Nếu không chọn ai => reset input và danh sách user đã chọn
-			if (!result || result.length === 0) {
-				_selectedProductsId = [];
-				$('#ProductsImportDisplay').val('');
-				return;
-			}
+  // Supplier
+  $('#AddSupplierImportBtn').on('click', function () {
+    _addSupplierCreateModal.open({}, function (result) {
+      if (result) {
+        $('#SupplierImportDisplay').val(result.supplierName.trim());
+        $('#SupplierIdImportCreate').val(result.supplierId);
+      }
+    });
+  });
 
-			// Nếu có chọn => cập nhật danh sách
-			_selectedProductsId = result.map(u => u.productId);
-			// Show tên user đã chọn ra UI
-			const selectedNames = result.map(u => u.productName).join(', ');
-			$('#ProductsImportDisplay').val(selectedNames);
-		});
-	});
-	var _addProductCreateModal = new app.ModalManager({
-		viewUrl: abp.appPath + 'Products/AddProduct',
-		scriptUrl: abp.appPath + 'view-resources/Views/Products/_AddProductsModal.js',
-		modalClass: 'AddProductsModal',
-	});
+  var _addSupplierCreateModal = new app.ModalManager({
+    viewUrl: abp.appPath + 'Suppliers/AddSupplier',
+    scriptUrl: abp.appPath + 'view-resources/Views/Suppliers/_AddSupplierModal.js',
+    modalClass: 'AddSupplierModal',
+  });
 
-	//var _$stockTransactionTable = _$table.DataTable({
-	//	paging: true,
-	//	serverSide: true,
-	//	listAction: {
-	//		ajaxFunction: _storageLocationService.getAll,
-	//		inputFilter: function () {
-	//			return $('#StorageLocationServiceSearchForm').serializeFormToObject(true);
-	//		}
-	//	},
-	//	buttons: [
-	//		{
-	//			name: 'refresh',
-	//			text: '<i class="fas fa-redo-alt"></i>',
-	//			action: () => _$rolesTable.draw(false)
-	//		}
-	//	],
-	//	responsive: {
-	//		details: {
-	//			type: 'column'
-	//		}
-	//	},
-	//	columnDefs: [
-	//		{ targets: 0, data: 'code', className: 'dt-center', orderable: false },
-	//		{ targets: 1, data: 'warehouseName', className: 'dt-center', orderable: false },
-	//		{ targets: 2, data: 'capacity', className: 'dt-center', orderable: false },
-	//		{ targets: 3, data: 'currentVolume', className: 'dt-center', orderable: false },
-	//		{
-	//			targets: 4,
-	//			data: 'isAvailable',
-	//			className: 'dt-center',
-	//			orderable: false,
-	//			render: function (data) {
-	//				return data ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
-	//			}
-	//		},
-	//		{
-	//			targets: 5,
-	//			data: null,
-	//			sortable: false,
-	//			autoWidth: false,
-	//			defaultContent: '',
-	//			render: (data, type, row, meta) => {
-	//				return [
-	//					`   <button type="button" class="btn btn-sm bg-secondary edit-storageLocation" data-storageLocation-id="${row.id}" data-toggle="modal" data-target="#StorageLocationEditModal">`,
-	//					`       <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
-	//					'   </button>',
-	//					`   <button type="button" class="btn btn-sm bg-danger delete-storageLocation" data-storageLocation-id="${row.id}" data-storageLocation-name="${row.name}">`,
-	//					`       <i class="fas fa-trash"></i> ${l('Delete')}`,
-	//					'   </button>',
-	//				].join('');
-	//			}
-	//		}
-	//	]
-	//});
-	_$form.find('.save-button').on('click', (e) => {
-		e.preventDefault();
+  // Products
+  $('#AddProductsImportBtn').click(function () {
+    _addProductCreateModal.open({ _selectedProducts }, function (result) {
+      if (!result || result.length === 0) {
+        _selectedProducts = [];
+        $('#ProductsImportDisplay').val('');
+        $('#productImportTable tbody').empty();
+        return;
+      }
 
-		if (!_$form.valid()) {
-			return;
-		}
+      _selectedProducts = result;
+      const selectedNames = result.map(u => u.productName).join(', ');
+      $('#ProductsImportDisplay').val(selectedNames);
 
-		var storageLocation = _$form.serializeFormToObject();
-		console.log(storageLocation);
-		abp.ui.setBusy(_$modalimport);
-		_storageLocationService
-			.create(storageLocation)
-			.done(function () {
-				_$modalimport.modal('hide');
-				_$form[0].reset();
-				abp.notify.info(l('SavedSuccessfully'));
-				_$storageLocationTable.ajax.reload();
-			})
-			.always(function () {
-				abp.ui.clearBusy(_$modalimport);
-			});
-	});
+      // Render bảng sản phẩm với đầy đủ thông tin
+      renderProductRows(_selectedProducts);
+    });
+  });
 
-	$(document).on('click', '.delete-storageLocation', function () {
-		var storageLocationId = $(this).attr("data-storageLocation-id");
-		var storageLocationName = $(this).attr('data-storageLocation-name');
+  var _addProductCreateModal = new app.ModalManager({
+    viewUrl: abp.appPath + 'Products/AddProduct',
+    scriptUrl: abp.appPath + 'view-resources/Views/Products/_AddProductsModal.js',
+    modalClass: 'AddProductsModal',
+  });
 
-		deleteSupplier(storageLocationId, storageLocationName);
-	});
-	function deleteSupplier(storageLocationId, storageLocationName) {
-		abp.message.confirm(
-			abp.utils.formatString(
-				l('AreYouSureWantToDelete'),
-				storageLocationName),
-			null,
-			(isConfirmed) => {
-				if (isConfirmed) {
-					_storageLocationService.delete(
-						storageLocationId
-					).done(() => {
-						abp.notify.info(l('SuccessfullyDeleted'));
-						_$storageLocationTable.ajax.reload();
-					});
-				}
-			}
-		);
-	}
-	abp.event.on('storageLocation.edited', (data) => {
-		_$storageLocationTable.ajax.reload();
-	});
+  // Hàm load vị trí lưu trữ theo kho
+  function loadStorageLocations(warehouseId) {
+    $.get(`/api/storage-locations?warehouseId=${warehouseId}`, function (locations) {
+      $('.storage-location-select').empty().append('<option value="">-- Chọn vị trí --</option>');
+      locations.forEach(location => {
+        $('.storage-location-select').append(
+          `<option value="${location.id}">${location.code} (Còn ${location.availableSpace})</option>`
+        );
+      });
+    });
+  }
 
-	$('.btn-search').on('click', (e) => {
-		_$storageLocationTable.ajax.reload();
-	});
+  // Hàm render bảng sản phẩm
+  function renderProductRows(products) {
+    let $tbody = $('#productImportTable tbody');
+    $tbody.empty();
 
-	$(document).on('click', '.edit-storageLocation', function (e) {
-		var storageLocationId = $(this).attr("data-storageLocation-id");
+    products.forEach((product, index) => {
+      let row = `
+                <tr data-product-id="${product.productId}">
+                    <td>${product.productCode}</td>
+                    <td>${product.productName}</td>
+                    <td>
+                        <input type="number" 
+                               class="form-control import-quantity" 
+                               min="1" 
+                               value="1"
+                               required>
+                    </td>
+                    <td>
+                        <input type="number" 
+                               class="form-control import-unit-price" 
+                               min="0" 
+                               step="1000"
+                               required>
+                    </td>
+                    <td class="import-total-price">0</td>
+                    <td>
+                        <select class="form-control storage-location-select" required>
+                            <option value="">-- Chọn vị trí --</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm remove-product">
+                            <i class="la la-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+      $tbody.append(row);
+    });
 
-		e.preventDefault();
-		abp.ajax({
-			url: abp.appPath + 'StorageLocations/Edit?StorageLocationId=' + storageLocationId,
-			type: 'POST',
-			dataType: 'html',
-			success: function (content) {
-				$('#StorageLocationEditModal div.modal-content').html(content);
-			},
-			error: function (e) {
-			}
-		})
-	});
+    // Load vị trí lưu trữ nếu đã chọn kho
+    if ($('#WarehouseIdImportCreate').val()) {
+      loadStorageLocations($('#WarehouseIdImportCreate').val());
+    }
+
+    setupAutoCalculate();
+  }
+
+  // Tự động tính toán thành tiền
+  function setupAutoCalculate() {
+    $(document).off('input', '.import-quantity, .import-unit-price').on('input', '.import-quantity, .import-unit-price', function () {
+      const $row = $(this).closest('tr');
+      const quantity = parseInt($row.find('.import-quantity').val()) || 0;
+      const unitPrice = parseInt($row.find('.import-unit-price').val()) || 0;
+      const total = quantity * unitPrice;
+
+      $row.find('.import-total-price').text(total.toLocaleString('vi-VN'));
+      calculateGrandTotal();
+    });
+  }
+
+  // Tính tổng tiền
+  function calculateGrandTotal() {
+    let grandTotal = 0;
+    $('#productImportTable tbody tr').each(function () {
+      const totalText = $(this).find('.import-total-price').text().replace(/\./g, '');
+      grandTotal += parseInt(totalText) || 0;
+    });
+    $('#grandTotal').text(grandTotal.toLocaleString('vi-VN'));
+  }
+
+  // Xử lý xóa sản phẩm
+  $(document).on('click', '.remove-product', function () {
+    const productId = $(this).closest('tr').data('product-id');
+    _selectedProducts = _selectedProducts.filter(p => p.productId !== productId);
+    $(this).closest('tr').remove();
+    calculateGrandTotal();
+
+    // Cập nhật lại display
+    $('#ProductsImportDisplay').val(_selectedProducts.map(p => p.productName).join(', '));
+  });
+
+  // Submit form
+  _$form.find('.save-button').on('click', (e) => {
+    e.preventDefault();
+
+    if (!_$form.valid()) {
+      return;
+    }
+
+    // Validate ít nhất 1 sản phẩm
+    if (_selectedProducts.length === 0) {
+      abp.notify.error('Vui lòng chọn ít nhất 1 sản phẩm');
+      return;
+    }
+
+    // Thu thập dữ liệu chi tiết
+    let details = [];
+    $('#productImportTable tbody tr').each(function () {
+      const productId = $(this).data('product-id');
+      details.push({
+        productId: productId,
+        quantity: parseInt($(this).find('.import-quantity').val()),
+        unitPrice: parseFloat($(this).find('.import-unit-price').val()),
+        storageLocationId: $(this).find('.storage-location-select').val()
+      });
+    });
+
+    // Validate dữ liệu
+    for (let detail of details) {
+      if (!detail.quantity || detail.quantity <= 0) {
+        abp.notify.error('Số lượng phải lớn hơn 0');
+        return;
+      }
+      if (!detail.unitPrice || detail.unitPrice < 0) {
+        abp.notify.error('Đơn giá không hợp lệ');
+        return;
+      }
+      if (!detail.storageLocationId) {
+        abp.notify.error('Vui lòng chọn vị trí lưu trữ cho tất cả sản phẩm');
+        return;
+      }
+    }
+
+    // Tạo object gửi lên server
+    var importRequest = {
+      warehouseId: $('#WarehouseIdImportCreate').val(),
+      supplierId: $('#SupplierIdImportCreate').val(),
+      details: details
+    };
+
+    abp.ui.setBusy(_$modalimport);
+    _stockTransactionService
+      .createImportRequest(importRequest)
+      .done(function () {
+        _$modalimport.modal('hide');
+        _$form[0].reset();
+        _selectedProducts = [];
+        $('#productImportTable tbody').empty();
+        abp.notify.info(l('Tạo phiếu nhập kho thành công'));
+        _$table.DataTable().ajax.reload();
+      })
+      .always(function () {
+        abp.ui.clearBusy(_$modalimport);
+      });
+  });
 
 })(jQuery);

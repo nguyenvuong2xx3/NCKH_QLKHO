@@ -10,6 +10,7 @@
 }
 
 @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditProduct")))
+<script src="~/view-resources/Views/Products/_EditModal.js" asp-append-version="true"></script>
 
 <form name="productEditForm" role="form" class="form-horizontal">
 	<input type="hidden" name="Id" value="@Model.Product.Id" />
