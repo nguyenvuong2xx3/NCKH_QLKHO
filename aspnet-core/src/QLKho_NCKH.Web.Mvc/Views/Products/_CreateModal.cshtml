@@ -130,12 +130,24 @@
 	</div>
 </div>
 <style>
+	.modal.fade {
+		z-index: 1050 !important; /* Đảm bảo modal cha luôn hiển thị trên */
+	}
+
 	.modal.show {
 		z-index: 1060 !important; /* Z-index của modal con */
 	}
 
 	.modal-backdrop.show {
 		z-index: 1055 !important; /* Z-index của backdrop modal con */
+	}
+
+	.modal {
+		overflow-y: auto !important;
+	}
+
+	.modal-open {
+		overflow: hidden !important;
 	}
 
 </style>

@@ -51,7 +51,9 @@ namespace QLKho_NCKH.Web.Controllers
 
 			var model = new EditProductViewModel
 			{
-				Product = product
+				Product = product,
+				Category = category,
+				Supplier = supplier
 			};
 			return PartialView("_EditModal", model);
 		}
@@ -208,45 +210,39 @@ namespace QLKho_NCKH.Web.Controllers
 		}
 
 
-		//public async Task<IActionResult> DeleteImage(int productId)
-		//{
-		//	var existingProduct = await _productAppService.GetAsync(new EntityDto<int>(productId));
+		public async Task<IActionResult> DeleteImage(int productId)
+		{
+			var existingProduct = await _productAppService.GetProductById(productId);
 
-		//	if (existingProduct == null)
-		//	{
-		//		return Json(new { success = false, message = "Sản phẩm không tồn tại." });
-		//	}
+			if (existingProduct == null)
+			{
+				return Json(new { success = false, message = "Sản phẩm không tồn tại." });
+			}
 
-		//	if (string.IsNullOrEmpty(existingProduct.Image))
-		//	{
-		//		return Json(new { success = false, message = "Sản phẩm này không có ảnh để xóa." });
-		//	}
+			if (string.IsNullOrEmpty(existingProduct.Image))
+			{
+				return Json(new { success = false, message = "Sản phẩm này không có ảnh để xóa." });
+			}
 
-		//	try
-		//	{
-		//		// Xóa file ảnh trên server
-		//		DeleteFile(existingProduct.Image);
+			try
+			{
+				// Xóa file ảnh trên server
+				DeleteFile(existingProduct.Image);
 
-		//		// Cập nhật lại sản phẩm trong DB (xóa đường dẫn ảnh)
-		//		var updateProductDto = new UpdateProductDto()
-		//		{
-		//			Id = existingProduct.Id,
-		//			Name = existingProduct.Name,
-		//			Description = existingProduct.Description,
-		//			Price = existingProduct.Price,
-		//			State = existingProduct.State,
-		//			CategoryId = existingProduct.CategoryId,
-		//			Image = null,
-		//		};
-		//		await _productAppService.Update(updateProductDto);
+				// Cập nhật lại sản phẩm trong DB (xóa đường dẫn ảnh)
+				var updateProductDto = new UpdateProductDto()
+				{
+					Image = null,
+				};
+				await _productAppService.Update(updateProductDto);
 
-		//		return Json(new { success = true, message = "Ảnh đã được xóa thành công." });
-		//	}
-		//	catch (Exception)
-		//	{
-		//		return Json(new { success = false, message = "Đã xảy ra lỗi khi xóa ảnh. Vui lòng thử lại." });
-		//	}
-		//}
+				return Json(new { success = true, message = "Ảnh đã được xóa thành công." });
+			}
+			catch (Exception)
+			{
+				return Json(new { success = false, message = "Đã xảy ra lỗi khi xóa ảnh. Vui lòng thử lại." });
+			}
+		}
 
 	}
 }

@@ -48,7 +48,6 @@ namespace QLKho_NCKH.Products
 				Volume = input.Volume,
 				IsActive = input.IsActive,
 				SupplierId = input.SupplierId,
-
 			};
 
 			await _productRepository.InsertAsync(product);
