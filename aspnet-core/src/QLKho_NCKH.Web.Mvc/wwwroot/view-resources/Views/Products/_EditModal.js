@@ -68,23 +68,34 @@
     });
   }
 
-  // Xử lý xóa ảnh
+  // Xử lý sự kiện xóa ảnh sản phẩm
   $('#deleteImageBtn').on('click', function () {
     abp.message.confirm(
       "Bạn có chắc chắn muốn xóa ảnh này?",
       "Xác nhận",
       function (isConfirmed) {
         if (isConfirmed) {
-          abp.ui.setBusy(_$modal);
-          _productService.deleteImage({ productId: $('input[name="Id"]').val() })
-            .done(function () {
-              $('#productImage').attr('src', '/img/products/default_image.png');
-              $('#deleteImageBtn').hide();
-              abp.notify.info("Ảnh sản phẩm đã được xóa thành công.");
-            })
-            .always(function () {
-              abp.ui.clearBusy(_$modal);
-            });
+          abp.ui.setBusy();
+          $.ajax({
+            url: abp.appPath + 'Products/DeleteImage',
+            type: 'POST',
+            data: { productId: $('input[name="Id"]').val() },
+            success: function (response) {
+              if (response.success) {
+                $('#productImage').attr('src', '/img/products/default_image.png'); // Hiển thị ảnh mặc định
+                abp.notify.info("Ảnh sản phẩm đã được xóa thành công."); // Cập nhật thông báo
+                abp.event.trigger('product.edited', response);
+              } else {
+                abp.notify.error(response.message);
+              }
+            },
+            error: function () {
+              abp.notify.error("Đã có lỗi xảy ra, vui lòng thử lại.");
+            },
+            complete: function () {
+              abp.ui.clearBusy();
+            }
+          });
         }
       }
     );
