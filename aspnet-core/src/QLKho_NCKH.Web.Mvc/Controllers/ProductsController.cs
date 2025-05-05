@@ -13,6 +13,7 @@ using QLKho_NCKH.Suppliers;
 using Abp.Application.Services.Dto;
 using QLKho_NCKH.Authorization;
 using Abp.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Hosting;
 
 namespace QLKho_NCKH.Web.Controllers
 {
@@ -195,8 +196,8 @@ namespace QLKho_NCKH.Web.Controllers
 		{
 			if (string.IsNullOrEmpty(fileName)) return; // Kiểm tra tên file hợp lệ
 
-			string folderPath = @"E:\Uploads"; // Thư mục chứa ảnh
-			string fullPath = Path.Combine(folderPath, fileName); // Đường dẫn đầy đủ
+			string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+			string fullPath = Path.Combine(uploadsFolder, fileName.TrimStart('/')); // Loại bỏ dấu `/` đầu nếu có
 
 			if (System.IO.File.Exists(fullPath)) // Kiểm tra file có tồn tại không
 			{
@@ -232,6 +233,7 @@ namespace QLKho_NCKH.Web.Controllers
 				// Cập nhật lại sản phẩm trong DB (xóa đường dẫn ảnh)
 				var updateProductDto = new UpdateProductDto()
 				{
+					Id = productId,
 					Image = null,
 				};
 				await _productAppService.Update(updateProductDto);
@@ -243,6 +245,64 @@ namespace QLKho_NCKH.Web.Controllers
 				return Json(new { success = false, message = "Đã xảy ra lỗi khi xóa ảnh. Vui lòng thử lại." });
 			}
 		}
+
+		//public async Task<IActionResult> Update(UpdateProductDto model)
+		//{
+		//	try
+		//	{
+		//		if (ModelState.IsValid)
+		//		{
+		//			var existingProduct = await _productAppService.GetByIdProducts(new EntityDto<int>(model.Id));
+		//			if (existingProduct == null)
+		//			{
+		//				return Json(new { success = false, message = "Không tìm thấy sản phẩm." }); // Trả về lỗi nếu không tìm thấy
+		//			}
+
+		//			// Nếu có upload ảnh mới
+		//			if (model.ImageFile != null && model.ImageFile.Length > 0)
+		//			{
+		//				// Danh sách các định dạng ảnh được phép tải lên
+		//				string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".jfif" };
+		//				string fileExtension = Path.GetExtension(model.ImageFile.FileName).ToLower();
+
+		//				// Kiểm tra xem ảnh có thuộc định dạng hợp lệ không
+		//				if (!allowedExtensions.Contains(fileExtension))
+		//				{
+		//					return Json(new { success = false, message = "Định dạng ảnh không hợp lệ. Vui lòng chọn file .jpg, .png, .gif." });
+		//				}
+
+		//				// Upload ảnh mới và xóa ảnh cũ (nếu không phải ảnh mặc định)
+		//				var oldImagePath = existingProduct.Image;
+		//				string uniqueFileName = UploadImage(model.ImageFile);
+		//				model.Image = uniqueFileName;
+
+		//				// xóa ảnh cũ
+		//				if (oldImagePath != null && !oldImagePath.Equals("/img/products/default.png"))
+		//				{
+		//					string oldImageFullPath = Path.Combine(webHostEnvironment.WebRootPath, oldImagePath.TrimStart('/'));
+		//					if (System.IO.File.Exists(oldImageFullPath))
+		//					{
+		//						System.IO.File.Delete(oldImageFullPath);
+		//					}
+		//				}
+		//			}
+
+		//			await _productAppService.UpdateProducts(model);
+		//			return Json(new { success = true, message = "Cập nhật sản phẩm thành công" });
+		//		}
+
+		//		var errors = ModelState.Values
+		//				.SelectMany(v => v.Errors)
+		//				.Select(e => e.ErrorMessage)
+		//				.ToList();
+
+		//		return Json(new { success = false, errors });
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return Json(new { success = false, message = ex.Message });
+		//	}
+		//}
 
 	}
 }
