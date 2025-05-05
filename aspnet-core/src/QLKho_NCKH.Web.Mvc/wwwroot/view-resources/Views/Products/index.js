@@ -1,371 +1,255 @@
 ﻿(function ($) {
-	var _productService = abp.services.app.product,
+  // Khai báo dịch vụ và các biến
+  var _productService = abp.services.app.product,
+    l = abp.localization.getSource('QLKho_NCKH'),
+    _$modal = $('#ProductCreateModal'),
+    _$form = _$modal.find('form'),
+    _$table = $('#ProductsTable');
 
-		l = abp.localization.getSource('QLKho_NCKH'),
-		_$modal = $('#ProductCreateModal'),
-		_$form = _$modal.find('form'),
-		_$table = $('#ProductsTable');
+  // Modal Supplier
+  var _addSupplierCreateModal = new app.ModalManager({
+    viewUrl: abp.appPath + 'Suppliers/AddSupplier',
+    scriptUrl: abp.appPath + 'view-resources/Views/Suppliers/_AddSupplierModal.js',
+    modalClass: 'AddSupplierModal',
+  });
 
-	//category
-	$('#CreateCategoryBtn').on('click', function () {
-		_addCategoryCreateModal.open({}, function (result) {
-			if (result) {
-				$('#CategoryDisplay').val(result.categoryName.trim());
-				$('#CategoryIdCreate').val(result.categoryId);
-			}
-		});
-	});
+  // Modal Category
+  var _addCategoryCreateModal = new app.ModalManager({
+    viewUrl: abp.appPath + 'Categories/AddCategory',
+    scriptUrl: abp.appPath + 'view-resources/Views/Categories/_AddCategoryModal.js',
+    modalClass: 'AddCategoryModal',
+  });
 
-	var _addCategoryCreateModal = new app.ModalManager({
-		viewUrl: abp.appPath + 'Categories/AddCategory',
-		scriptUrl: abp.appPath + 'view-resources/Views/Categories/_AddCategoryModal.js',
-		modalClass: 'AddCategoryModal',
-	});
+  // Xử lý sự kiện tạo danh mục
+  $('#CreateCategoryBtn').on('click', function () {
+    _addCategoryCreateModal.open({}, function (result) {
+      if (result) {
+        $('#CategoryDisplay').val(result.categoryName.trim());
+        $('#CategoryIdCreate').val(result.categoryId);
+        _addCategoryCreateModal.close(); // Đóng modal con
+      }
+    });
+  });
 
-	//supplier
-	$('#AddSupplierBtn').on('click', function () {
-		_addSupplierCreateModal.open({}, function (result) {
-			if (result) {
-				$('#SupplierDisplay').val(result.supplierName.trim());
-				$('#SupplierIdCreate').val(result.supplierId);
-			}
-		});
-	});
-
-	var _addSupplierCreateModal = new app.ModalManager({
-		viewUrl: abp.appPath + 'Suppliers/AddSupplier',
-		scriptUrl: abp.appPath + 'view-resources/Views/Suppliers/_AddSupplierModal.js',
-		modalClass: 'AddSupplierModal',
-	});
-
-	$('#AddCategoryModal, #AddSupplierModal').on('hidden.bs.modal', function () {
-		$('body').addClass('modal-open'); // Khôi phục khả năng cuộn cho modal chính
-	});
-	$('#AddCategoryModal, #AddSupplierModal').on('hidden.bs.modal', function () {
-		$('.modal-backdrop').last().remove(); // Xóa backdrop của modal con
-	});
+  // Xử lý sự kiện thêm nhà cung cấp
+  $('#AddSupplierBtn').on('click', function () {
+    _addSupplierCreateModal.open({}, function (result) {
+      if (result) {
+        $('#SupplierDisplay').val(result.supplierName.trim());
+        $('#SupplierIdCreate').val(result.supplierId);
+        _addSupplierCreateModal.close(); // Đóng modal con
+      }
+    });
+  });
 
 
-	var _$productTable = _$table.DataTable({
-		paging: true,
-		serverSide: true,
-		listAction: {
-			ajaxFunction: _productService.getAllProducts,
-			inputFilter: function () {
-				//return $('#ProductSearchForm').serializeFormToObject(true);
-			}
-		},
-		buttons: [
-			{
-				name: 'refresh',
-				text: '<i class="fas fa-redo-alt"></i>',
-				action: () => _$productTable.draw(false)
-			}
-		],
-		responsive: {
-			details: {
-				type: 'column'
-			}
-		},
-		columnDefs: [
-			{
-				targets: 0,
-				data: 'code',
-				sortable: false
-			},
-			{
-				targets: 1,
-				data: 'name',
-				sortable: false
-			},
-			{
-				targets: 2,
-				data: 'image',
-				sortable: false,
-				render: function (data, type, row) {
-					if (data) {
-						return `<img src="${data}" alt="Ảnh sản phẩm" class="img-thumbnail d-block mx-auto" width="80" height="80" style="object-fit: cover;">`;
-					}
-					return '<span class="text-muted">Không có ảnh</span>';
-				}
-			},
-			{
-				targets: 3,
-				data: 'description',
-				sortable: false,
-			},
-			{
-				targets: 4,
-				data: 'categoryName',
-				sortable: false
-			},
-			{
-				targets: 5,
-				data: 'barcode',
-				sortable: false
-			},
-			{
-				targets: 6,
-				data: 'unit',
-				sortable: false
-			},
-			{
-				targets: 7,
-				data: 'weight',
-				sortable: false
-			},
-			{
-				targets: 8,
-				data: 'volume',
-				sortable: false
-			},
-			{
-				targets: 9,
-				data: 'supplierName',
-				sortable: false
-			},
-			{
-				targets: 10,
-				data: 'isActive',
-				sortable: false,
-				className: 'text-center', // Đảm bảo checkbox được căn giữa theo chiều ngang
-				render: function (data, type, row) {
-					return `
-            <div class="d-flex justify-content-center align-items-center">
-                <input type="checkbox" class="form-check-input is-active-toggle " 
-                       data-id="${row.id}" 
-                       ${data ? 'checked' : ''}>
-            </div>
-        `;
-				}
-			},
-			{
-				targets: 11,
-				data: null,
-				sortable: false,
-				autoWidth: true,
-				defaultContent: '',
-				render: (data, type, row, meta) => {
-					return [
-						`   <button type="button" class="btn btn-sm bg-secondary edit-product" data-product-id="${row.id}" data-toggle="modal" data-target="#ProductEditModal">`,
-						`       <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
-						'   </button>',
-						`   <button type="button" class="btn btn-sm bg-danger delete-product" data-product-id="${row.id}" data-product-name="${row.name}">`,
-						`       <i class="fas fa-trash"></i> ${l('Delete')}`,
-						'   </button>',
-						`   <button type="button" class="btn btn-sm bg-info detail-product" data-product-id="${row.id}" data-toggle="modal" >`,
-						`       <i class="fas fa-eye"></i> ${l('Details')}`,
-						'   </button>'
-					].join('');
-				}
-			}
-		]
-	});
+  // Đảm bảo cuộn nội dung trong modal con khi modal con được mở
+  $(document).on('hidden.bs.modal', '.modal', function () {
+    if ($('.modal.show').length) {
+      $('body').addClass('modal-open'); // Đảm bảo body không bị cuộn khi có modal khác đang mở
+    }
+  });
 
 
+  // Khôi phục khả năng cuộn sau khi đóng modal con
+  $(document).on('hidden.bs.modal', '.modal', function () {
+    if ($('#ProductCreateModal').hasClass('show')) {
+      $('#ProductCreateModal .modal-content').css('overflow-y', 'auto');
+    }
+  });
 
+  // Khởi tạo DataTable cho sản phẩm
+  var _$productTable = _$table.DataTable({
+    paging: true,
+    serverSide: true,
+    listAction: {
+      ajaxFunction: _productService.getAllProducts,
+      inputFilter: function () {
+        //return $('#ProductSearchForm').serializeFormToObject(true);
+      }
+    },
+    buttons: [
+      {
+        name: 'refresh',
+        text: '<i class="fas fa-redo-alt"></i>',
+        action: function () {
+          _$productTable.draw(false);
+        }
+      }
+    ],
+    responsive: {
+      details: {
+        type: 'column'
+      }
+    },
+    columnDefs: [
+      {
+        targets: 0,
+        data: 'code',
+        sortable: false
+      },
+      {
+        targets: 1,
+        data: 'name',
+        sortable: false
+      },
+      {
+        targets: 2,
+        data: 'image',
+        sortable: false,
+        render: function (data) {
+          if (data) {
+            return `<img src="${data}" alt="Ảnh sản phẩm" class="img-thumbnail d-block mx-auto" width="80" height="80" style="object-fit: cover;">`;
+          }
+          return '<span class="text-muted">Không có ảnh</span>';
+        }
+      },
+      {
+        targets: 3,
+        data: 'description',
+        sortable: false,
+      },
+      {
+        targets: 4,
+        data: 'categoryName',
+        sortable: false
+      },
+      {
+        targets: 5,
+        data: 'barcode',
+        sortable: false
+      },
+      {
+        targets: 6,
+        data: 'unit',
+        sortable: false
+      },
+      {
+        targets: 7,
+        data: 'weight',
+        sortable: false
+      },
+      {
+        targets: 8,
+        data: 'volume',
+        sortable: false
+      },
+      {
+        targets: 9,
+        data: 'supplierName',
+        sortable: false
+      },
+      {
+        targets: 10,
+        data: 'isActive',
+        sortable: false,
+        className: 'text-center',
+        render: function (data, type, row) {
+          return `<div class="d-flex justify-content-center align-items-center">
+                                <input type="checkbox" class="form-check-input is-active-toggle" 
+                                       data-id="${row.id}" ${data ? 'checked' : ''}>
+                            </div>`;
+        }
+      },
+      {
+        targets: 11,
+        data: null,
+        sortable: false,
+        autoWidth: true,
+        render: function (data, type, row) {
+          return [
+            `<button type="button" class="btn btn-sm bg-secondary edit-product" data-product-id="${row.id}" data-toggle="modal" data-target="#ProductEditModal">`,
+            `    <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
+            ' </button>',
+            `<button type="button" class="btn btn-sm bg-danger delete-product" data-product-id="${row.id}" data-product-name="${row.name}">`,
+            `    <i class="fas fa-trash"></i> ${l('Delete')}`,
+            ' </button>',
+            `<button type="button" class="btn btn-sm bg-info detail-product" data-product-id="${row.id}" data-toggle="modal">`,
+            `    <i class="fas fa-eye"></i> ${l('Details')}`,
+            ' </button>'
+          ].join('');
+        }
+      }
+    ]
+  });
 
-	//_$form.validate({
-	//	rules: {
-	//		Name: {
-	//			required: true,
-	//			validName: true
-	//		},
-	//		Description: {
-	//			required: true
-	//		},
-	//		Price: {
-	//			required: true,
-	//			validPrice: true,
-	//			min: 1000
-	//		},
-	//		State: {
-	//			required: true
-	//		},
-	//		Image: {
-	//			required: true,
-	//			validImage: true
-	//		},
-	//		CategoryId: {
-	//			required: true
-	//		}
-	//	},
-	//	messages: {
-	//		Name: {
-	//			required: "Vui lòng nhập tên sản phẩm.",
-	//			validName: "Tên sản phẩm không hợp lệ. Không được chỉ chứa số hoặc dấu cách."
-	//		},
-	//		Description: {
-	//			required: "Vui lòng nhập mô tả sản phẩm."
-	//		},
-	//		State: {
-	//			required: "Vui lòng chọn trạng thái sản phẩm."
-	//		},
-	//		Price: {
-	//			required: "Vui lòng nhập giá sản phẩm.",
-	//			validPrice: "Giá không hợp lệ",
-	//			number: "Giá phải là số.",
-	//			min: "Giá phải lớn hơn 1000."
-	//		},
-	//		Image: {
-	//			required: "Vui lòng chọn ảnh"
-	//		},
-	//		CategoryId: {
-	//			required: "Vui lòng chọn danh mục sản phẩm."
-	//		},
-	//		errorPlacement: function (error, element) {
-	//			error.insertAfter(element); // Hiển thị lỗi ngay bên dưới ô input
-	//		},
-	//		highlight: function (element) {
-	//			$(element).addClass("is-invalid"); // Thêm viền đỏ khi có lỗi
-	//		},
-	//		unhighlight: function (element) {
-	//			$(element).removeClass("is-invalid"); // Xóa viền đỏ khi nhập đúng
-	//		}
-	//	}
-	//});
+  // Xử lý lưu sản phẩm
+  _$form.find('.save-button').on('click', function (e) {
+    e.preventDefault();
 
+    if (!_$form.valid()) {
+      return;
+    }
 
-	_$form.find('.save-button').on('click', (e) => {
-		e.preventDefault();
+    var product = _$form.serializeFormToObject();
+    var formData = new FormData(_$form[0]);
+    abp.ui.setBusy(_$modal);
 
-		if (!_$form.valid()) {
-			return;
-		}
+    $.ajax({
+      url: abp.appPath + 'Products/Create',
+      type: 'POST',
+      processData: false,
+      contentType: false,
+      data: formData,
+      error: function (xhr) {
+        var errorMessage = xhr.responseJSON && xhr.responseJSON.errors && xhr.responseJSON.errors.length > 0
+          ? xhr.responseJSON.errors.join("<br/>")
+          : "Có lỗi xảy ra khi tạo mới sản phẩm (Có thể do upload ảnh không đúng định dạng)";
+        $("#error-message").html(errorMessage).show();
+      }
+    }).done(function () {
+      _$modal.modal('hide');
+      _$form[0].reset();
+      abp.notify.info(l('Lưu thành công'));
+      _$productTable.ajax.reload();
+    }).always(function () {
+      abp.ui.clearBusy(_$modal);
+    });
+  });
 
-		var product = _$form.serializeFormToObject(); // Lấy dữ liệu từ form
-		var formData = new FormData(_$form[0]);
-		abp.ui.setBusy(_$modal);
-		$.ajax({
+  // Xử lý sự kiện chỉnh sửa sản phẩm
+  $(document).on('click', '.edit-product', function (e) {
+    var productId = $(this).attr("data-product-id");
+    e.preventDefault();
 
-			url: abp.appPath + 'Products/Create', // Đường dẫn đến phương thức trong controller
-			type: 'POST',
-			processData: false, // Important! Không xử lý dữ liệu
-			contentType: false, // Important!  Không đặt kiểu dữ liệu
-			data: formData,
-			error: function (xhr, textStatus, errorThrown) {
-				var errorMessage;
-				if (xhr.responseJSON && xhr.responseJSON.errors && xhr.responseJSON.errors.length > 0) {
-					errorMessage = xhr.responseJSON.errors.join("<br/>");
-				}
-				else {
-					errorMessage = "Có lỗi xảy ra khi tạo mới khách hàng (Có thể do upload ảnh không đúng định dạng (.jpg, .jpeg, .png, .gif)";
-				}
-				$("#error-message").html(errorMessage).show();
-			}
-		}).done(function () {
-			/*resetDefaultImage();*/
-			_$modal.modal('hide');
-			_$form[0].reset();
-			abp.notify.info(l('Lưu thành công'));
-			_$productTable.ajax.reload();
+    abp.ajax({
+      url: abp.appPath + 'Products/EditModal?productId=' + productId,
+      type: 'POST',
+      dataType: 'html',
+      success: function (content) {
+        $('#ProductEditModal div.modal-content').html(content);
+        $('#ProductEditModal').modal('show'); // Show modal
+      }
+    });
+  });
 
-		}).always(function () {
+  // Tìm kiếm sản phẩm
+  $('.btn-search').on('click', function () {
+    _$productTable.ajax.reload();
+  });
 
-			abp.ui.clearBusy(_$modal);
+  $('.txt-search').on('keypress', function (e) {
+    if (e.which === 13) {
+      _$productTable.ajax.reload();
+      return false;
+    }
+  });
 
-		});
-	});
+  // Hiển thị ảnh xem trước khi tải lên
+  document.getElementById('imageUpload').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    const previewImage = document.getElementById('previewImage');
 
-	//$(document).on('click', '.delete-product', function () {
-	//	var productId = $(this).attr("data-product-id");
-	//	var productName = $(this).attr('data-product-name');
-
-	//	deleteProduct(productId, productName);
-	//});
-
-	//function deleteProduct(productId, productName) {
-	//	abp.message.confirm(
-	//		abp.utils.formatString(
-	//			l('Bạn có chắc chắn muốn xóa sản phẩm {0}'),
-	//			productName),
-	//		null,
-	//		(isConfirmed) => {
-	//			if (isConfirmed) {
-	//				_productService.delete({
-	//					id: productId
-	//				}).done(() => {
-	//					abp.notify.info(l('SuccessfullyDeleted'));
-	//					_$productTable.ajax.reload();
-	//				});
-	//			}
-	//		}
-	//	);
-	//}
-
-	$(document).on('click', '.edit-product', function (e) {
-		var productId = $(this).attr("data-product-id");
-
-		e.preventDefault();
-		abp.ajax({
-			url: abp.appPath + 'Products/EditModal?productId=' + productId,
-			type: 'POST',
-			dataType: 'html',
-			success: function (content) {
-				$('#ProductEditModal div.modal-content').html(content);
-			},
-			error: function (e) {
-			}
-		});
-	});
-
-	////$(document).on('click', 'a[data-target="#ProductCreateModal"]', (e) => {
-	////	$('.nav-tabs a[href="#product-details"]').tab('show')
-	////});
-
-	//abp.event.on('product.edited', (data) => {
-	//	_$productTable.ajax.reload();
-	//});
-
-	//_$modal.on('shown.bs.modal', () => {
-	//	_$modal.find('input:not([type=hidden]):first').focus();
-	//}).on('hidden.bs.modal', () => {
-	//	_$form.clearForm(); // Xóa toàn bộ dữ liệu trong form
-	//	$('#previewImage').attr('src', '/img/products/default_product.png'); // Đặt lại ảnh về mặc định
-	//});
-
-
-	$('.btn-search').on('click', (e) => {
-		_$productTable.ajax.reload();
-	});
-
-	$('.txt-search').on('keypress', (e) => {
-		if (e.which == 13) {
-			_$productTable.ajax.reload();
-			return false;
-		}
-	});
-
-
-	//hiện thị ảnh để xem trước trong create modal
-	document.getElementById('imageUpload').addEventListener('change', function (event) {
-		const file = event.target.files[0]; // Lấy file ảnh
-		const previewImage = document.getElementById('previewImage');
-
-		if (file) {
-			const reader = new FileReader();
-			reader.onload = function (e) {
-				previewImage.src = e.target.result; // Gán ảnh vào thẻ <img>
-				previewImage.style.display = 'block'; // Hiển thị ảnh
-			};
-			reader.readAsDataURL(file); // Đọc file ảnh dưới dạng URL
-		} else {
-			previewImage.src = ''; // Xóa ảnh nếu không có file
-			previewImage.style.display = 'none';
-		}
-	});
-
-
-	//$(document).on("click", ".detail-product", function () {
-	//	var productId = $(this).attr("data-product-id");
-	//	window.location.href = "/Products/Detail?productId=" + productId;
-	//});
-
-
-
-
-
-
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        previewImage.src = e.target.result;
+        previewImage.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      previewImage.src = '';
+      previewImage.style.display = 'none';
+    }
+  });
 })(jQuery);
-
-
