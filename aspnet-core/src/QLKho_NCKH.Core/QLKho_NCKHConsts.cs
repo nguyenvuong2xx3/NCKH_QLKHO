@@ -3,8 +3,11 @@
 namespace QLKho_NCKH
 {
     public class QLKho_NCKHConsts
+
     {
-        public const string LocalizationSourceName = "QLKho_NCKH";
+		public const string DefaultSchema = "QLKho_NCKH";
+
+		public const string LocalizationSourceName = "QLKho_NCKH";
 
         public const string ConnectionStringName = "Default";
 

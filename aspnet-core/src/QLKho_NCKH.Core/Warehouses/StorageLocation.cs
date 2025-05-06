@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QLKho_NCKH.Warehouses
 {
+	[Table("AppStorageLocations")]
 	public class StorageLocation : FullAuditedEntity<int>
 	{
 		public string Code { get; set; }

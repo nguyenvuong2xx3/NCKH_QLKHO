@@ -6,6 +6,7 @@ using QLKho_NCKH.Suppliers;
 
 namespace QLKho_NCKH.Products
 {
+	[Table("AppProducts")]
 	public class Product : FullAuditedEntity<int>
 	{
 		public string Code { get; set; }

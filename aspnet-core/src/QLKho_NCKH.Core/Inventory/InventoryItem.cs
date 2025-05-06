@@ -6,6 +6,8 @@ using QLKho_NCKH.Warehouses;
 
 namespace QLKho_NCKH.Inventory
 {
+	[Table("AppInventoryItems")]
+
 	public class InventoryItem : FullAuditedEntity<int>
 	{
 		[ForeignKey(nameof(ProductId))]

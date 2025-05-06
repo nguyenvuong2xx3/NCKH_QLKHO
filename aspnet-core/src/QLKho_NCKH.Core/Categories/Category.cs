@@ -6,6 +6,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QLKho_NCKH.Categories
 {
+
+	[Table("AppCategories")]
 	public class Category : FullAuditedEntity<int>
 	{
 		[Required]

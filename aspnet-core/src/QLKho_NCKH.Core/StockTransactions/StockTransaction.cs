@@ -11,6 +11,9 @@ using QLKho_NCKH.EnumCustom;
 
 namespace YourProject.Domain.Transactions
 {
+
+	[Table("AppStockTransactions")]
+
 	public class StockTransaction : FullAuditedEntity<int>
 	{
 		[Required]

@@ -12,6 +12,7 @@ using YourProject.Domain.Transactions;
 
 namespace QLKho_NCKH.StockTransactions
 {
+	[Table("AppStockTransactionDetails")]
 	public class StockTransactionDetail : FullAuditedEntity<int>
 	{
 		[Required]

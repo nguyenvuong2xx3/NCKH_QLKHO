@@ -1,9 +1,11 @@
 ﻿// YourProject.Domain/Warehouses/Warehouse.cs
 using Abp.Domain.Entities.Auditing;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QLKho_NCKH.Warehouses
 {
+	[Table("AppWarehouses")]
 	public class Warehouse : FullAuditedEntity<int>
 	{
 		public string Code { get; set; }
