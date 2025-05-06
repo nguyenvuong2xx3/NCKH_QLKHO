@@ -48,54 +48,45 @@ namespace QLKho_NCKH.StockTransactions
 			};
 		}
 		//[HttpPost]
-		//public async Task<IActionResult> CreateImportRequest([FromBody] CreateImportRequestDto input)
-		//{
-		//	//using (var transaction = await _unitOfWork.BeginTransactionAsync())
-		//	//{
-		//	//	try
-		//	//	{
-		//			// 1. Lưu master (StockTransaction)
-		//			var master = new StockTransaction
-		//			{
-		//				TransactionType = TransactionType.Import,
-		//				//Status = RequestStatus.Draft,
-		//				ToWarehouseId = input.WarehouseId,
-		//				SupplierId = input.SupplierId
-		//			};
-		//			await _stockTransactionRepository.InsertAsync(master);
+		public async Task<IActionResult> CreateImportRequest(CreateImportRequestDto input)
+		{
+			//using (var transaction = await _unitOfWork.BeginTransactionAsync())
+			//{
+			//	try
+			//	{
+			// 1. Lưu master (StockTransaction)
+			var master = new StockTransaction
+			{
+				TransactionType = TransactionType.Import,
+				//Status = RequestStatus.Draft,
+				ToWarehouseId = input.WarehouseId,
+				SupplierId = input.SupplierId
+			};
+			await _stockTransactionRepository.InsertAsync(master);
 
-		//			// 2. Lưu details (StockTransactionDetail)
-		//			foreach (var detailDto in input.Details)
-		//			{
-		//				var detail = new StockTransactionDetail
-		//				{
-		//					StockTransactionId = master.Id,
-		//					ProductId = detailDto.ProductId,
-		//					Quantity = detailDto.Quantity,
-		//					StorageLocationId = detailDto.StorageLocationId,
-		//					BatchNumber = detailDto.BatchNumber
-		//				};
-		//				await _stockTransactionDetailRepository.InsertAsync(detail);
-		//			}
+			// 2. Lưu details (StockTransactionDetail)
+			foreach (var detailDto in input.ImportRequestDetails)
+			{
+				var detail = new StockTransactionDetail
+				{
+					StockTransactionId = master.Id,
+					ProductId = detailDto.ProductId,
+					Quantity = detailDto.Quantity,
+					StorageLocationId = detailDto.StorageLocationId,
+					//BatchNumber = detailDto.BatchNumber
+				};
+				await _stockTransactionDetailRepository.InsertAsync(detail);
+			}
 
-		//			//await _unitOfWork.CompleteAsync();
-		//			//await transaction.CommitAsync();
-
-		//			return new OkObjectResult(new
-		//			{
-		//				TransactionCode = master.TransactionCode,
-		//				TransactionDate = master.TransactionDate,
-		//				FromWarehouseName = master.FromWarehouse?.Name,
-		//				ToWarehouseName = master.ToWarehouse?.Name,
-		//				ReferenceNumber = master.ReferenceNumber,
-		//				Note = master.Note
-		//			});
-		//}
-				//catch (Exception)
-				//{
-				//	await transaction.RollbackAsync();
-				//	throw;
-				//}
-			//}
+			return new OkObjectResult(new
+			{
+				TransactionCode = master.TransactionCode,
+				TransactionDate = master.TransactionDate,
+				FromWarehouseName = master.FromWarehouse?.Name,
+				ToWarehouseName = master.ToWarehouse?.Name,
+				ReferenceNumber = master.ReferenceNumber,
+				Note = master.Note
+			});
+		}
 	}
 }
