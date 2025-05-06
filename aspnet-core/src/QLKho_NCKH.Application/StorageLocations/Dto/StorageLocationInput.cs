@@ -13,6 +13,7 @@ namespace QLKho_NCKH.StorageLocations.Dto
 	{
 
 		public string Filter { get; set; }
+		public int? WarehouseId { get; set; }
 		public void Normalize()
 		{
 			if (Sorting.IsNullOrWhiteSpace())

@@ -52,32 +52,41 @@ namespace QLKho_NCKH.StorageLocations
 
 		public async Task<PagedResultDto<StorageLocationListDto>> GetAllAsync(StorageLocationInput input)
 		{
-			var query = await _storageLocationRepository.GetAllAsync();
-			query = query.Include(x => x.Warehouse);
-			var storageLocations = query
-				.WhereIf(!input.Filter.IsNullOrEmpty(), x => x.Code.Contains(input.Filter))
-				.OrderBy(x => x.CreationTime)
-				.Skip(input.SkipCount)
-				.Take(input.MaxResultCount);
+			// Lấy queryable (không await) để còn áp dụng filter
+			var query = _storageLocationRepository
+					.GetAll()                          // hoặc GetAllIncluding nếu hỗ trợ include trực tiếp
+					.Include(x => x.Warehouse)         // join Warehouse để lấy tên
+
+					// Lọc theo mã nếu có filter text
+					.WhereIf(!input.Filter.IsNullOrEmpty(),
+									 x => x.Code.Contains(input.Filter))
+
+					// Lọc theo WarehouseId nếu client đã truyền
+					.WhereIf(input.WarehouseId.HasValue,
+									 x => x.WarehouseId == input.WarehouseId.Value);
+
+			// Tính tổng số bản ghi sau khi đã filter
 			var totalCount = await query.CountAsync();
-			var storageLocationListDtos = new List<StorageLocationListDto>();
-			foreach (var storageLocation in storageLocations)
+
+			// Áp dụng sắp xếp + phân trang
+			var storageLocations = await query
+					.OrderBy(x => x.CreationTime)
+					.Skip(input.SkipCount)
+					.Take(input.MaxResultCount)
+					.ToListAsync();
+
+			// Map ra DTO
+			var items = storageLocations.Select(x => new StorageLocationListDto
 			{
-				storageLocationListDtos.Add(new StorageLocationListDto
-				{
-					Id = storageLocation.Id,
-					Code = storageLocation.Code,
-					WarehouseName = storageLocation.Warehouse.Name,
-					Capacity = storageLocation.Capacity,
-					CurrentVolume = storageLocation.CurrentVolume,
-					IsAvailable = storageLocation.IsAvailable
-				});
-			}
-			return new PagedResultDto<StorageLocationListDto>
-			{
-				TotalCount = totalCount,
-				Items = storageLocationListDtos
-			};
+				Id = x.Id,
+				Code = x.Code,
+				WarehouseName = x.Warehouse.Name,
+				Capacity = x.Capacity,
+				CurrentVolume = x.CurrentVolume,
+				IsAvailable = x.IsAvailable
+			}).ToList();
+
+			return new PagedResultDto<StorageLocationListDto>(totalCount, items);
 		}
 
 		public async Task<storageLocationDto> GetByIdAsync(int id)

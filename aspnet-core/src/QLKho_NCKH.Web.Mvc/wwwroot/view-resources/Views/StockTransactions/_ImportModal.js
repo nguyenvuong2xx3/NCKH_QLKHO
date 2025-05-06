@@ -41,7 +41,17 @@
 
   // Products
   $('#AddProductsImportBtn').click(function () {
-    _addProductCreateModal.open({ _selectedProducts }, function (result) {
+    const supplierId = $('#SupplierIdImportCreate').val();
+    console.log(supplierId)
+    if (!supplierId) {
+      abp.notify.error('Vui lòng chọn nhà cung cấp trước khi thêm sản phẩm');
+      return;
+    }
+
+    _addProductCreateModal.open({
+      _selectedProducts: _selectedProducts,
+      supplierId: supplierId // Truyền supplierId vào modal
+    }, function (result) {
       if (!result || result.length === 0) {
         _selectedProducts = [];
         $('#ProductsImportDisplay').val('');
@@ -52,8 +62,6 @@
       _selectedProducts = result;
       const selectedNames = result.map(u => u.productName).join(', ');
       $('#ProductsImportDisplay').val(selectedNames);
-
-      // Render bảng sản phẩm với đầy đủ thông tin
       renderProductRows(_selectedProducts);
     });
   });
@@ -66,15 +74,27 @@
 
   // Hàm load vị trí lưu trữ theo kho
   function loadStorageLocations(warehouseId) {
-    $.get(`/api/storage-locations?warehouseId=${warehouseId}`, function (locations) {
-      $('.storage-location-select').empty().append('<option value="">-- Chọn vị trí --</option>');
-      locations.forEach(location => {
-        $('.storage-location-select').append(
-          `<option value="${location.id}">${location.code} (Còn ${location.availableSpace})</option>`
-        );
+    // gọi vào proxy của Application Service
+    abp.services.app.storageLocation
+      .getAll({ warehouseId: warehouseId })
+      .done(function (result) {
+        const locations = result.items; // giả định DTO trả về .Items
+        const $select = $('.storage-location-select');
+
+        $select.empty().append('<option value="">-- Chọn vị trí --</option>');
+
+        locations.forEach(function (loc) {
+          $select.append(
+            `<option value="${loc.id}">${loc.code} (Còn ${loc.availableSpace})</option>`
+          );
+        });
+      })
+      .fail(function (err) {
+        console.error('Không thể tải danh sách vị trí:', err);
+        abp.message.error('Tải vị trí kho thất bại.');
       });
-    });
   }
+
 
   // Hàm render bảng sản phẩm
   function renderProductRows(products) {

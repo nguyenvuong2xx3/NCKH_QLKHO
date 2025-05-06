@@ -122,7 +122,7 @@ namespace QLKho_NCKH.Products
 			throw new NotImplementedException();
 		}
 
-		public async Task  Delete(EntityDto<int> input)
+		public async Task Delete(EntityDto<int> input)
 		{
 			var product = _productRepository.GetAll().FirstOrDefault(x => x.Id == input.Id);
 			if (product == null)
@@ -130,22 +130,30 @@ namespace QLKho_NCKH.Products
 				throw new UserFriendlyException("Product not found");
 			}
 			_productRepository.Delete(product);
-	
-			 
+
+
 		}
 
 		public async Task<PagedResultDto<ProductListDto>> GetAllProducts(ProductInput input)
 		{
 			// Xây dựng truy vấn cơ sở dữ liệu
-			var query = _productRepository.GetAllIncluding(x => x.Category, x => x.Supplier)
-					.WhereIf(!input.Filter.IsNullOrWhiteSpace(), x => x.Name.Contains(input.Filter) || x.Description.Contains(input.Filter));
-			//.WhereIf(input.CategoryId.HasValue,
-			//				 x => x.CategoryId == input.CategoryId.Value)
-			//.WhereIf(input.State.HasValue,
-			//				 x => x.State == input.State.Value);
+			var query = _productRepository
+				.GetAllIncluding(x => x.Category, x => x.Supplier)
+				.WhereIf(!input.Filter.IsNullOrWhiteSpace(),
+								 x => x.Name.Contains(input.Filter) || x.Description.Contains(input.Filter))
+				// only add this WHERE if SupplierId > 0
+				.WhereIf(input.SupplierId > 0,
+								 x => x.SupplierId == input.SupplierId);
 
-			// Sắp xếp dữ liệu
-			query = query.OrderBy(input.Sorting ?? "CreationTime DESC");
+			// … ordering, paging, projection, etc.
+
+		//.WhereIf(input.CategoryId.HasValue,
+		//				 x => x.CategoryId == input.CategoryId.Value)
+		//.WhereIf(input.State.HasValue,
+		//				 x => x.State == input.State.Value);
+
+		// Sắp xếp dữ liệu
+		query = query.OrderBy(input.Sorting ?? "CreationTime DESC");
 
 			// Đếm tổng số bản ghi
 			var totalCount = await query.CountAsync();

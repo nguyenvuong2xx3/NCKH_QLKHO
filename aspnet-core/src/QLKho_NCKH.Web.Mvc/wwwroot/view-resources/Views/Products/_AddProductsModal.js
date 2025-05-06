@@ -11,11 +11,14 @@
     // Lấy giá trị filter từ input
     function getFilter() {
       return {
-        filter: _$filterInput.val()
+        filter: _$filterInput.val(),
+        supplierId: _modalManager.getArgs().supplierId // Lấy supplierId từ modal args
       };
     }
-
     // Làm mới bảng
+
+    //var get = getFilter()
+    //console.log(get)
     function refreshTable() {
       dataTable.ajax.reload();
     }

@@ -37,7 +37,7 @@ namespace QLKho_NCKH.EntityFrameworkCore
 			// Cấu hình Category
 			builder.Entity<Category>(b =>
 			{
-				b.ToTable("Categories");
+				b.ToTable("AppCategories");
 				b.HasMany(x => x.Products)
 				 .WithOne(x => x.Category)
 				 .HasForeignKey(x => x.CategoryId);
@@ -46,14 +46,14 @@ namespace QLKho_NCKH.EntityFrameworkCore
 			// Cấu hình Product
 			builder.Entity<Product>(b =>
 			{
-				b.ToTable("Products");
+				b.ToTable("AppProducts");
 				b.HasIndex(x => x.Code).IsUnique();
 			});
 
 			// Cấu hình Warehouse
 			builder.Entity<Warehouse>(b =>
 			{
-				b.ToTable("Warehouses");
+				b.ToTable("AppWarehouses");
 				b.HasMany(x => x.StorageLocations)
 				 .WithOne(x => x.Warehouse)
 				 .HasForeignKey(x => x.WarehouseId);
@@ -62,12 +62,12 @@ namespace QLKho_NCKH.EntityFrameworkCore
 			// Cấu hình InventoryItem
 			builder.Entity<InventoryItem>(b =>
 			{
-				b.ToTable("InventoryItems");
+				b.ToTable("AppInventoryItems");
 				b.HasIndex(x => new { x.ProductId, x.StorageLocationId }).IsUnique();
 			});
 			builder.Entity<StockTransactionDetail>(b =>
 			{
-				b.ToTable("StockTransactionDetails");
+				b.ToTable("AppStockTransactionDetails");
 
 				// Tạo composite key nếu cần
 				b.HasKey(x => new { x.StockTransactionId, x.ProductId, x.StorageLocationId });

@@ -13,6 +13,8 @@ namespace QLKho_NCKH.Products.Dtos
 	{
 		public string Filter { get; set; }
 
+		public int SupplierId { get; set; }
+
 		public void Normalize()
 		{
 			if (Sorting.IsNullOrWhiteSpace())
