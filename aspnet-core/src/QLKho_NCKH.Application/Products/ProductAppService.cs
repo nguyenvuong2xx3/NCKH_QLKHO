@@ -122,9 +122,16 @@ namespace QLKho_NCKH.Products
 			throw new NotImplementedException();
 		}
 
-		public Task DeleteProducts(EntityDto<int> input)
+		public async Task  Delete(EntityDto<int> input)
 		{
-			throw new NotImplementedException();
+			var product = _productRepository.GetAll().FirstOrDefault(x => x.Id == input.Id);
+			if (product == null)
+			{
+				throw new UserFriendlyException("Product not found");
+			}
+			_productRepository.Delete(product);
+	
+			 
 		}
 
 		public async Task<PagedResultDto<ProductListDto>> GetAllProducts(ProductInput input)

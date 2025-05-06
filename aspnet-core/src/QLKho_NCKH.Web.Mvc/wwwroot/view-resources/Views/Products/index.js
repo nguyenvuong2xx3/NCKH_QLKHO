@@ -223,6 +223,36 @@
     });
   });
 
+  abp.event.on('product.edited', (data) => {
+    _$productTable.ajax.reload();
+  });
+
+  $(document).on('click', '.delete-product', function () {
+    var productId = $(this).attr("data-product-id");
+    var productName = $(this).attr('data-product-name');
+
+    deleteProduct(productId, productName);
+  });
+
+  function deleteProduct(productId, productName) {
+    abp.message.confirm(
+      abp.utils.formatString(
+        l('Bạn có chắc chắn muốn xóa sản phẩm {0}'),
+        productName),
+      null,
+      (isConfirmed) => {
+        if (isConfirmed) {
+          _productService.delete({
+            id: productId
+          }).done(() => {
+            abp.notify.info(l('SuccessfullyDeleted'));
+            _$productTable.ajax.reload();
+          });
+        }
+      }
+    );
+  }
+
   // Tìm kiếm sản phẩm
   $('.btn-search').on('click', function () {
     _$productTable.ajax.reload();

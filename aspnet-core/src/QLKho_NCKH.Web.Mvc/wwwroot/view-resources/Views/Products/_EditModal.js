@@ -24,7 +24,7 @@
       if (result) {
         $('#CategoryDisplayEdit').val(result.categoryName.trim());
         $('#CategoryIdEdit').val(result.categoryId);
-        _addCategoryCreateModal.close(); // Đóng modal con
+        _addCategoryEditModal.close(); // Đóng modal con
       }
     });
   });
@@ -35,7 +35,7 @@
       if (result) {
         $('#SupplierDisplayEdit').val(result.supplierName.trim());
         $('#SupplierIdEdit').val(result.supplierId);
-        _addSupplierCreateModal.close(); // Đóng modal con
+        _addSupplierEditModal.close(); // Đóng modal con
       }
     });
   });
@@ -105,25 +105,6 @@
       abp.ui.clearBusy(_$modal);
     });
   }
-
-  // Xử lý sự kiện khi nhấn nút "Lưu"
-  _$form.closest('div.modal-content').find(".save-button").click(function (e) {
-    e.preventDefault(); // Ngăn chặn reload trang
-    save(); // Gọi hàm save() để cập nhật sản phẩm
-  });
-
-  // Xử lý sự kiện khi nhấn Enter trong form
-  _$form.find('input').on('keypress', function (e) {
-    if (e.which === 13) { // Mã 13 là Enter
-      e.preventDefault();
-      save();
-    }
-  });
-
-  // Khi mở modal, tự động focus vào ô input đầu tiên
-  _$modal.on('shown.bs.modal', function () {
-    _$form.find('input[type=text]:first').focus();
-  });
 
   // Xử lý sự kiện xóa ảnh sản phẩm
   $('#deleteImageBtn').on('click', function () {
