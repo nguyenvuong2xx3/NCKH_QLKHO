@@ -7,12 +7,15 @@ namespace QLKho_NCKH.EntityFrameworkCore
     {
         public static void Configure(DbContextOptionsBuilder<QLKho_NCKHDbContext> builder, string connectionString)
         {
-            builder.UseSqlServer(connectionString);
+            //builder.UseSqlServer(connectionString);
+            builder.UseNpgsql(connectionString);
+            
         }
 
         public static void Configure(DbContextOptionsBuilder<QLKho_NCKHDbContext> builder, DbConnection connection)
         {
-            builder.UseSqlServer(connection);
+            //builder.UseSqlServer(connection);
+            builder.UseNpgsql(connection);
         }
     }
 }

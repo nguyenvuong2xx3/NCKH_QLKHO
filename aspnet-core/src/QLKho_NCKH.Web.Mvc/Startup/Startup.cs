@@ -17,6 +17,7 @@ using QLKho_NCKH.Web.Resources;
 using Abp.AspNetCore.SignalR.Hubs;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.WebEncoders;
+using System;
 
 namespace QLKho_NCKH.Web.Startup
 {
@@ -33,6 +34,9 @@ namespace QLKho_NCKH.Web.Startup
 
         public void ConfigureServices(IServiceCollection services)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+
             // MVC
             services.AddControllersWithViews(
                     options =>

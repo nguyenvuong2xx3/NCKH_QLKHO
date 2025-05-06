@@ -15,6 +15,9 @@ namespace QLKho_NCKH.Migrator
         {
             ParseArgs(args);
 
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+			      AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+
             using (var bootstrapper = AbpBootstrapper.Create<QLKho_NCKHMigratorModule>())
             {
                 bootstrapper.IocManager.IocContainer

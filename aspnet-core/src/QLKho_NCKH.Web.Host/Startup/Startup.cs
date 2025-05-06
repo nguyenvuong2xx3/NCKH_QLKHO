@@ -33,6 +33,7 @@ namespace QLKho_NCKH.Web.Host.Startup
         {
             _hostingEnvironment = env;
             _appConfiguration = env.GetAppConfiguration();
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         public void ConfigureServices(IServiceCollection services)
