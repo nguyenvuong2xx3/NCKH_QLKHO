@@ -3,117 +3,133 @@
 @using QLKho_NCKH.Web.Models.storageLocations
 @model storageLocationListViewModel
 @{
-  Layout = null;
+	Layout = null;
 }
 <div class="modal fade" id="ExportModal" tabindex="-1" role="dialog" aria-labelledby="ExportModalLabel" data-backdrop="static">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewExportStorageLocation")))
-      <form name="StorageLocationExportForm" role="form" class="form-horizontal">
-        <div class="modal-body">
-          <div class="tab-content mt-4">
-            <div role="tabpanel" class="tab-pane container active" id="create-supplier-details">
-              <div class="form-group row required">
-                <label class="col-md-3 col-form-label">@L("WarehouseName")</label>
-                <div class="col-md-9">
-                  <div class="input-group">
-                    <input type="text" id="WarehouseExportDisplay" class="form-control" readonly required />
-                    <div class="input-group-append">
-                      <button type="button" id="CreateWarehouseExportBtn" class="btn btn-success" title="@L("WarehouseName")">
-                        <i class="fa fa-id-card"></i> @L("Select")
-                      </button>
-                    </div>
-                  </div>
-                  <input type="hidden" id="WarehouseIdExportCreate" name="FromWarehouseId" />
-                </div>
-              </div>
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewExportStorageLocation")))
+			<form name="StorageLocationExportForm" role="form" class="form-horizontal">
+				<div class="modal-body">
+					<div class="tab-content mt-4">
+						<div role="tabpanel" class="tab-pane container active" id="create-supplier-details">
+							<div class="form-group row required">
+								<label class="col-md-3 col-form-label">@L("WarehouseName")</label>
+								<div class="col-md-9">
+									<div class="input-group">
+										<input type="text" id="WarehouseExportDisplay" class="form-control" readonly required />
+										<div class="input-group-append">
+											<button type="button" id="CreateWarehouseExportBtn" class="btn btn-success" title="@L("WarehouseName")">
+												<i class="fa fa-id-card"></i> @L("Select")
+											</button>
+										</div>
+									</div>
+									<input type="hidden" id="WarehouseIdExportCreate" name="FromWarehouseId" />
+								</div>
+							</div>
 
-              <div class="form-group row required">
-                <label class="col-md-3 col-form-label">@L("Customer")</label>
-                <div class="col-md-9">
-                  <div class="input-group">
-                    <input type="text" id="SupplierExportDisplay" class="form-control" readonly required />
-                    <div class="input-group-append">
-                      <button type="button" id="AddSupplierExportBtn" class="btn btn-success" title="@L("Customer")">
-                        <i class="fa fa-id-card"></i> @L("Select")
-                      </button>
-                    </div>
-                  </div>
-                  <input type="hidden" id="SupplierIdExportCreate" name="CustomerId" />
-                </div>
-              </div>
+							<div class="form-group row required">
+								<label class="col-md-3 col-form-label">@L("Customer")</label>
+								<div class="col-md-9">
+									<div class="input-group">
+										<input type="text" id="SupplierExportDisplay" class="form-control" readonly required />
+										<div class="input-group-append">
+											<button type="button" id="AddSupplierExportBtn" class="btn btn-success" title="@L("Customer")">
+												<i class="fa fa-id-card"></i> @L("Select")
+											</button>
+										</div>
+									</div>
+									<input type="hidden" id="SupplierIdExportCreate" name="CustomerId" />
+								</div>
+							</div>
 
-              <div class="form-group row required">
-                <label class="col-md-3 col-form-label">@L("Products")</label>
-                <div class="col-md-9">
-                  <div class="input-group">
-                    <input type="text" id="ProductsExportDisplay" class="form-control" readonly required />
-                    <div class="input-group-append">
-                      <button type="button" id="AddProductsExportBtn" class="btn btn-success" title="@L("Products")">
-                        <i class="fa fa-id-card"></i> @L("Select")
-                      </button>
-                    </div>
-                  </div>
-                  <input type="hidden" id="ProductsIdExportCreate" name="ProductId" />
-                </div>
-              </div>
+							<!-- Add this section where you want the customer selection to appear -->
+							<div class="form-group row required">
+								<label class="col-md-3 col-form-label">@L("Customer")</label>
+								<div class="col-md-9">
+									<div class="input-group">
+										<input type="text" id="CustomerDisplay" class="form-control" readonly required />
+										<div class="input-group-append">
+											<button type="button" id="SelectCustomerBtn" class="btn btn-success" title="@L("SelectCustomer")">
+												<i class="fa fa-id-card"></i> @L("Select")
+											</button>
+										</div>
+									</div>
+									<input type="hidden" id="CustomerId" name="CustomerId" />
+								</div>
+							</div>
 
-              <!-- Bảng sản phẩm -->
-              <div class="form-group row">
-                <div class="col-md-12">
-                  <table id="productExportTable" class="table table-bordered table-hover">
-                    <thead>
-                      <tr>
-                        <th>@L("ProductCode")</th>
-                        <th>@L("ProductName")</th>
-                        <th>@L("Quantity")</th>
-                        <th>@L("UnitPrice")</th>
-                        <th>@L("TotalPrice")</th>
-                        <th>@L("StorageLocation")</th>
-                        <th>@L("Actions")</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <!-- Sản phẩm sẽ được thêm vào đây bằng JavaScript -->
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+							<div class="form-group row required">
+								<label class="col-md-3 col-form-label">@L("Products")</label>
+								<div class="col-md-9">
+									<div class="input-group">
+										<input type="text" id="ProductsExportDisplay" class="form-control" readonly required />
+										<div class="input-group-append">
+											<button type="button" id="AddProductsExportBtn" class="btn btn-success" title="@L("Products")">
+												<i class="fa fa-id-card"></i> @L("Select")
+											</button>
+										</div>
+									</div>
+									<input type="hidden" id="ProductsIdExportCreate" name="ProductId" />
+								</div>
+							</div>
 
-              <!-- Tổng tiền -->
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label">@L("GrandTotal")</label>
-                <div class="col-md-9">
-                  <div class="form-control-plaintext font-weight-bold" id="grandTotal">0</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
-      </form>
-    </div>
-  </div>
+							<!-- Bảng sản phẩm -->
+							<div class="form-group row">
+								<div class="col-md-12">
+									<table id="productExportTable" class="table table-bordered table-hover">
+										<thead>
+											<tr>
+												<th>@L("ProductCode")</th>
+												<th>@L("ProductName")</th>
+												<th>@L("Quantity")</th>
+												<th>@L("UnitPrice")</th>
+												<th>@L("TotalPrice")</th>
+												<th>@L("StorageLocation")</th>
+												<th>@L("Actions")</th>
+											</tr>
+										</thead>
+										<tbody>
+											<!-- Sản phẩm sẽ được thêm vào đây bằng JavaScript -->
+										</tbody>
+									</table>
+								</div>
+							</div>
+
+							<!-- Tổng tiền -->
+							<div class="form-group row">
+								<label class="col-md-3 col-form-label">@L("GrandTotal")</label>
+								<div class="col-md-9">
+									<div class="form-control-plaintext font-weight-bold" id="grandTotal">0</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+			</form>
+		</div>
+	</div>
 </div>
 
 <style>
-  .modal {
-    z-index: 1050 !important;
-  }
+	.modal {
+		z-index: 1050 !important;
+	}
 
-  .modal-backdrop {
-    z-index: 1040 !important;
-  }
+	.modal-backdrop {
+		z-index: 1040 !important;
+	}
 
-  #productExportTable {
-    width: 100%;
-  }
+	#productExportTable {
+		width: 100%;
+	}
 
-    #productExportTable th {
-      white-space: nowrap;
-    }
+		#productExportTable th {
+			white-space: nowrap;
+		}
 
-  .input-group-append .btn {
-    border-radius: 0 4px 4px 0;
-  }
+	.input-group-append .btn {
+		border-radius: 0 4px 4px 0;
+	}
 </style>

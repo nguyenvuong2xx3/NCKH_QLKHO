@@ -31,5 +31,10 @@ namespace QLKho_NCKH.Web.Controllers
 
 			return PartialView("_EditModal", model);
 		}
+
+		public async Task<ActionResult> AddCustomer()
+		{
+			return PartialView("_AddCustomersModal");
+		}
 	}
 }

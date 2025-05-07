@@ -6,6 +6,22 @@
   _$form = _$modalexport.find('form'),
     _$table = $('#StockTransactionsTable');
 
+  // Add this to your script section or JS file
+  var _addCustomerModal = new app.ModalManager({
+    viewUrl: abp.appPath + 'Customers/AddCustomer',
+    scriptUrl: abp.appPath + 'view-resources/Views/Customers/_AddCustomersModal.js',
+    modalClass: 'AddCustomersModal',
+  });
+
+  $('#SelectCustomerBtn').on('click', function () {
+    _addCustomerModal.open({}, function (result) {
+      if (result) {
+        $('#CustomerDisplay').val(result.customerName.trim());
+        $('#CustomerId').val(result.customerId);
+      }
+    });
+  });
+
   // Warehouse
   $('#CreateWarehouseExportBtn').on('click', function () {
     _addWarehouseCreateModal.open({}, function (result) {
@@ -230,6 +246,19 @@
       .always(function () {
         abp.ui.clearBusy(_$modalexport);
       });
+  });
+
+  // Handle modal scrolling
+  $(document).on('hidden.bs.modal', '.modal', function () {
+    if ($('.modal.show').length) {
+      $('body').addClass('modal-open');
+    }
+  });
+
+  $(document).on('hidden.bs.modal', '.modal', function () {
+    if ($('#ExportModal').hasClass('show')) {
+      $('#ExportModal .modal-content').css('overflow-y', 'auto');
+    }
   });
 
 })(jQuery);
