@@ -1,55 +1,90 @@
-﻿
-@using Abp.Authorization.Users
+﻿@using Abp.Authorization.Users
 @using QLKho_NCKH.Web.Models.Common.Modals
 @using QLKho_NCKH.Web.Models.storageLocations
 @model storageLocationListViewModel
 @{
   Layout = null;
 }
-<div class="modal fade" id="ExportModal" tabindex="-1" role="dialog" aria-labelledby="ImportModalLabel" data-backdrop="static">
+<div class="modal fade" id="ExportModal" tabindex="-1" role="dialog" aria-labelledby="ExportModalLabel" data-backdrop="static">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewImportStorageLocation")))
-      <form name="StorageLocationCreateForm" role="form" class="form-horizontal">
+      @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewExportStorageLocation")))
+      <form name="StorageLocationExportForm" role="form" class="form-horizontal">
         <div class="modal-body">
           <div class="tab-content mt-4">
             <div role="tabpanel" class="tab-pane container active" id="create-supplier-details">
               <div class="form-group row required">
-                <label class="col-md-3 col-form-label">@L("Code")</label>
-                <div class="col-md-9">
-                  <input type="text" class="form-control" name="Code" required maxlength="256">
-                </div>
-              </div>
-              <div class="form-group row required">
                 <label class="col-md-3 col-form-label">@L("WarehouseName")</label>
-                <div class="input-group">
-                  <input type="text" id="WarehouseExportDisplay" class="form-control" readonly required />
-                  <button type="button" id="CreateWarehouseExportBtn" class="btn btn-success btn-sm" title="@L("WarehouseName")">
-                    <i class="fa fa-id-card"></i>
-                  </button>
-                </div>
-                <input type="hidden" id="WarehouseIdExportCreate" name="WarehouseId" />
-              </div>
-              <!-- Số điện thoại -->
-              <div class="form-group row required">
-                <label class="col-md-3 col-form-label">@L("Capacity")</label>
                 <div class="col-md-9">
-                  <input type="number" class="form-control" name="Capacity" required maxlength="20">
+                  <div class="input-group">
+                    <input type="text" id="WarehouseExportDisplay" class="form-control" readonly required />
+                    <div class="input-group-append">
+                      <button type="button" id="CreateWarehouseExportBtn" class="btn btn-success" title="@L("WarehouseName")">
+                        <i class="fa fa-id-card"></i> @L("Select")
+                      </button>
+                    </div>
+                  </div>
+                  <input type="hidden" id="WarehouseIdExportCreate" name="FromWarehouseId" />
                 </div>
               </div>
 
-              <!-- Email -->
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label">@L("CurrentVolume")</label>
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label">@L("Customer")</label>
                 <div class="col-md-9">
-                  <input type="number" class="form-control" name="CurrentVolume" maxlength="256">
+                  <div class="input-group">
+                    <input type="text" id="SupplierExportDisplay" class="form-control" readonly required />
+                    <div class="input-group-append">
+                      <button type="button" id="AddSupplierExportBtn" class="btn btn-success" title="@L("Customer")">
+                        <i class="fa fa-id-card"></i> @L("Select")
+                      </button>
+                    </div>
+                  </div>
+                  <input type="hidden" id="SupplierIdExportCreate" name="CustomerId" />
                 </div>
               </div>
-              <!-- Trạng thái hoạt động -->
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label">@L("IsAvailable")</label>
+
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label">@L("Products")</label>
                 <div class="col-md-9">
-                  <input type="checkbox" name="IsAvailable" value="true" checked />
+                  <div class="input-group">
+                    <input type="text" id="ProductsExportDisplay" class="form-control" readonly required />
+                    <div class="input-group-append">
+                      <button type="button" id="AddProductsExportBtn" class="btn btn-success" title="@L("Products")">
+                        <i class="fa fa-id-card"></i> @L("Select")
+                      </button>
+                    </div>
+                  </div>
+                  <input type="hidden" id="ProductsIdExportCreate" name="ProductId" />
+                </div>
+              </div>
+
+              <!-- Bảng sản phẩm -->
+              <div class="form-group row">
+                <div class="col-md-12">
+                  <table id="productExportTable" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>@L("ProductCode")</th>
+                        <th>@L("ProductName")</th>
+                        <th>@L("Quantity")</th>
+                        <th>@L("UnitPrice")</th>
+                        <th>@L("TotalPrice")</th>
+                        <th>@L("StorageLocation")</th>
+                        <th>@L("Actions")</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- Sản phẩm sẽ được thêm vào đây bằng JavaScript -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Tổng tiền -->
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label">@L("GrandTotal")</label>
+                <div class="col-md-9">
+                  <div class="form-control-plaintext font-weight-bold" id="grandTotal">0</div>
                 </div>
               </div>
             </div>
@@ -60,6 +95,7 @@
     </div>
   </div>
 </div>
+
 <style>
   .modal {
     z-index: 1050 !important;
@@ -67,5 +103,17 @@
 
   .modal-backdrop {
     z-index: 1040 !important;
+  }
+
+  #productExportTable {
+    width: 100%;
+  }
+
+    #productExportTable th {
+      white-space: nowrap;
+    }
+
+  .input-group-append .btn {
+    border-radius: 0 4px 4px 0;
   }
 </style>
