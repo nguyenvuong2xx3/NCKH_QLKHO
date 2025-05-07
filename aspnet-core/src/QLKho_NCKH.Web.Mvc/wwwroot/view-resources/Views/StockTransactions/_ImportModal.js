@@ -200,7 +200,7 @@
         productId: productId,
         quantity: parseInt($(this).find('.import-quantity').val()),
         unitPrice: parseFloat($(this).find('.import-unit-price').val()),
-        storageLocationId: $(this).find('.storage-location-select').val()
+        storageLocationId: parseInt($(this).find('.storage-location-select').val())
       });
     });
 
@@ -222,9 +222,9 @@
 
     // Tạo object gửi lên server
     var importRequest = {
-      warehouseId: $('#WarehouseIdImportCreate').val(),
-      supplierId: $('#SupplierIdImportCreate').val(),
-      details: details
+      warehouseId: parseInt($('#WarehouseIdImportCreate').val()),
+      supplierId: parseInt($('#SupplierIdImportCreate').val()),
+      importRequestDetails: details
     };
 
     abp.ui.setBusy(_$modalimport);

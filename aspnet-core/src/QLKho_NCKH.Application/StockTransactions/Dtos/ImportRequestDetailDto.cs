@@ -11,6 +11,8 @@ namespace QLKho_NCKH.StockTransactions.Dtos
 		public int ProductId { get; set; }
 		public int Quantity { get; set; }
 		public int StorageLocationId { get; set; }
-		public string BatchNumber { get; set; }
+
+		public int UnitPrice { get; set; }
+		//public string BatchNumber { get; set; }
 	}
 }
