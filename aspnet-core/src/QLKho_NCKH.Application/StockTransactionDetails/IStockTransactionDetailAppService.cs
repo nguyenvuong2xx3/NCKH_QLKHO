@@ -20,8 +20,5 @@ namespace QLKho_NCKH.StockTransactionDetails
 		//Task<PagedResultDto<StockTransactionDetailListDto>> GetStockTransactionDetails(GetStockTransactionDetailsInput input);
 
 		//Task DeleteStockTransactionDetail(int Id);
-
-
-
 	}
 }
