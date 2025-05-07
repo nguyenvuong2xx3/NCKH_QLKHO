@@ -24,10 +24,11 @@ namespace QLKho_NCKH.Web.Controllers
 		{
 			return PartialView("_CreateImportModal");
 		}
+
 		//public async Task<IActionResult> CreateImportStockTransactions(CreateImportRequestDto input)
 		//{
-		//	_stockTransactionAppService.CreateImportRequest(input.WarehouseId, input.SupplierId);
-		//	_stockTransactionDetailAppService.CreateStockTransactionDetail(input.ImportRequestDetails);
+		//	var import = await _stockTransactionAppService.CreateStockTransactionImport();
+		//	var importdetail = await _stockTransactionDetailAppService.CreateStockTransactionDetail(input.ImportRequestDetails);
 		//}
 	}
 }

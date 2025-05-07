@@ -50,16 +50,45 @@ namespace QLKho_NCKH.StockTransactions
 				Note = stockTransaction.Note
 			};
 		}
-		//public async Task CreateImportRequest(int warehouseId, int supplierId)
-		//{
-		//	// 1. Create master StockTransaction  
-		//	var master = new StockTransaction
-		//	{
-		//		TransactionType = TransactionType.Import,
-		//		ToWarehouseId = warehouseId,
-		//		SupplierId = supplierId
-		//	};
-		//	await _stockTransactionRepository.InsertAsync(master);
-		//}
+		public async Task<IActionResult> CreateImportRequest(CreateImportRequestDto input)
+		{
+			//using (var transaction = await _unitOfWork.BeginTransactionAsync())
+			//{
+			//	try
+			//	{
+			// 1. Lưu master (StockTransaction)
+			var master = new StockTransaction
+			{
+				TransactionType = TransactionType.Import,
+				//Status = RequestStatus.Draft,
+				ToWarehouseId = input.WarehouseId,
+				SupplierId = input.SupplierId
+			};
+			await _stockTransactionRepository.InsertAsync(master);
+
+			// 2. Lưu details (StockTransactionDetail)
+			foreach (var detailDto in input.ImportRequestDetails)
+			{
+				var detail = new StockTransactionDetail
+				{
+					StockTransactionId = master.Id,
+					ProductId = detailDto.ProductId,
+					Quantity = detailDto.Quantity,
+					StorageLocationId = detailDto.StorageLocationId,
+					//BatchNumber = detailDto.BatchNumber
+				};
+				await _stockTransactionDetailRepository.InsertAsync(detail);
+			}
+
+			return new OkObjectResult(new
+			{
+				TransactionCode = master.TransactionCode,
+				TransactionDate = master.TransactionDate,
+				FromWarehouseName = master.FromWarehouse?.Name,
+				ToWarehouseName = master.ToWarehouse?.Name,
+				ReferenceNumber = master.ReferenceNumber,
+				Note = master.Note
+			});
+		}
 	}
 }
