@@ -210,7 +210,8 @@
     }
 
     var exportRequest = {
-      warehouseId: parseInt($('#WarehouseIdExportCreate').val()),
+      transactionCode: $('#TransactionCodeImport').val(),
+      fromWarehouseId: parseInt($('#WarehouseIdExportCreate').val()),
       customerId: parseInt($('#CustomerIdExportCreate').val()),
       exportRequestDetails: details
     };

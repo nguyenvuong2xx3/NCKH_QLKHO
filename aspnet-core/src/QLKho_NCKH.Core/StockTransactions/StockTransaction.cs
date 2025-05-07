@@ -8,6 +8,7 @@ using QLKho_NCKH.Warehouses;
 using System.ComponentModel.DataAnnotations.Schema;
 using QLKho_NCKH.StockTransactions;
 using QLKho_NCKH.EnumCustom;
+using QLKho_NCKH.Customers;
 
 namespace YourProject.Domain.Transactions
 {
@@ -35,6 +36,9 @@ namespace YourProject.Domain.Transactions
 		public Supplier Supplier { get; set; }
 		public int? SupplierId { get; set; }
 
+		[ForeignKey(nameof(CustomerId))]
+		public Customer Customer { get; set; }
+		public int? CustomerId { get; set; } // Cho phép null nếu xuất kho không liên quan khách hàng
 		public string ReferenceNumber { get; set; }
 		public string Note { get; set; }
 		public TransactionStatus Status { get; set; } = TransactionStatus.Draft;
