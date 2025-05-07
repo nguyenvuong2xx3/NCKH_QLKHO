@@ -10,6 +10,7 @@ using QLKho_NCKH.Inventory;
 using QLKho_NCKH.Suppliers;
 using QLKho_NCKH.StockTransactions;
 using YourProject.Domain.Transactions;
+using QLKho_NCKH.Customers;
 
 namespace QLKho_NCKH.EntityFrameworkCore
 {
@@ -22,6 +23,7 @@ namespace QLKho_NCKH.EntityFrameworkCore
 		public DbSet<StorageLocation> StorageLocations { get; set; }
 		public DbSet<InventoryItem> InventoryItems { get; set; }
 		public DbSet<Supplier> Suppliers { get; set; }
+		public DbSet<Customer> Customers { get; set; }
 		public DbSet<StockTransactionDetail> StockTransactionDetails { get; set; }
 		public DbSet<StockTransaction> StockTransactions { get; set; }
 

@@ -229,5 +229,11 @@
     "inputFiles": [
       "wwwroot/view-resources/Views/Products/Create.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/view-resources/Views/StockTransactions/_TransferModal.min.js",
+    "inputFiles": [
+      "wwwroot/view-resources/Views/StockTransactions/_TransferModal.js"
+    ]
   }
 ]

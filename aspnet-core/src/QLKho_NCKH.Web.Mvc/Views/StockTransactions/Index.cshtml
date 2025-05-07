@@ -29,6 +29,14 @@
   <environment names="Staging,Production">
     <script src="~/view-resources/Views/StockTransactions/_ExportModal.min.js" asp-append-version="true"></script>
   </environment>
+
+  <environment names="Development">
+    <script src="~/view-resources/Views/StockTransactions/_TransferModal.js" asp-append-version="true"></script>
+  </environment>
+
+  <environment names="Staging,Production">
+    <script src="~/view-resources/Views/StockTransactions/_TransferModal.min.js" asp-append-version="true"></script>
+  </environment>
 }
 
 <section class="content-header">

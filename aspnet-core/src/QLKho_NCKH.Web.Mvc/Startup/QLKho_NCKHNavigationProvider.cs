@@ -184,7 +184,15 @@ namespace QLKho_NCKH.Web.Startup
 									icon: "fas fa-theater-masks",
 							permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_StockTransactions)
 							)
-					);
+					).AddItem(
+							new MenuItemDefinition(
+									PageNames.Customers,
+									L("Customers"),
+									url: "Customers",
+									icon: "fas fa-theater-masks",
+							permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_StockTransactions)
+							)
+					); 
 		}
 
 		private static ILocalizableString L(string name)
