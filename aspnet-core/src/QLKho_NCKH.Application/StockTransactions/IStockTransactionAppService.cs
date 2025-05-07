@@ -12,6 +12,6 @@ namespace QLKho_NCKH.StockTransactions
 	{
 		Task<StockTransactionDto> CreateStockTransactionImport(CreateStockTransactionImportDto input);
 
-		Task<IActionResult> CreateImportRequest(CreateImportRequestDto input);
+		Task CreateImportRequest(CreateImportRequestDto input);
 	}
 }

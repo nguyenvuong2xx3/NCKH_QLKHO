@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using YourProject.Domain.Transactions;
 
 namespace QLKho_NCKH.StockTransactions
@@ -50,21 +51,21 @@ namespace QLKho_NCKH.StockTransactions
 				Note = stockTransaction.Note
 			};
 		}
-		public async Task<IActionResult> CreateImportRequest(CreateImportRequestDto input)
+		public async Task CreateImportRequest(CreateImportRequestDto input)
 		{
-			//using (var transaction = await _unitOfWork.BeginTransactionAsync())
-			//{
-			//	try
-			//	{
-			// 1. Lưu master (StockTransaction)
+			
 			var master = new StockTransaction
 			{
+				TransactionCode = input.TransactionCode,
 				TransactionType = TransactionType.Import,
 				//Status = RequestStatus.Draft,
-				ToWarehouseId = input.WarehouseId,
-				SupplierId = input.SupplierId
+				ToWarehouseId = input.ToWarehouseId,
+				SupplierId = input.SupplierId,
+				ReferenceNumber = input.ReferenceNumber,
+				Note = input.Note,
 			};
 			await _stockTransactionRepository.InsertAsync(master);
+			await _unitOfWorkManager.Current.SaveChangesAsync();
 
 			// 2. Lưu details (StockTransactionDetail)
 			foreach (var detailDto in input.ImportRequestDetails)
@@ -75,20 +76,11 @@ namespace QLKho_NCKH.StockTransactions
 					ProductId = detailDto.ProductId,
 					Quantity = detailDto.Quantity,
 					StorageLocationId = detailDto.StorageLocationId,
-					//BatchNumber = detailDto.BatchNumber
+					UnitPrice = detailDto.UnitPrice
+
 				};
 				await _stockTransactionDetailRepository.InsertAsync(detail);
 			}
-
-			return new OkObjectResult(new
-			{
-				TransactionCode = master.TransactionCode,
-				TransactionDate = master.TransactionDate,
-				FromWarehouseName = master.FromWarehouse?.Name,
-				ToWarehouseName = master.ToWarehouse?.Name,
-				ReferenceNumber = master.ReferenceNumber,
-				Note = master.Note
-			});
 		}
 	}
 }

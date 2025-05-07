@@ -222,12 +222,16 @@
 
     // Tạo object gửi lên server
     var importRequest = {
-      warehouseId: parseInt($('#WarehouseIdImportCreate').val()),
+      transactionCode: $('#TransactionCodeImport').val(),
+      toWarehouseId: parseInt($('#WarehouseIdImportCreate').val()),
       supplierId: parseInt($('#SupplierIdImportCreate').val()),
+      note: $('input[name="Note"]').val(),
+      referenceNumber: $('input[name="ReferenceNumber"]').val(),
       importRequestDetails: details
     };
 
     abp.ui.setBusy(_$modalimport);
+    console.log(importRequest);
     _stockTransactionService
       .createImportRequest(importRequest)
       .done(function () {
@@ -237,6 +241,9 @@
         $('#productImportTable tbody').empty();
         abp.notify.info(l('Tạo phiếu nhập kho thành công'));
         _$table.DataTable().ajax.reload();
+      }).fail(function (error) {
+        console.error('Error', error); // Xem chi tiết lỗi ở đây
+        abp.message.error(error.message || "Something went wrong.");
       })
       .always(function () {
         abp.ui.clearBusy(_$modalimport);
