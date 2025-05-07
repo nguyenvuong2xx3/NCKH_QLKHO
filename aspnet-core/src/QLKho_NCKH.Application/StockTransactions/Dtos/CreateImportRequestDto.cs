@@ -15,3 +15,4 @@ namespace QLKho_NCKH.StockTransactions.Dtos
 		public List<ImportRequestDetailDto> ImportRequestDetails { get; set; }
 	}
 }
+	

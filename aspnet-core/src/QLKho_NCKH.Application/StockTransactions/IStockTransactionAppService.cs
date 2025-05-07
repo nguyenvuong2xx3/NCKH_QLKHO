@@ -11,6 +11,6 @@ namespace QLKho_NCKH.StockTransactions
 	public interface IStockTransactionAppService
 	{
 		Task<StockTransactionDto> CreateStockTransactionImport(CreateStockTransactionImportDto input);
-		Task<IActionResult> CreateImportRequest(CreateImportRequestDto input);
+		Task CreateImportRequest(int warehouseId, int supplierId);
 	}
 }

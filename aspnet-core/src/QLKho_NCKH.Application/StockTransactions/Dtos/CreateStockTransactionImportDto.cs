@@ -13,9 +13,9 @@ namespace QLKho_NCKH.StockTransactions.Dtos
 		public string TransactionCode { get; set; }
 		public DateTime TransactionDate { get; set; } = DateTime.Now;
 		public TransactionType TransactionType { get; set; } = TransactionType.Import;
-		//public int? FromWarehouseId { get; set; }
-		public int ToWarehouseId { get; set; }
-		public int SupplierId { get; set; }
+		public int? FromWarehouseId { get; set; }
+		public int? ToWarehouseId { get; set; }
+		public int? SupplierId { get; set; }
 		public string ReferenceNumber { get; set; }
 		public string Note { get; set; }
 	}

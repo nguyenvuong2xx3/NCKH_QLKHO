@@ -50,54 +50,16 @@ namespace QLKho_NCKH.StockTransactions
 				Note = stockTransaction.Note
 			};
 		}
-		//[HttpPost]
-		public async Task<IActionResult> CreateImportRequest(CreateImportRequestDto input)
-		{
-			using (var uow = _unitOfWorkManager.Begin())
-			{
-				try
-				{
-					// 1. Lưu master (StockTransaction)
-					var master = new StockTransaction
-					{
-						TransactionType = TransactionType.Import,
-						ToWarehouseId = input.WarehouseId,
-						SupplierId = input.SupplierId
-					};
-					await _stockTransactionRepository.InsertAsync(master);
-
-					// 2. Lưu details (StockTransactionDetail)
-					foreach (var detailDto in input.ImportRequestDetails)
-					{
-						var detail = new StockTransactionDetail
-						{
-							StockTransactionId = master.Id,
-							ProductId = detailDto.ProductId,
-							Quantity = detailDto.Quantity,
-							StorageLocationId = detailDto.StorageLocationId,
-							UnitPrice = detailDto.UnitPrice
-						};
-						await _stockTransactionDetailRepository.InsertAsync(detail);
-					}
-
-					await uow.CompleteAsync();
-					return new OkObjectResult(new
-					{
-						TransactionCode = master.TransactionCode,
-						TransactionDate = master.TransactionDate,
-						FromWarehouseName = master.FromWarehouse?.Name,
-						ToWarehouseName = master.ToWarehouse?.Name,
-						ReferenceNumber = master.ReferenceNumber,
-						Note = master.Note
-					});
-				}
-				catch (Exception ex)
-				{
-					// No need to call RollbackAsync() - it happens automatically
-					//Logger.Error("Error creating import request", ex);
-					return new BadRequestObjectResult("Error creating import request: " + ex.Message);
-				}
-			}
-			}
-		}
+		//public async Task CreateImportRequest(int warehouseId, int supplierId)
+		//{
+		//	// 1. Create master StockTransaction  
+		//	var master = new StockTransaction
+		//	{
+		//		TransactionType = TransactionType.Import,
+		//		ToWarehouseId = warehouseId,
+		//		SupplierId = supplierId
+		//	};
+		//	await _stockTransactionRepository.InsertAsync(master);
+		//}
 	}
+}
