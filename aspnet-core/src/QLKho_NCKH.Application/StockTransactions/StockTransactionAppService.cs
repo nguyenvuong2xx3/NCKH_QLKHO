@@ -13,6 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using YourProject.Domain.Transactions;
+using QLKho_NCKH.Warehouses;
+using System.Linq.Dynamic.Core;
+using QLKho_NCKH.Warehouses.Dto;
 
 namespace QLKho_NCKH.StockTransactions
 {
@@ -20,12 +23,18 @@ namespace QLKho_NCKH.StockTransactions
 	{
 		private readonly IRepository<StockTransaction, int> _stockTransactionRepository;
 		private readonly IRepository<StockTransactionDetail, int> _stockTransactionDetailRepository;
+		private readonly IRepository<Warehouse, int> _warehouseRepository;
+
 		private readonly IUnitOfWorkManager _unitOfWorkManager;
-		public StockTransactionAppService(IRepository<StockTransaction, int> stockTransactionRepository, IRepository<StockTransactionDetail, int> stockTransactionDetailRepository, IUnitOfWorkManager unitOfWorkManager)
+		public StockTransactionAppService(IRepository<StockTransaction, int> stockTransactionRepository, 
+			IRepository<StockTransactionDetail, int> stockTransactionDetailRepository, 
+			IUnitOfWorkManager unitOfWorkManager,
+			IRepository<Warehouse, int> warehouseRepository)
 		{
 			_stockTransactionRepository = stockTransactionRepository;
 			_stockTransactionDetailRepository = stockTransactionDetailRepository;
 			_unitOfWorkManager = unitOfWorkManager;
+			_warehouseRepository = warehouseRepository;
 		}
 		public async Task<StockTransactionDto> CreateStockTransactionImport(CreateStockTransactionImportDto input)
 		{
@@ -84,22 +93,24 @@ namespace QLKho_NCKH.StockTransactions
 		}
 		public async Task<PagedResultDto<StockTransactionListDto>> GetStockTransactions(GetStockTransactionsInput input)
 		{
+			var getAll = await _warehouseRepository.GetAllAsync();
 			var query = _stockTransactionRepository.GetAll()
 					.WhereIf(!string.IsNullOrEmpty(input.Filter), u => u.TransactionCode.Contains(input.Filter)
 					|| u.ReferenceNumber.Contains(input.Filter) || u.Note.Contains(input.Filter));
 
 			var count = await query.CountAsync();
 			var result = await query.OrderByDescending(x => x.CreationTime)
-			.PageBy(input)
-			.ToListAsync();
+					.PageBy(input)
+					.ToListAsync();
 
-			var StockTransactionsDtos = new List<StockTransactionListDto>();
+			var stockTransactionsDtos = new List<StockTransactionListDto>();
 
 			foreach (var item in result)
 			{
-				StockTransactionsDtos.Add(new StockTransactionListDto
-				{
+				var warehouses = await GetWarehousesByTransaction(item.Id);
 
+				stockTransactionsDtos.Add(new StockTransactionListDto
+				{
 					Id = item.Id,
 					TransactionCode = item.TransactionCode,
 					TransactionDate = item.TransactionDate,
@@ -108,32 +119,42 @@ namespace QLKho_NCKH.StockTransactions
 					SupplierId = item.SupplierId,
 					ReferenceNumber = item.ReferenceNumber,
 					Note = item.Note,
-					Status = item.Status
+					Status = item.Status,
+					FromWarehouseName = warehouses.FromWarehouse?.Name,
+					ToWarehouseName = warehouses.ToWarehouse?.Name
 				});
 			}
+
 			return new PagedResultDto<StockTransactionListDto>()
 			{
 				TotalCount = count,
-				Items = StockTransactionsDtos
+				Items = stockTransactionsDtos
 			};
-
 		}
 		public async Task<StockTransactionListDto> GetStockTransaction(int id)
 		{
-			var stockTransaction = await _stockTransactionRepository.GetAsync(id);
+			var stockTransaction = await _stockTransactionRepository
+					.GetAll()
+					.Include(x => x.Supplier)
+					.FirstOrDefaultAsync(x => x.Id == id);
+
+			var warehouses = await GetWarehousesByTransaction(id);
 
 			return new StockTransactionListDto
 			{
 				Id = stockTransaction.Id,
 				TransactionCode = stockTransaction.TransactionCode,
+				TransactionType = stockTransaction.TransactionType,
 				TransactionDate = stockTransaction.TransactionDate,
 				FromWarehouseId = stockTransaction.FromWarehouseId ?? 0,
 				ToWarehouseId = stockTransaction.ToWarehouseId ?? 0,
 				SupplierId = stockTransaction.SupplierId,
+				SupplierName = stockTransaction.Supplier?.Name,
 				ReferenceNumber = stockTransaction.ReferenceNumber,
 				Note = stockTransaction.Note,
-				Status = stockTransaction.Status, // Không cần cast nếu kiểu đúng
-				//TransactionType = stockTransaction.TransactionType.ToString() // Enum to string (nếu là enum)
+				Status = stockTransaction.Status,
+				FromWarehouseName = warehouses.FromWarehouse?.Name,
+				ToWarehouseName = warehouses.ToWarehouse?.Name
 			};
 		}
 
@@ -142,13 +163,46 @@ namespace QLKho_NCKH.StockTransactions
 			var query = await _stockTransactionRepository.GetAsync(input.Id);
 			if (query != null)
 			{
-				query.Status = TransactionStatusEnum.Draft;
+				query.Status = TransactionStatusEnum.Approved;
 				await _stockTransactionRepository.UpdateAsync(query);
 			}
 			else
 			{
 				throw new Exception("Không tìm thấy giao dịch với ID đã cho.");
 			}
+		}
+
+		public async Task<WarehouseFormTo> GetWarehousesByTransaction(int stockTransactionId)
+		{
+			var stockTransaction = await _stockTransactionRepository.GetAsync(stockTransactionId);
+			if (stockTransaction == null)
+			{
+				throw new Exception("Stock transaction not found.");
+			}
+
+			var fromWarehouse = stockTransaction.FromWarehouseId.HasValue
+					? await _warehouseRepository.GetAsync(stockTransaction.FromWarehouseId.Value)
+					: null;
+
+			var toWarehouse = stockTransaction.ToWarehouseId.HasValue
+					? await _warehouseRepository.GetAsync(stockTransaction.ToWarehouseId.Value)
+					: null;
+
+			return new WarehouseFormTo
+			{
+				FromWarehouse = fromWarehouse != null ? new WarehouseDetailDto
+				{
+					Id = fromWarehouse.Id,
+					Name = fromWarehouse.Name,
+					Location = fromWarehouse.Location
+				} : null,
+				ToWarehouse = toWarehouse != null ? new WarehouseDetailDto
+				{
+					Id = toWarehouse.Id,
+					Name = toWarehouse.Name,
+					Location = toWarehouse.Location
+				} : null
+			};
 		}
 	}
 }
