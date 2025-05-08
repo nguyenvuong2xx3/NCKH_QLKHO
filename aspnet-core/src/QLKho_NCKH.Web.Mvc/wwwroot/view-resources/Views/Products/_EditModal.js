@@ -56,8 +56,118 @@
     }
   });
 
+  // Phương thức kiểm tra tùy chỉnh cho số điện thoại (giữ nguyên)
+  $.validator.addMethod("phoneNumber", function (value, element) {
+    return this.optional(element) || /^[0-9\+\-\(\)\s]*$/.test(value);
+  }, "Số điện thoại không hợp lệ.");
 
-  
+  // Phương thức kiểm tra tùy chỉnh cho mã vạch (barcode)
+  $.validator.addMethod("barcode", function (value, element) {
+    // Nếu trường không bắt buộc và không có giá trị, bỏ qua kiểm tra
+    if (this.optional(element)) {
+      return true;
+    }
+
+    // Kiểm tra mã vạch chỉ chứa số và có độ dài từ 8 đến 13 ký tự
+    var regex = /^[0-9]{8,13}$/;
+    return regex.test(value);
+  }, "Mã vạch không hợp lệ. Chỉ cho phép từ 8 đến 13 ký tự số.");
+
+  // Khởi tạo validate cho form sản phẩm
+  _$form.validate({
+    rules: {
+      Name: {
+        required: true,
+        maxlength: 256
+      },
+      Code: {
+        required: true,
+        maxlength: 256
+      },
+      Description: {
+        required: true,
+        maxlength: 500
+      },
+      CategoryIdCreate: {
+        required: true
+      },
+      SupplierIdCreate: {
+        required: true
+      },
+      Barcode: {
+        required: true,
+        barcode: true,
+        maxlength: 20
+      },
+      Unit: {
+        required: true,
+        maxlength: 50
+      },
+      Weight: {
+        required: true,
+        number: true,
+        maxlength: 20
+      },
+      Volume: {
+        required: true,
+        number: true,
+        maxlength: 20
+      },
+      Image: {
+        required: true // Kiểm tra nếu có hình ảnh
+      }
+    },
+    messages: {
+      Name: {
+        required: "Tên sản phẩm là bắt buộc.",
+        maxlength: "Tên sản phẩm không được vượt quá 256 ký tự."
+      },
+      Code: {
+        required: "Mã sản phẩm là bắt buộc.",
+        maxlength: "Mã sản phẩm không được vượt quá 256 ký tự."
+      },
+      Description: {
+        required: "Mô tả sản phẩm là bắt buộc.",
+        maxlength: "Mô tả sản phẩm không được vượt quá 500 ký tự."
+      },
+      CategoryIdCreate: {
+        required: "Danh mục sản phẩm là bắt buộc."
+      },
+      SupplierIdCreate: {
+        required: "Nhà cung cấp là bắt buộc."
+      },
+      Barcode: {
+        required: "Mã vạch là bắt buộc.",
+        barcode: "Mã vạch không hợp lệ. Chỉ cho phép từ 8 đến 13 ký tự số."
+      },
+      Unit: {
+        required: "Đơn vị tính là bắt buộc.",
+        maxlength: "Đơn vị tính không được vượt quá 50 ký tự."
+      },
+      Weight: {
+        required: "Trọng lượng là bắt buộc.",
+        number: "Trọng lượng phải là một số hợp lệ.",
+        maxlength: "Trọng lượng không được vượt quá 20 ký tự."
+      },
+      Volume: {
+        required: "Thể tích là bắt buộc.",
+        number: "Thể tích phải là một số hợp lệ.",
+        maxlength: "Thể tích không được vượt quá 20 ký tự."
+      },
+      Image: {
+        required: "Ảnh sản phẩm là bắt buộc."
+      }
+    },
+    errorPlacement: function (error, element) {
+      error.insertAfter(element);
+    },
+    highlight: function (element) {
+      $(element).closest('.form-group').addClass('has-error');
+    },
+    unhighlight: function (element) {
+      $(element).closest('.form-group').removeClass('has-error');
+    }
+  });
 
   function save() {
     if (!_$form.valid()) {
@@ -66,43 +176,37 @@
 
     var formData = new FormData(_$form[0]);
 
-    // Lấy thông tin về file ảnh
-    var imageInput = document.getElementById('newImage');
-    var imageFile = imageInput.files[0];
-
-    // Thêm file ảnh vào FormData nếu đã chọn
+    // Thêm file ảnh nếu có
+    var imageFile = $('#newImage')[0].files[0];
     if (imageFile) {
-      formData.append('ImagePath', imageFile);
+      formData.append('ImageFile', imageFile);
     }
 
     abp.ui.setBusy(_$modal);
     $.ajax({
-      url: abp.appPath + 'Products/EditAndUploadDeleteImage', // Đường dẫn đến phương thức trong controller
+      url: abp.appPath + 'Products/EditAndUploadDeleteImage',
       type: 'POST',
-      processData: false, // Quan trọng!
-      contentType: false, // Quan trọng!
       data: formData,
-      error: function (xhr, textStatus, errorThrown) {
-        var errorMessage;
-        if (xhr.responseJSON && xhr.responseJSON.errors && xhr.responseJSON.errors.length > 0) {
-          errorMessage = xhr.responseJSON.errors.join("<br/>");
+      processData: false,
+      contentType: false,
+      success: function (response) {
+        if (response.success) {
+          _$modal.modal('hide');
+          abp.notify.info(l('SavedSuccessfully'));
+          abp.event.trigger('product.edited', response);
         } else {
-          errorMessage = "Có lỗi xảy ra khi cập nhật sản phẩm (Có thể do upload ảnh không đúng định dạng .jpg, .jpeg, .png, .gif)";
+          abp.notify.error(response.message || 'Có lỗi xảy ra khi cập nhật');
         }
-        $("#error-message").html(errorMessage).show();
+      },
+      error: function (xhr) {
+        var errorMessage = xhr.responseJSON && xhr.responseJSON.message
+          ? xhr.responseJSON.message
+          : "Có lỗi xảy ra khi cập nhật sản phẩm";
+        abp.notify.error(errorMessage);
+      },
+      complete: function () {
+        abp.ui.clearBusy(_$modal);
       }
-    }).done(function (customer) {
-      _$modal.modal('hide');
-      abp.notify.info(l('SavedSuccessfully'));
-      abp.event.trigger('product.edited', result);
-    }).fail(function (error) {
-      var errorMessage = error.message || "Có lỗi xảy ra khi cập nhật sản phẩm";
-      if (error.details) {
-        errorMessage += ": " + error.details;
-      }
-      abp.notify.error(errorMessage);
-    }).always(function () {
-      abp.ui.clearBusy(_$modal);
     });
   }
 
@@ -139,6 +243,25 @@
     );
   });
 
+  // Enter key handler
+  _$form.find('input').on('keypress', function (e) {
+    if (e.which === 13) {
+      e.preventDefault();
+      save();
+    }
+  });
+
+  // Focus first input when modal shown
+  _$modal.on('shown.bs.modal', function () {
+    _$form.find('input[type=text]:first').focus();
+  });
+
+  // 1. Bind sự kiện click cho nút Save
+  _$modal.on('click', '.save-button', function (e) {
+    e.preventDefault();
+    save();
+  });
+
 
   // Xem trước ảnh mới khi chọn file
   $('#newImage').on('change', function (event) {
@@ -153,3 +276,4 @@
   });
 
 })(jQuery);
+

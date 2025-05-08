@@ -73,31 +73,39 @@
 		]
 	});
 
-	//$.validator.addMethod("validNameCategory", function (value, element) {
-	//	return this.optional(element) || /^(?!\d+$)(?!\s+$)[\p{L}\d\s]+$/u.test(value);
-	//}, "Tên danh mục không hợp lệ. Không được chỉ chứa số hoặc dấu cách.");
+	_$form.validate({
+		rules: {
+			Name: {
+				required: true,
+				maxlength: 80,
+			},
+			Description: {
+				required: true,
+				maxlength: 500,
+			},
+		},
+		messages: {
+			Name: {
+				required: "Vui lòng nhập tên danh mục.",
+				maxlength: "Tên danh mục không được quá dài",
+			},
+			Description: {
+				required: "Vui lòng nhập mô tả.",
+				maxlength: "Mô tả không được vượt quá 500 ký tự.",
+			},
+		},
+		errorClass: "error",
+		errorPlacement: function (error, element) {
+			error.insertAfter(element);
+		},
+		highlight: function (element) {
+			$(element).closest(".form-group").addClass("has-error");
+		},
+		unhighlight: function (element) {
+			$(element).closest(".form-group").removeClass("has-error");
+		},
+	});
 
-
-	//_$form.validate({
-	//	rules: {
-	//		CategoryName: {
-	//			required: true,
-	//			validNameCategory: true
-	//		},
-	//		CategoryDescription: {
-	//			required: true
-	//		}
-	//	},
-	//	messages: {
-	//		CategoryName: {
-	//			required: "Vui lòng nhập tên danh mục.",
-	//			validNameCategory: "Tên danh mục không hợp lệ. Không được chỉ chứa số hoặc dấu cách."
-	//		},
-	//		CategoryDescription: {
-	//			required: "Vui lòng nhập mô tả danh mục.",
-	//		}
-	//	}
-	//});
 
 
 	_$form.find('.save-button').on('click', (e) => {

@@ -14,13 +14,13 @@
           <div class="form-group row required">
             <label class="col-md-3 col-form-label">@L("Name")</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" name="Name" required maxlength="256">
+              <input type="text" class="form-control" name="Name" required maxlength="256" placeholder="Nhập tên danh mục...">
             </div>
           </div>
           <div class="form-group row required">
             <label class="col-md-3 col-form-label">@L("Description")</label>
             <div class="col-md-9">
-              <textarea class="form-control" name="Description" required maxlength="500"></textarea>
+              <textarea class="form-control" name="Description" required maxlength="500" placeholder="Nhập mô tả..."></textarea>
             </div>
           </div>
         </div>
@@ -29,3 +29,15 @@
     </div>
   </div>
 </div>
+
+<style>
+  .has-error .form-control {
+    border-color: #d9534f;
+  }
+
+  .error {
+    color: #d9534f;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+  }
+</style>

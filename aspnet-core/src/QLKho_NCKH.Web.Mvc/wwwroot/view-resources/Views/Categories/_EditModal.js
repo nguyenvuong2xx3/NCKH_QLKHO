@@ -4,6 +4,39 @@
 		_$modal = $('#CategoryEditModal'),
 		_$form = _$modal.find('form');
 
+	_$form.validate({
+		rules: {
+			Name: {
+				required: true,
+				maxlength: 80,
+			},
+			Description: {
+				required: true,
+				maxlength: 500,
+			},
+		},
+		messages: {
+			Name: {
+				required: "Vui lòng nhập tên danh mục.",
+				maxlength: "Tên danh mục không được quá dài",
+			},
+			Description: {
+				required: "Vui lòng nhập mô tả.",
+				maxlength: "Mô tả không được vượt quá 500 ký tự.",
+			},
+		},
+		errorClass: "error",
+		errorPlacement: function (error, element) {
+			error.insertAfter(element);
+		},
+		highlight: function (element) {
+			$(element).closest(".form-group").addClass("has-error");
+		},
+		unhighlight: function (element) {
+			$(element).closest(".form-group").removeClass("has-error");
+		},
+	});
+
 	function save() {
 		if (!_$form.valid()) {
 			return;

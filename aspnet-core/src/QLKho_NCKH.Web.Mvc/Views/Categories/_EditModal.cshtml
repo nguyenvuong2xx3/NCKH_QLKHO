@@ -31,4 +31,17 @@
 	@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
 </form>
 
+<style>
+	.has-error .form-control {
+		border-color: #d9534f;
+	}
+
+	.error {
+		color: #d9534f;
+		font-size: 0.875em;
+		margin-top: 0.25rem;
+	}
+</style>
+
+
 <script src="~/view-resources/Views/Categories/_EditModal.js" asp-append-version="true"></script>

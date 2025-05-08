@@ -4,6 +4,63 @@
     _$modal = $('#WarehouseEditModal'),
     _$form = _$modal.find('form');
 
+  // Phương thức kiểm tra tùy chỉnh
+  $.validator.addMethod("validArea", function (value, element) {
+    return this.optional(element) || /^[0-9]/.test(value);
+  }, "Diện tích không hợp lệ. Vui lòng nhập theo định dạng, ví dụ: 500m2.");
+
+  // Khởi tạo validate cho biểu mẫu tạo mới kho
+  _$form.validate({
+    rules: {
+      Code: {
+        required: true,
+        maxlength: 256
+      },
+      Name: {
+        required: true,
+        maxlength: 256
+      },
+      Location: {
+        required: true,
+        maxlength: 256
+      },
+      TotalArea: {
+        required: true,
+        validArea: true,
+        maxlength: 20
+      }
+    },
+    messages: {
+      Code: {
+        required: "Mã kho là bắt buộc.",
+        maxlength: "Mã kho không được vượt quá 256 ký tự."
+      },
+      Name: {
+        required: "Tên kho là bắt buộc.",
+        maxlength: "Tên kho không được vượt quá 256 ký tự."
+      },
+      Location: {
+        required: "Địa chỉ kho là bắt buộc.",
+        maxlength: "Địa chỉ kho không được vượt quá 256 ký tự."
+      },
+      TotalArea: {
+        required: "Diện tích kho là bắt buộc.",
+        validArea: "Diện tích không hợp lệ. Vui lòng nhập theo định dạng, ví dụ: 500m2.",
+        maxlength: "Diện tích không được vượt quá 20 ký tự."
+      }
+    },
+    errorPlacement: function (error, element) {
+      error.insertAfter(element);
+    },
+    highlight: function (element) {
+      $(element).closest('.form-group').addClass('has-error');
+    },
+    unhighlight: function (element) {
+      $(element).closest('.form-group').removeClass('has-error');
+    }
+  });
+
+
   function save() {
     if (!_$form.valid()) {
       return;

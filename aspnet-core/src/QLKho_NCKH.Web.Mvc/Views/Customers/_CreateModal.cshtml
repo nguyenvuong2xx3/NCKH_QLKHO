@@ -34,14 +34,14 @@
             </div>
           </div>
 
-          <div class="form-group row mb-3">
+          <div class="form-group row mb-3 required">
             <label class="col-md-3 col-form-label fw-bold">@L("Address")</label>
             <div class="col-md-9">
               <input type="text" class="form-control" name="Address" maxlength="200" placeholder="Nhập địa chỉ...">
             </div>
           </div>
 
-          <div class="form-group row mb-3">
+          <div class="form-group row mb-3 required">
             <label class="col-md-3 col-form-label fw-bold">@L("PhoneNumber")</label>
             <div class="col-md-9">
               <input type="tel" class="form-control" name="PhoneNumber" maxlength="20" placeholder="Nhập số điện thoại...">
@@ -55,7 +55,7 @@
             </div>
           </div>
 
-          <div class="form-group row mb-3">
+          <div class="form-group row mb-3 required">
             <label class="col-md-3 col-form-label fw-bold">@L("TaxCode")</label>
             <div class="col-md-9">
               <input type="text" class="form-control" name="TaxCode" maxlength="20" placeholder="Nhập mã số thuế...">
@@ -78,3 +78,15 @@
     </div>
   </div>
 </div>
+
+<style>
+  .has-error .form-control {
+    border-color: #d9534f;
+  }
+
+  .error {
+    color: #d9534f;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+  }
+</style>

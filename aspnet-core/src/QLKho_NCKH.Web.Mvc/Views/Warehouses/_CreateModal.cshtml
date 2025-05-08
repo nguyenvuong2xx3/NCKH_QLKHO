@@ -10,57 +10,57 @@
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewWarehouse")))
-			<form name="upplierCreateForm" role="form" class="form-horizontal">
-				<div class="modal-body">
-					@* <ul class="nav nav-tabs" role="tablist"> *@
-					@* 	<li class="nav-item"> *@
-					@* 		<a class="nav-link active" data-toggle="tab" role="tab" href="#create-user-details">@L("SupplierDetails")</a> *@
-					@* 	</li> *@
-					@* 	<li class="nav-item"> *@
-					@* 		<a class="nav-link" data-toggle="tab" role="tab" href="#create-user-roles">@L("UserRoles")</a> *@
-					@* 	</li> *@
-					@* </ul> *@
-					<div class="tab-content mt-4">
-						<div role="tabpanel" class="tab-pane container active" id="create-warehouses-details">
-							<div class="form-group row required">
-								<label class="col-md-3 col-form-label">@L("Code")</label>
-								<div class="col-md-9">
-									<input type="text" class="form-control" name="Code" required maxlength="256">
-								</div>
-							</div>
-							<div class="form-group row required">
-								<label class="col-md-3 col-form-label">@L("Name")</label>
-								<div class="col-md-9">
-									<input type="text" class="form-control" name="Name" required maxlength="256">
-								</div>
-							</div>
-							<div class="form-group row required">
-								<label class="col-md-3 col-form-label">@L("Location")</label>
-								<div class="col-md-9">
-									<input type="text" class="form-control" name="Location" required maxlength="256">
-								</div>
-							</div>
-
-							<!-- Số điện thoại -->
-							<div class="form-group row required">
-								<label class="col-md-3 col-form-label">@L("TotalArea")</label>
-								<div class="col-md-9">
-									<input type="tel" class="form-control" name="TotalArea" required maxlength="20">
-								</div>
-							</div>
-
-							<!-- Trạng thái hoạt động -->
-							<div class="form-group row">
-								<label class="col-md-3 col-form-label">@L("IsActive")</label>
-								<div class="col-md-9">
-									<input type="checkbox" name="IsActive"/>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
-			</form>
+      <form name="upplierCreateForm" role="form" class="form-horizontal">
+        <div class="modal-body">
+          <div class="tab-content mt-4">
+            <div role="tabpanel" class="tab-pane container active" id="create-warehouses-details">
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label">@L("Code")</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="Code" required maxlength="256" placeholder="Nhập mã kho (VD: KHO001)">
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label">@L("Name")</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="Name" required maxlength="256" placeholder="Nhập tên kho (VD: Kho chính)">
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label">@L("Location")</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" name="Location" required maxlength="256" placeholder="Nhập địa chỉ kho (VD: 123 Đường ABC, Quận 1)">
+                </div>
+              </div>
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label">@L("TotalArea")</label>
+                <div class="col-md-9">
+                  <input type="tel" class="form-control" name="TotalArea" required maxlength="20" placeholder="Nhập diện tích (VD: 500m2)">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label">@L("IsActive")</label>
+                <div class="col-md-9">
+                  <input type="checkbox" name="IsActive" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+      </form>
 		</div>
 	</div>
 </div>
+
+<style>
+  .has-error .form-control {
+    border-color: #d9534f;
+  }
+
+  .error {
+    color: #d9534f;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+  }
+</style>

@@ -26,14 +26,14 @@
       </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row required">
       <label class="col-md-3 col-form-label">@L("Address")</label>
       <div class="col-md-9">
         <input type="text" class="form-control" name="Address" value="@Model.Customer.Address" maxlength="200" placeholder="Customer address...">
       </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row required">
       <label class="col-md-3 col-form-label">@L("PhoneNumber")</label>
       <div class="col-md-9">
         <input type="tel" class="form-control" name="PhoneNumber" value="@Model.Customer.PhoneNumber" maxlength="20" placeholder="Phone number...">
@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row required">
       <label class="col-md-3 col-form-label">@L("TaxCode")</label>
       <div class="col-md-9">
         <input type="text" class="form-control" name="TaxCode" value="@Model.Customer.TaxCode" maxlength="20" placeholder="Tax code...">
@@ -67,5 +67,17 @@
 
   @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
 </form>
+
+<style>
+  .has-error .form-control {
+    border-color: #d9534f;
+  }
+
+  .error {
+    color: #d9534f;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+  }
+</style>
 
 <script src="~/view-resources/Views/Customers/_EditModal.js" asp-append-version="true"></script>
