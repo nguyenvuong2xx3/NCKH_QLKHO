@@ -29,17 +29,17 @@
 							</div>
 
 							<div class="form-group row required">
-								<label class="col-md-3 col-form-label">@L("Customer")</label>
+								<label class="col-md-3 col-form-label">@L("Supplier")</label>
 								<div class="col-md-9">
 									<div class="input-group">
 										<input type="text" id="SupplierExportDisplay" class="form-control" readonly required />
 										<div class="input-group-append">
-											<button type="button" id="AddSupplierExportBtn" class="btn btn-success" title="@L("Customer")">
+											<button type="button" id="AddSupplierExportBtn" class="btn btn-success" title="@L("Supplier")">
 												<i class="fa fa-id-card"></i> @L("Select")
 											</button>
 										</div>
 									</div>
-									<input type="hidden" id="SupplierIdExportCreate" name="CustomerId" />
+									<input type="hidden" id="SupplierIdExportCreate" name="SupplierId" />
 								</div>
 							</div>
 
@@ -74,25 +74,26 @@
 								</div>
 							</div>
 
-							<!-- Bảng sản phẩm -->
 							<div class="form-group row">
 								<div class="col-md-12">
-									<table id="productExportTable" class="table table-bordered table-hover">
-										<thead>
-											<tr>
-												<th>@L("ProductCode")</th>
-												<th>@L("ProductName")</th>
-												<th>@L("Quantity")</th>
-												<th>@L("UnitPrice")</th>
-												<th>@L("TotalPrice")</th>
-												<th>@L("StorageLocation")</th>
-												<th>@L("Actions")</th>
-											</tr>
-										</thead>
-										<tbody>
-											<!-- Sản phẩm sẽ được thêm vào đây bằng JavaScript -->
-										</tbody>
-									</table>
+									<div class="table-responsive" style="max-height: 400px; overflow-x: auto;">
+										<table id="productExportTable" class="table table-bordered table-hover" style="min-width: 1000px;">
+											<thead>
+												<tr>
+													<th style="min-width: 120px;">@L("ProductCode")</th>
+													<th style="min-width: 200px;">@L("ProductName")</th>
+													<th style="width: 100px;">@L("Quantity")</th>
+													<th style="width: 120px;">@L("UnitPrice")</th>
+													<th style="width: 120px;">@L("TotalPrice")</th>
+													<th style="min-width: 150px;">@L("StorageLocation")</th>
+													<th style="width: 80px;">@L("Actions")</th>
+												</tr>
+											</thead>
+											<tbody>
+												<!-- Sản phẩm sẽ được thêm vào đây bằng JavaScript -->
+											</tbody>
+										</table>
+									</div>
 								</div>
 							</div>
 
@@ -131,5 +132,34 @@
 
 	.input-group-append .btn {
 		border-radius: 0 4px 4px 0;
+	}
+
+	/* Modal sizing */
+	.modal-dialog.modal-lg {
+		max-width: 95%;
+		width: 1200px;
+	}
+
+	/* Table styling */
+	#productExportTable {
+		margin-bottom: 0;
+	}
+
+		#productExportTable th {
+			position: sticky;
+			top: 0;
+			background: white;
+			z-index: 10;
+		}
+
+	/* Scrollbar styling */
+	.table-responsive::-webkit-scrollbar {
+		height: 8px;
+		width: 8px;
+	}
+
+	.table-responsive::-webkit-scrollbar-thumb {
+		background: #ddd;
+		border-radius: 4px;
 	}
 </style>
