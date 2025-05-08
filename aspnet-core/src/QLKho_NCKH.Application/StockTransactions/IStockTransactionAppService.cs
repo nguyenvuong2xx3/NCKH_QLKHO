@@ -15,10 +15,13 @@ namespace QLKho_NCKH.StockTransactions
 		Task<StockTransactionDto> CreateStockTransactionImport(CreateStockTransactionImportDto input);
 
 		Task CreateImportRequest(CreateImportRequestDto input);
-
+		Task CreateExportRequest(ExportInputDto input);
+		Task UpdateExportStockTransactions(StockTransactionUpdateInput input);
 		Task<PagedResultDto<StockTransactionListDto>> GetStockTransactions(GetStockTransactionsInput input);
 		Task<StockTransactionListDto> GetStockTransaction(int id);
 
 		Task Update(StockTransactionUpdateInput input);
+
+		Task DeleteStockTransaction(int Id);
 	}
 }

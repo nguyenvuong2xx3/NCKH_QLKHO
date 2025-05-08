@@ -15,6 +15,7 @@ namespace QLKho_NCKH.Products.Dtos
 
 		public int SupplierId { get; set; }
 
+		public int warehouseId { get; set; }
 		public void Normalize()
 		{
 			if (Sorting.IsNullOrWhiteSpace())

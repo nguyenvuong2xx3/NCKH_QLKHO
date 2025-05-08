@@ -12,7 +12,8 @@
     function getFilter() {
       return {
         filter: _$filterInput.val(),
-        supplierId: _modalManager.getArgs().supplierId // Lấy supplierId từ modal args
+        supplierId: _modalManager.getArgs().supplierId, // Lấy supplierId từ modal args
+				warehouseId: _modalManager.getArgs().warehouseId // Lấy warehouseId từ modal args
       };
     }
     // Làm mới bảng
@@ -22,7 +23,8 @@
     function refreshTable() {
       dataTable.ajax.reload();
     }
-
+  //  var fil = getFilter();
+		//console.log(fil)
     // Cập nhật trạng thái nút Save
     function updateSaveButtonState() {
       var $saveButton = _modalManager.getModal().find('.save-button');
@@ -32,7 +34,7 @@
     this.init = function (modalManager) {
       _modalManager = modalManager;
       const args = _modalManager.getArgs();
-
+			console.log(args);
       // Khởi tạo danh sách ID đã chọn ban đầu
       initialSelectedIds = Array.isArray(args) ? [...args] :
         (args._selectedProductIds ? [...args._selectedProductIds] : []);

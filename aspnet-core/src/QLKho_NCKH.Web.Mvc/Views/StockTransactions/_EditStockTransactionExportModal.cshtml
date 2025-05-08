@@ -9,7 +9,7 @@
 @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditStockTransaction")))
 <script src="~/view-resources/Views/StockTransactions/_EditModal.js" asp-append-version="true"></script>
 
-<form name="StockTransactionEditForm" role="form" class="form-horizontal">
+<form name="StockTransactionExportForm" role="form" class="form-horizontal">
 	<input type="hidden" name="Id" value="@Model.Id" />
 	<div class="modal-body">
 		<div class="tab-content mt-4">
@@ -39,10 +39,10 @@
 				</div>
 				<!--nhà cung cấp-->
 				<div class="form-group row">
-					<label class="col-md-3 col-form-label">@L("SupplierName")</label>
+					<label class="col-md-3 col-form-label">@L("CustomerName")</label>
 					<div class="col-md-9">
-						<input type="text" class="form-control" value="@Model.SupplierName" readonly>
-						<input type="hidden" name="ToWarehouseId" value="@Model.SupplierId">
+						<input type="text" class="form-control" value="@Model.CustomerName" readonly>
+						<input type="hidden" name="ToWarehouseId" value="@Model.CustomerId">
 					</div>
 				</div>
 				<!-- Kho nguồn -->

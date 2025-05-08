@@ -10,6 +10,11 @@ namespace QLKho_NCKH.StockTransactions.Dtos
 	public class StockTransactionUpdateInput
 	{
 		public int Id { get; set; }
+
+		public int? ProductId { get; set; }
+
+		public int? StorageLocationId { get; set; }
+
 		public TransactionStatusEnum Status { get; set; }
 	}
 }

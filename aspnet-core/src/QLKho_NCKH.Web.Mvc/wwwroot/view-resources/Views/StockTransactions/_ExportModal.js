@@ -5,6 +5,7 @@
     _$form = _$modal.find('form'),
     _$table = $('#StockTransactionsTable'),
     _selectedProducts = [];
+  _warehouseId = null;
 
   // Customer Modal
   var _addCustomerModal = new app.ModalManager({
@@ -34,28 +35,29 @@
       if (result) {
         $('#WarehouseExportDisplay').val(result.warehouseName.trim());
         $('#WarehouseIdExportCreate').val(result.warehouseId);
+        _warehouseId = result.warehouseId;
         loadStorageLocations(result.warehouseId);
       }
     });
   });
 
   // Products Modal
-  var _addProductModal = new app.ModalManager({
-    viewUrl: abp.appPath + 'Products/AddProduct',
-    scriptUrl: abp.appPath + 'view-resources/Views/Products/_AddProductsModal.js',
-    modalClass: 'AddProductsModal',
+  var _addInventoryItemModal = new app.ModalManager({
+    viewUrl: abp.appPath + 'InventoryItems/AddInventory',
+    scriptUrl: abp.appPath + 'view-resources/Views/InventoryItems/_AddInventoryItemModal.js',
+    modalClass: 'AddInventoryItemModal',
   });
 
-  $('#AddProductsExportBtn').click(function () {
+  $('#AddInventoryItemsBtn').click(function () {
     const warehouseId = $('#WarehouseIdExportCreate').val();
     if (!warehouseId) {
       abp.notify.error('Vui lòng chọn kho trước khi thêm sản phẩm');
       return;
     }
 
-    _addProductModal.open({
-      _selectedProducts: _selectedProducts,
-      warehouseId: warehouseId
+    _addInventoryItemModal.open({
+      warehouseId: warehouseId,
+      _selectedItems: _selectedProducts
     }, function (result) {
       if (!result || result.length === 0) {
         _selectedProducts = [];
@@ -98,10 +100,13 @@
       let row = `
         <tr data-product-id="${product.productId}">
           <td>${product.productCode}</td>
+          <td>${product.productBarcode}</td>
           <td>${product.productName}</td>
+          <td>${product.quantity || 0}</td>
           <td>
             <input type="number" class="form-control export-quantity" 
-                   min="1" value="1" required>
+                   min="1" max="${product.quantity || 1}" 
+                   value="1" required>
           </td>
           <td>
             <input type="number" class="form-control export-unit-price" 
@@ -132,7 +137,7 @@
 
   // Auto calculate totals
   function setupAutoCalculate() {
-    $(document).on('input', '.export-quantity, .export-unit-price', function () {
+    $(document).off('input', '.export-quantity, .export-unit-price').on('input', '.export-quantity, .export-unit-price', function () {
       const $row = $(this).closest('tr');
       const quantity = parseInt($row.find('.export-quantity').val()) || 0;
       const unitPrice = parseFloat($row.find('.export-unit-price').val()) || 0;
@@ -203,16 +208,17 @@
     }
 
     var exportRequest = {
+      transactionCode: $('#TransactionCodeExport').val(),
       fromWarehouseId: parseInt($('#WarehouseIdExportCreate').val()),
       customerId: parseInt($('#CustomerId').val()),
       note: $('#NoteExport').val(),
       referenceNumber: $('#ReferenceNumberExport').val(),
-      exportDetails: details
+      exportRequestDetails: details
     };
 
     abp.ui.setBusy(_$modal);
     _stockTransactionService
-      .createExportStockTransaction(exportRequest)
+      .createExportRequest(exportRequest)
       .done(function () {
         _$modal.modal('hide');
         _$form[0].reset();

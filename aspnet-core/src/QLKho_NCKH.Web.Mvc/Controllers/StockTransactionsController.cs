@@ -40,24 +40,51 @@ namespace QLKho_NCKH.Web.Controllers
 		{
 			var stockTransaction = _stockTransactionAppService.GetStockTransaction(stockTransactionId);
 
-			var viewmodel = new StockTransactionListViewModel
+			if (stockTransaction.Result.TransactionType == TransactionType.Import) {
+				var viewmodel = new StockTransactionListViewModel
+				{
+					Id = stockTransaction.Result.Id,
+					TransactionType = stockTransaction.Result.TransactionType,
+					TransactionCode = stockTransaction.Result.TransactionCode,
+					TransactionDate = stockTransaction.Result.TransactionDate,
+					FromWarehouseId = stockTransaction.Result.FromWarehouseId ?? 0,
+					ToWarehouseId = stockTransaction.Result.ToWarehouseId ?? 0,
+					//SupplierId = stockTransaction.Result.SupplierId ?? 0,
+					ReferenceNumber = stockTransaction.Result.ReferenceNumber,
+					Note = stockTransaction.Result.Note,
+					FromWarehouseName = stockTransaction.Result.FromWarehouseName,
+					ToWarehouseName = stockTransaction.Result.ToWarehouseName,
+					SupplierName = stockTransaction.Result.SupplierName,
+					Status = stockTransaction.Result.Status
+				};
+				return PartialView("_EditStockTransactionModal", viewmodel);
+			}
+			if(stockTransaction.Result.TransactionType == TransactionType.Export)
 			{
-				Id = stockTransaction.Result.Id,
-				TransactionType = stockTransaction.Result.TransactionType,
-				TransactionCode = stockTransaction.Result.TransactionCode,
-				TransactionDate = stockTransaction.Result.TransactionDate,
-				FromWarehouseId = stockTransaction.Result.FromWarehouseId ?? 0,
-				ToWarehouseId = stockTransaction.Result.ToWarehouseId ?? 0,
-				SupplierId = stockTransaction.Result.SupplierId ?? 0,
-				ReferenceNumber = stockTransaction.Result.ReferenceNumber,
-				Note = stockTransaction.Result.Note,
-				FromWarehouseName = stockTransaction.Result.FromWarehouseName,
-				ToWarehouseName = stockTransaction.Result.ToWarehouseName,
-				SupplierName = stockTransaction.Result.SupplierName,
-				Status = stockTransaction.Result.Status
-			};
-
-			return PartialView("_EditStockTransactionModal", viewmodel);
+				var viewmodel = new StockTransactionListViewModel
+				{
+					Id = stockTransaction.Result.Id,
+					TransactionType = stockTransaction.Result.TransactionType,
+					TransactionCode = stockTransaction.Result.TransactionCode,
+					TransactionDate = stockTransaction.Result.TransactionDate,
+					FromWarehouseId = stockTransaction.Result.FromWarehouseId ?? 0,
+					ToWarehouseId = stockTransaction.Result.ToWarehouseId ?? 0,
+					CustomerName = stockTransaction.Result.CustomerName,
+					ReferenceNumber = stockTransaction.Result.ReferenceNumber,
+					Note = stockTransaction.Result.Note,
+					FromWarehouseName = stockTransaction.Result.FromWarehouseName,
+					ToWarehouseName = stockTransaction.Result.ToWarehouseName,
+					SupplierName = stockTransaction.Result.SupplierName,
+					Status = stockTransaction.Result.Status
+				};
+				return PartialView("_EditStockTransactionExportModal", viewmodel);
+			}
+			return Ok(new
+			{
+				success = true,
+				message = "Updated successfully",
+				data = (object)null // nếu có dữ liệu cần gửi về, thay thế null
+			});
 		}
 		public async Task<IActionResult> UpdateImportStockTransactions([FromBody] StockTransactionUpdateInput input)
 		{
@@ -80,5 +107,15 @@ namespace QLKho_NCKH.Web.Controllers
 				data = (object)null // nếu có dữ liệu cần gửi về, thay thế null
 			});
 		}
+		//public async Task<IActionResult> UpdateExportStockTransactions([FromBody] StockTransactionUpdateInput input)
+		//{
+		//	UpdateExportStockTransactions
+		//	return Ok(new
+		//	{
+		//		success = true,
+		//		message = "Updated successfully",
+		//		data = (object)null // nếu có dữ liệu cần gửi về, thay thế null
+		//	});
+		//}
 	}
 }
