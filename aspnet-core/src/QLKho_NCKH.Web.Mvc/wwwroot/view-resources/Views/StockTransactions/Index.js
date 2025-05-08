@@ -27,23 +27,29 @@
           return data === 0 ? 'Nhập kho' : data === 1 ? 'Xuất kho' : 'Chuyển kho';
         }
       },
-      //{
-      //  targets: 2,
-      //  data: 'fromWarehouseName',
-      //  className: 'dt-center'
-      //},
-      //{
-      //  targets: 2,
-      //  data: 'toWarehouseName',
-      //  className: 'dt-center'
-      //},
       {
         targets: 2,
+        data: 'fromWarehouseName',
+        className: 'dt-center',
+        render: function (data, type, row) {
+          return data ? data : ''; // hoặc 'N/A'
+        }
+      },
+      {
+        targets: 3,
+        data: 'toWarehouseName',
+        className: 'dt-center',
+        render: function (data, type, row) {
+          return data ? data : '';
+        }
+      },
+      {
+        targets: 4,
         data: 'referenceNumber',
         className: 'dt-center'
       },
       {
-        targets: 3,
+        targets: 5,
         data: 'status',
         className: 'dt-center',
         render: function (data) {
@@ -52,7 +58,7 @@
         }
       },
       {
-        targets: 4,
+        targets: 6,
         data: null,
         sortable: false,
         autoWidth: false,
@@ -88,8 +94,8 @@
   });
   function getStatusText(status) {
     switch (status) {
-      case 0: return 'Nháp';
-      case 1: return 'Chờ duyệt';
+      case 0: return 'Chờ duyệt';
+      //case 1: return 'Chờ duyệt';
       case 2: return 'Đã duyệt';
       case 3: return 'Hoàn thành';
       default: return 'Đã hủy';

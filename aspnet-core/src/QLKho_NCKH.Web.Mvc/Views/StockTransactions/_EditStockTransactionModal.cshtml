@@ -26,7 +26,7 @@
 				<div class="form-group row required">
 					<label class="col-md-3 col-form-label">@L("TransactionType")</label>
 					<div class="col-md-9">
-						<input type="text" class="form-control" value="@Model.TransactionType" readonly>
+						<input type="text" class="form-control" value="@L("@Model.TransactionType")" readonly>
 					</div>
 				</div>
 
@@ -37,24 +37,35 @@
 						<input type="text" class="form-control date-picker" name="TransactionDate" value="@Model.TransactionDate.ToString("dd/MM/yyyy")" readonly>
 					</div>
 				</div>
-
+				<!--nhà cung cấp-->
+				<div class="form-group row">
+					<label class="col-md-3 col-form-label">@L("SupplierName")</label>
+					<div class="col-md-9">
+						<input type="text" class="form-control" value="@Model.SupplierName" readonly>
+						<input type="hidden" name="ToWarehouseId" value="@Model.SupplierId">
+					</div>
+				</div>
 				<!-- Kho nguồn -->
-				<div class="form-group row">
-					<label class="col-md-3 col-form-label">@L("FromWarehouse")</label>
-					<div class="col-md-9">
-						<input type="text" class="form-control" value="@Model.FromWarehouseId" readonly>
-						<input type="hidden" name="FromWarehouseId" value="@Model.FromWarehouseId">
+				@if (Model.FromWarehouseId != 0)
+				{
+					<div class="form-group row">
+						<label class="col-md-3 col-form-label">@L("FromWarehouse")</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" value="@Model.FromWarehouseName" readonly>
+							<input type="hidden" name="FromWarehouseId" value="@Model.FromWarehouseId">
+						</div>
 					</div>
-				</div>
-
-				<!-- Kho đích -->
-				<div class="form-group row">
-					<label class="col-md-3 col-form-label">@L("ToWarehouse")</label>
-					<div class="col-md-9">
-						<input type="text" class="form-control" value="@Model.ToWarehouseId" readonly>
-						<input type="hidden" name="ToWarehouseId" value="@Model.ToWarehouseId">
+				}
+				@if (Model.ToWarehouseId != 0)
+				{
+					<div class="form-group row">
+						<label class="col-md-3 col-form-label">@L("ToWarehouse")</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" value="@Model.ToWarehouseName" readonly>
+							<input type="hidden" name="ToWarehouseId" value="@Model.ToWarehouseId">
+						</div>
 					</div>
-				</div>
+				}
 
 				<!-- Số tham chiếu -->
 				<div class="form-group row">
@@ -77,13 +88,6 @@
 					<label class="col-md-3 col-form-label">@L("Status")</label>
 					<div class="col-md-9">
 						<input type="text" class="form-control" name="Status" value="@Model.Status" readonly>
-						<select class="form-control" name="Status">
-							@* <option value="0" @(Model.Status == "Draft" ? "selected" : "")>Nháp</option> *@
-							@* <option value="1" @(Model.Status == "Pending" ? "selected" : "")>Chờ duyệt</option> *@
-							@* <option value="2" @(Model.Status == "Approved" ? "selected" : "")>Đã duyệt</option> *@
-							@* <option value="3" @(Model.Status == "Completed" ? "selected" : "")>Hoàn thành</option> *@
-							@* <option value="4" @(Model.Status == "Cancelled" ? "selected" : "")>Đã hủy</option> *@
-						</select>
 					</div>
 				</div>
 			</div>

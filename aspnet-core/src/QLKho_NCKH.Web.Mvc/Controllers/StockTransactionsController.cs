@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QLKho_NCKH.Controllers;
+using QLKho_NCKH.EnumCustom;
 using QLKho_NCKH.InventoryItems;
 using QLKho_NCKH.InventoryItems.Dto;
 using QLKho_NCKH.StockTransactionDetails;
@@ -42,6 +43,7 @@ namespace QLKho_NCKH.Web.Controllers
 			var viewmodel = new StockTransactionListViewModel
 			{
 				Id = stockTransaction.Result.Id,
+				TransactionType = stockTransaction.Result.TransactionType,
 				TransactionCode = stockTransaction.Result.TransactionCode,
 				TransactionDate = stockTransaction.Result.TransactionDate,
 				FromWarehouseId = stockTransaction.Result.FromWarehouseId ?? 0,
@@ -49,9 +51,9 @@ namespace QLKho_NCKH.Web.Controllers
 				SupplierId = stockTransaction.Result.SupplierId ?? 0,
 				ReferenceNumber = stockTransaction.Result.ReferenceNumber,
 				Note = stockTransaction.Result.Note,
-				//FromWarehouseName = stockTransaction.FromWarehouse?.Name ?? "N/A",
-				//ToWarehouseName = stockTransaction.ToWarehouse?.Name ?? "N/A",
-				//SupplierName = stockTransaction.Supplier?.Name ?? "N/A",
+				FromWarehouseName = stockTransaction.Result.FromWarehouseName,
+				ToWarehouseName = stockTransaction.Result.ToWarehouseName,
+				SupplierName = stockTransaction.Result.SupplierName,
 				Status = stockTransaction.Result.Status
 			};
 
