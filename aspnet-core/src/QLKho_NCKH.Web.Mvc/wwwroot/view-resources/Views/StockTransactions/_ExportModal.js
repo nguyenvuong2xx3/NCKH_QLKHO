@@ -1,12 +1,12 @@
 ﻿(function ($) {
   var _stockTransactionService = abp.services.app.stockTransaction,
     l = abp.localization.getSource('QLKho_NCKH'),
-    _$modalexport = $('#ExportModal'),
+    _$modal = $('#ExportModal'),
+    _$form = _$modal.find('form'),
+    _$table = $('#StockTransactionsTable'),
     _selectedProducts = [];
-  _$form = _$modalexport.find('form'),
-    _$table = $('#StockTransactionsTable');
 
-  // Add this to your script section or JS file
+  // Customer Modal
   var _addCustomerModal = new app.ModalManager({
     viewUrl: abp.appPath + 'Customers/AddCustomer',
     scriptUrl: abp.appPath + 'view-resources/Views/Customers/_AddCustomersModal.js',
@@ -22,9 +22,15 @@
     });
   });
 
-  // Warehouse
+  // Warehouse Modal
+  var _addWarehouseModal = new app.ModalManager({
+    viewUrl: abp.appPath + 'Warehouses/AddWarehoses',
+    scriptUrl: abp.appPath + 'view-resources/Views/Warehouses/_AddWarehousesModal.js',
+    modalClass: 'AddWarehousesModal',
+  });
+
   $('#CreateWarehouseExportBtn').on('click', function () {
-    _addWarehouseCreateModal.open({}, function (result) {
+    _addWarehouseModal.open({}, function (result) {
       if (result) {
         $('#WarehouseExportDisplay').val(result.warehouseName.trim());
         $('#WarehouseIdExportCreate').val(result.warehouseId);
@@ -33,39 +39,23 @@
     });
   });
 
-  var _addWarehouseCreateModal = new app.ModalManager({
-    viewUrl: abp.appPath + 'Warehouses/AddWarehoses',
-    scriptUrl: abp.appPath + 'view-resources/Views/Warehouses/_AddWarehousesModal.js',
-    modalClass: 'AddWarehousesModal',
-  });
-
-  // Supplier
-  $('#AddSupplierExportBtn').on('click', function () {
-    _addSupplierCreateModal.open({}, function (result) {
-      if (result) {
-        $('#SupplierExportDisplay').val(result.supplierName.trim());
-        $('#SupplierIdExportCreate').val(result.supplierId);
-      }
-    });
-  });
-
-  var _addSupplierCreateModal = new app.ModalManager({
-    viewUrl: abp.appPath + 'Suppliers/AddSupplier',
-    scriptUrl: abp.appPath + 'view-resources/Views/Suppliers/_AddSupplierModal.js',
-    modalClass: 'AddSupplierModal',
+  // Products Modal
+  var _addProductModal = new app.ModalManager({
+    viewUrl: abp.appPath + 'Products/AddProduct',
+    scriptUrl: abp.appPath + 'view-resources/Views/Products/_AddProductsModal.js',
+    modalClass: 'AddProductsModal',
   });
 
   $('#AddProductsExportBtn').click(function () {
-    const supplierId = $('#SupplierIdExportCreate').val();
-    console.log(supplierId)
-    if (!supplierId) {
-      abp.notify.error('Vui lòng chọn nhà cung cấp trước khi thêm sản phẩm');
+    const warehouseId = $('#WarehouseIdExportCreate').val();
+    if (!warehouseId) {
+      abp.notify.error('Vui lòng chọn kho trước khi thêm sản phẩm');
       return;
     }
 
-    _addProductExportModal.open({
+    _addProductModal.open({
       _selectedProducts: _selectedProducts,
-      supplierId: supplierId // Truyền supplierId vào modal
+      warehouseId: warehouseId
     }, function (result) {
       if (!result || result.length === 0) {
         _selectedProducts = [];
@@ -81,14 +71,7 @@
     });
   });
 
-  var _addProductExportModal = new app.ModalManager({
-    viewUrl: abp.appPath + 'Products/AddProduct',
-    scriptUrl: abp.appPath + 'view-resources/Views/Products/_AddProductsModal.js',
-    modalClass: 'AddProductsModal',
-  });
-
-
-  // Hàm load vị trí lưu trữ theo kho
+  // Load storage locations
   function loadStorageLocations(warehouseId) {
     abp.services.app.storageLocation
       .getAll({ warehouseId: warehouseId })
@@ -103,50 +86,40 @@
             `<option value="${loc.id}">${loc.code} (Còn ${loc.availableSpace})</option>`
           );
         });
-      })
-      .fail(function (err) {
-        console.error('Không thể tải danh sách vị trí:', err);
-        abp.message.error('Tải vị trí kho thất bại.');
       });
   }
 
-  // Hàm render bảng sản phẩm
+  // Render product rows
   function renderProductRows(products) {
     let $tbody = $('#productExportTable tbody');
     $tbody.empty();
 
     products.forEach((product, index) => {
       let row = `
-                <tr data-product-id="${product.productId}">
-                    <td>${product.productCode}</td>
-                    <td>${product.productName}</td>
-                    <td>
-                        <input type="number" 
-                               class="form-control export-quantity" 
-                               min="1" 
-                               value="1"
-                               required>
-                    </td>
-                    <td>
-                        <input type="number" 
-                               class="form-control export-unit-price" 
-                               min="0" 
-                               step="1000"
-                               required>
-                    </td>
-                    <td class="export-total-price">0</td>
-                    <td>
-                        <select class="form-control storage-location-select" required>
-                            <option value="">-- Chọn vị trí --</option>
-                        </select>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm remove-product">
-                            <i class="la la-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
+        <tr data-product-id="${product.productId}">
+          <td>${product.productCode}</td>
+          <td>${product.productName}</td>
+          <td>
+            <input type="number" class="form-control export-quantity" 
+                   min="1" value="1" required>
+          </td>
+          <td>
+            <input type="number" class="form-control export-unit-price" 
+                   min="0" step="1000" value="${product.price || 0}" required>
+          </td>
+          <td class="export-total-price">${product.price || 0}</td>
+          <td>
+            <select class="form-control storage-location-select" required>
+              <option value="">-- Chọn vị trí --</option>
+            </select>
+          </td>
+          <td>
+            <button type="button" class="btn btn-danger btn-sm remove-product">
+              <i class="la la-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `;
       $tbody.append(row);
     });
 
@@ -157,11 +130,12 @@
     setupAutoCalculate();
   }
 
+  // Auto calculate totals
   function setupAutoCalculate() {
-    $(document).off('input', '.export-quantity, .export-unit-price').on('input', '.export-quantity, .export-unit-price', function () {
+    $(document).on('input', '.export-quantity, .export-unit-price', function () {
       const $row = $(this).closest('tr');
       const quantity = parseInt($row.find('.export-quantity').val()) || 0;
-      const unitPrice = parseInt($row.find('.export-unit-price').val()) || 0;
+      const unitPrice = parseFloat($row.find('.export-unit-price').val()) || 0;
       const total = quantity * unitPrice;
 
       $row.find('.export-total-price').text(total.toLocaleString('vi-VN'));
@@ -169,6 +143,7 @@
     });
   }
 
+  // Calculate grand total
   function calculateGrandTotal() {
     let grandTotal = 0;
     $('#productExportTable tbody tr').each(function () {
@@ -178,16 +153,17 @@
     $('#grandTotal').text(grandTotal.toLocaleString('vi-VN'));
   }
 
+  // Remove product
   $(document).on('click', '.remove-product', function () {
     const productId = $(this).closest('tr').data('product-id');
     _selectedProducts = _selectedProducts.filter(p => p.productId !== productId);
     $(this).closest('tr').remove();
     calculateGrandTotal();
-
     $('#ProductsExportDisplay').val(_selectedProducts.map(p => p.productName).join(', '));
   });
 
-  _$form.find('.save-button').on('click', (e) => {
+  // Submit form
+  _$form.find('.save-button').on('click', function (e) {
     e.preventDefault();
 
     if (!_$form.valid()) {
@@ -210,6 +186,7 @@
       });
     });
 
+    // Validate details
     for (let detail of details) {
       if (!detail.quantity || detail.quantity <= 0) {
         abp.notify.error('Số lượng phải lớn hơn 0');
@@ -226,39 +203,29 @@
     }
 
     var exportRequest = {
-      transactionCode: $('#TransactionCodeImport').val(),
       fromWarehouseId: parseInt($('#WarehouseIdExportCreate').val()),
-      customerId: parseInt($('#CustomerIdExportCreate').val()),
-      exportRequestDetails: details
+      customerId: parseInt($('#CustomerId').val()),
+      note: $('#NoteExport').val(),
+      referenceNumber: $('#ReferenceNumberExport').val(),
+      exportDetails: details
     };
 
-    abp.ui.setBusy(_$modalexport);
+    abp.ui.setBusy(_$modal);
     _stockTransactionService
-      .createExportRequest(exportRequest)
+      .createExportStockTransaction(exportRequest)
       .done(function () {
-        _$modalexport.modal('hide');
+        _$modal.modal('hide');
         _$form[0].reset();
         _selectedProducts = [];
         $('#productExportTable tbody').empty();
         abp.notify.info(l('Tạo phiếu xuất kho thành công'));
         _$table.DataTable().ajax.reload();
       })
+      .fail(function (error) {
+        abp.notify.error(error.message || 'Có lỗi xảy ra khi tạo phiếu xuất kho');
+      })
       .always(function () {
-        abp.ui.clearBusy(_$modalexport);
+        abp.ui.clearBusy(_$modal);
       });
   });
-
-  // Handle modal scrolling
-  $(document).on('hidden.bs.modal', '.modal', function () {
-    if ($('.modal.show').length) {
-      $('body').addClass('modal-open');
-    }
-  });
-
-  $(document).on('hidden.bs.modal', '.modal', function () {
-    if ($('#ExportModal').hasClass('show')) {
-      $('#ExportModal .modal-content').css('overflow-y', 'auto');
-    }
-  });
-
 })(jQuery);

@@ -235,5 +235,41 @@
     "inputFiles": [
       "wwwroot/view-resources/Views/StockTransactions/_TransferModal.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/jquery-libs/bs-timepicker/bootstrap-timepicker.min.css",
+    "inputFiles": [
+      "wwwroot/jquery-libs/bs-timepicker/bootstrap-timepicker.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/jquery-libs/bs-timepicker/bootstrap-timepicker.min.js",
+    "inputFiles": [
+      "wwwroot/jquery-libs/bs-timepicker/bootstrap-timepicker.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/jquery-libs/bs-daterangepicker/daterangepicker.min.css",
+    "inputFiles": [
+      "wwwroot/jquery-libs/bs-daterangepicker/daterangepicker.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/jquery-libs/bs-daterangepicker/daterangepicker.min.js",
+    "inputFiles": [
+      "wwwroot/jquery-libs/bs-daterangepicker/daterangepicker.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/jquery-libs/bs-daterangepicker/moment.min.min.js",
+    "inputFiles": [
+      "wwwroot/jquery-libs/bs-daterangepicker/moment.min.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/jquery-libs/bs-daterangepicker/package.min.js",
+    "inputFiles": [
+      "wwwroot/jquery-libs/bs-daterangepicker/package.js"
+    ]
   }
 ]
