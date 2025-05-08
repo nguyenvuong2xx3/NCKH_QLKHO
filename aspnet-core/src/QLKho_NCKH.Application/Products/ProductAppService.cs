@@ -148,6 +148,7 @@ namespace QLKho_NCKH.Products
 				.WhereIf(input.SupplierId > 0,
 								 x => x.SupplierId == input.SupplierId);
 
+
 			// … ordering, paging, projection, etc.
 
 		//.WhereIf(input.CategoryId.HasValue,

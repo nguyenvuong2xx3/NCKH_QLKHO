@@ -109,9 +109,9 @@
   function getStatusText(status) {
     switch (status) {
       case 0: return 'Chờ duyệt';
-      //case 1: return 'Chờ duyệt';
-      case 2: return 'Đã duyệt';
-      case 3: return 'Hoàn thành';
+      case 1: return 'Đã duyệt';
+      //case 2: return 'Đã duyệt';
+      //case 3: return 'Hoàn thành';
       default: return 'Đã hủy';
     }
   }
@@ -122,20 +122,29 @@
   });
 
   // Xử lý xóa
-  $(document).on('click', '.delete-btn', function () {
-    var id = $(this).data('id');
+  $(document).on('click', '.delete-stockTransaction', function () {
+    var stockTransactionId = $(this).attr("data-stockTransaction-id");
+    var stockTransactionName = $(this).attr('data-stockTransaction-name');
+
+    deleteSupplier(stockTransactionId, stockTransactionName);
+  });
+  function deleteSupplier(stockTransactionId, stockTransactionName) {
     abp.message.confirm(
-      l('AreYouSureWantToDelete'),
-      l('DeleteConfirmation'),
-      function (confirmed) {
-        if (confirmed) {
-          _stockTransactionService.delete(id).done(function () {
+      abp.utils.formatString(
+        l('AreYouSureWantToDelete'),
+        stockTransactionName),
+      null,
+      (isConfirmed) => {
+        if (isConfirmed) {
+          _stockTransactionService.deleteStockTransaction(
+            stockTransactionId
+          ).done(() => {
+            abp.notify.info(l('SuccessfullyDeleted'));
             _$stockTransactionTable.ajax.reload();
-            abp.notify.success(l('SuccessfullyDeleted'));
           });
         }
       }
     );
-  });
+  }
 
 })(jQuery);

@@ -16,6 +16,9 @@ using YourProject.Domain.Transactions;
 using QLKho_NCKH.Warehouses;
 using System.Linq.Dynamic.Core;
 using QLKho_NCKH.Warehouses.Dto;
+using QLKho_NCKH.Inventory;
+using Abp.UI;
+using Microsoft.Extensions.Logging;
 
 namespace QLKho_NCKH.StockTransactions
 {
@@ -24,17 +27,21 @@ namespace QLKho_NCKH.StockTransactions
 		private readonly IRepository<StockTransaction, int> _stockTransactionRepository;
 		private readonly IRepository<StockTransactionDetail, int> _stockTransactionDetailRepository;
 		private readonly IRepository<Warehouse, int> _warehouseRepository;
+		private readonly IRepository<InventoryItem, int> _inventoryItemRepository;
+
 
 		private readonly IUnitOfWorkManager _unitOfWorkManager;
-		public StockTransactionAppService(IRepository<StockTransaction, int> stockTransactionRepository, 
-			IRepository<StockTransactionDetail, int> stockTransactionDetailRepository, 
+		public StockTransactionAppService(IRepository<StockTransaction, int> stockTransactionRepository,
+			IRepository<StockTransactionDetail, int> stockTransactionDetailRepository,
 			IUnitOfWorkManager unitOfWorkManager,
-			IRepository<Warehouse, int> warehouseRepository)
+			IRepository<Warehouse, int> warehouseRepository,
+			IRepository<InventoryItem, int> inventoryItemRepository)
 		{
 			_stockTransactionRepository = stockTransactionRepository;
 			_stockTransactionDetailRepository = stockTransactionDetailRepository;
 			_unitOfWorkManager = unitOfWorkManager;
 			_warehouseRepository = warehouseRepository;
+			_inventoryItemRepository = inventoryItemRepository;
 		}
 		public async Task<StockTransactionDto> CreateStockTransactionImport(CreateStockTransactionImportDto input)
 		{
@@ -62,7 +69,7 @@ namespace QLKho_NCKH.StockTransactions
 		}
 		public async Task CreateImportRequest(CreateImportRequestDto input)
 		{
-			
+
 			var master = new StockTransaction
 			{
 				TransactionCode = input.TransactionCode,
@@ -91,6 +98,59 @@ namespace QLKho_NCKH.StockTransactions
 				await _stockTransactionDetailRepository.InsertAsync(detail);
 			}
 		}
+
+		public async Task CreateExportRequest(ExportInputDto input)
+		{
+			//tao 1 yc xuat kho
+			var master = new StockTransaction
+			{
+				TransactionCode = input.TransactionCode,
+				TransactionType = TransactionType.Export,
+				//Status = RequestStatus.Draft,
+				FromWarehouseId = input.FromWarehouseId,
+				//SupplierId = input.SupplierId,
+				CustomerId = input.CustomerId,
+				ReferenceNumber = input.ReferenceNumber,
+				Note = input.Note,
+			};
+			await _stockTransactionRepository.InsertAsync(master);
+			await _unitOfWorkManager.Current.SaveChangesAsync();
+
+			//luu san pham xuat kho
+			// 2. Lưu details (StockTransactionDetail)
+			foreach (var detailDto in input.ExportRequestDetails)
+			{
+				var inventory = await _inventoryItemRepository.GetAll()
+						.Where(x => x.ProductId == detailDto.ProductId && x.StorageLocationId == detailDto.StorageLocationId)
+						.FirstOrDefaultAsync();
+
+				if (inventory == null)
+				{
+					throw new Exception($"Không tìm thấy sản phẩm với ID {detailDto.ProductId} trong kho.");
+				}
+
+				if (inventory.Quantity < detailDto.Quantity)
+				{
+					throw new Exception($"Số lượng sản phẩm với ID {detailDto.ProductId} trong kho không đủ để xuất.");
+				}
+
+				//// Trừ số lượng trong kho  
+				//inventory.Quantity -= detailDto.Quantity;
+				//await _inventoryItemRepository.UpdateAsync(inventory);
+
+				// Lưu chi tiết giao dịch xuất kho  
+				var detail = new StockTransactionDetail
+				{
+					StockTransactionId = master.Id,
+					ProductId = detailDto.ProductId,
+					Quantity = detailDto.Quantity,
+					StorageLocationId = detailDto.StorageLocationId,
+					UnitPrice = detailDto.UnitPrice
+				};
+				await _stockTransactionDetailRepository.InsertAsync(detail);
+			}
+		}
+
 		public async Task<PagedResultDto<StockTransactionListDto>> GetStockTransactions(GetStockTransactionsInput input)
 		{
 			var getAll = await _warehouseRepository.GetAllAsync();
@@ -116,6 +176,7 @@ namespace QLKho_NCKH.StockTransactions
 				{
 					Id = item.Id,
 					TransactionCode = item.TransactionCode,
+					TransactionType = item.TransactionType,
 					TransactionDate = item.TransactionDate,
 					FromWarehouseId = item.FromWarehouseId ?? 0,
 					ToWarehouseId = item.ToWarehouseId ?? 0,
@@ -140,6 +201,7 @@ namespace QLKho_NCKH.StockTransactions
 			var stockTransaction = await _stockTransactionRepository
 					.GetAll()
 					.Include(x => x.Supplier)
+					.Include(x => x.Customer)
 					.FirstOrDefaultAsync(x => x.Id == id);
 
 			var warehouses = await GetWarehousesByTransaction(id);
@@ -152,7 +214,8 @@ namespace QLKho_NCKH.StockTransactions
 				TransactionDate = stockTransaction.TransactionDate,
 				FromWarehouseId = stockTransaction.FromWarehouseId ?? 0,
 				ToWarehouseId = stockTransaction.ToWarehouseId ?? 0,
-				SupplierId = stockTransaction.SupplierId,
+				//SupplierId = stockTransaction.SupplierId,
+				CustomerName = stockTransaction.Customer?.Name,
 				SupplierName = stockTransaction.Supplier?.Name,
 				ReferenceNumber = stockTransaction.ReferenceNumber,
 				Note = stockTransaction.Note,
@@ -173,6 +236,45 @@ namespace QLKho_NCKH.StockTransactions
 			else
 			{
 				throw new Exception("Không tìm thấy giao dịch với ID đã cho.");
+			}
+		}
+
+		public async Task UpdateExportStockTransactions(StockTransactionUpdateInput input)
+		{
+			using (var unitOfWork = _unitOfWorkManager.Begin())
+			{
+				
+					// 1. Cập nhật trạng thái giao dịch
+					var transaction = await _stockTransactionRepository.GetAsync(input.Id);
+					// Cập nhật các trường cần thiết
+					transaction.Status = TransactionStatusEnum.Approved;
+					await _stockTransactionRepository.UpdateAsync(transaction);
+
+					// 2. Lấy danh sách chi tiết giao dịch
+					var transactionDetails = await _stockTransactionDetailRepository.GetAllListAsync(x => x.StockTransactionId == input.Id);
+
+					// 3. Cập nhật số lượng tồn kho
+					foreach (var detail in transactionDetails)
+					{
+						var inventoryItem = await _inventoryItemRepository.FirstOrDefaultAsync(x =>
+								x.ProductId == detail.ProductId &&
+								x.StorageLocationId == detail.StorageLocationId);
+
+						if (inventoryItem == null)
+						{
+							throw new UserFriendlyException("Sản phẩm không có trong kho");
+						}
+
+						if (inventoryItem.Quantity < detail.Quantity)
+						{
+							throw new UserFriendlyException("Số lượng sản phẩm không đủ để xuất");
+						}
+
+						inventoryItem.Quantity -= detail.Quantity;
+						await _inventoryItemRepository.UpdateAsync(inventoryItem);
+					}
+
+					await unitOfWork.CompleteAsync();
 			}
 		}
 
@@ -207,6 +309,12 @@ namespace QLKho_NCKH.StockTransactions
 					Location = toWarehouse.Location
 				} : null
 			};
+		}
+		public async Task DeleteStockTransaction(int Id)
+		{
+			await _stockTransactionRepository.DeleteAsync(Id);
+			var query = await _stockTransactionDetailRepository.FirstOrDefaultAsync(x => x.StockTransactionId == Id);
+			await _stockTransactionDetailRepository.DeleteAsync(query);
 		}
 	}
 }

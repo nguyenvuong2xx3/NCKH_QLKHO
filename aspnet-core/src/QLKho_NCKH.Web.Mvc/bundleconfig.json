@@ -271,5 +271,17 @@
     "inputFiles": [
       "wwwroot/jquery-libs/bs-daterangepicker/package.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/view-resources/Views/InventoryItems/_AddInventoryItemModal.min.js",
+    "inputFiles": [
+      "wwwroot/view-resources/Views/InventoryItems/_AddInventoryItemModal.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/view-resources/Views/Products/_AddProductsModal.min.js",
+    "inputFiles": [
+      "wwwroot/view-resources/Views/Products/_AddProductsModal.js"
+    ]
   }
 ]

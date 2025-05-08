@@ -13,6 +13,12 @@
 				<div class="modal-body">
 					<div class="tab-content mt-4">
 						<div role="tabpanel" class="tab-pane container active" id="create-supplier-details">
+							<div class="form-group row">
+								<label class="col-md-3 col-form-label">@L("TransactionCode ")</label>
+								<div class="col-md-9">
+									<input type="text" class="form-control" id="TransactionCodeExport" name="TransactionCode" maxlength="500">
+								</div>
+							</div>
 							<div class="form-group row required">
 								<label class="col-md-3 col-form-label">@L("WarehouseName")</label>
 								<div class="col-md-9">
@@ -50,7 +56,7 @@
 									<div class="input-group">
 										<input type="text" id="ProductsExportDisplay" class="form-control" readonly required />
 										<div class="input-group-append">
-											<button type="button" id="AddProductsExportBtn" class="btn btn-success" title="@L("Products")">
+											<button type="button" id="AddInventoryItemsBtn" class="btn btn-success" title="@L("Products")">
 												<i class="fa fa-id-card"></i> @L("Select")
 											</button>
 										</div>
@@ -66,11 +72,12 @@
 											<thead>
 												<tr>
 													<th style="min-width: 120px;">@L("ProductCode")</th>
-													<th style="min-width: 200px;">@L("ProductName")</th>
-													<th style="width: 100px;">@L("Quantity")</th>
-													<th style="width: 120px;">@L("UnitPrice")</th>
-													<th style="width: 120px;">@L("TotalPrice")</th>
-													<th style="min-width: 150px;">@L("StorageLocation")</th>
+													<th style="min-width: 120px;">@L("ProductBarCode")</th>
+													<th style="min-width: 120px;">@L("ProductName")</th>
+													<th style="width: 30px;">@L("Quantity")</th>
+													<th style="width: 30px;">@L("UnitPrice")</th>
+													<th style="width: 50px;">@L("TotalPrice")</th>
+													<th>@L("StorageLocation")</th>
 													<th style="width: 80px;">@L("Actions")</th>
 												</tr>
 											</thead>
@@ -87,6 +94,19 @@
 								<label class="col-md-3 col-form-label">@L("GrandTotal")</label>
 								<div class="col-md-9">
 									<div class="form-control-plaintext font-weight-bold" id="grandTotal">0</div>
+								</div>
+							</div>
+							<!-- Ghi chú -->
+							<div class="form-group row">
+								<label class="col-md-3 col-form-label">@L("Note")</label>
+								<div class="col-md-9">
+									<input type="text" class="form-control" id="NoteExport" name="Note" maxlength="500">
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-md-3 col-form-label">@L("ReferenceNumber")</label>
+								<div class="col-md-9">
+									<input type="text" class="form-control" id="ReferenceNumberExport" name="ReferenceNumber" maxlength="500">
 								</div>
 							</div>
 						</div>

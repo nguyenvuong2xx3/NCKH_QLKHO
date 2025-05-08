@@ -16,7 +16,7 @@ namespace QLKho_NCKH.StockTransactions.Dtos
 		public DateTime TransactionDate { get; set; }
 		public int? FromWarehouseId { get; set; }	
 		public int? ToWarehouseId { get; set; }
-		public int? SupplierId { get; set; }
+		public int? CustomerId { get; set; }
 		public string? SupplierName { get; set; }
 		public string? FromWarehouseName { get; set; }
 		public string? ToWarehouseName { get; set; }
@@ -24,6 +24,11 @@ namespace QLKho_NCKH.StockTransactions.Dtos
 		public string Note { get; set; }
 		public DateTime CreationTime { get; set; }
 		public TransactionStatusEnum Status { get; set; }
+
+		public string? CustomerName { get; set; }
+
+		public int? SupplierId { get; set; }
+
 		public StockTransactionListDto()
 		{
 		}

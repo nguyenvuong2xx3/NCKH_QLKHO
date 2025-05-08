@@ -17,26 +17,28 @@ using Abp.Domain.Uow;
 using QLKho_NCKH.InventoryItems.Dto;
 using QLKho_NCKH.Inventory;
 using QLKho_NCKH.Products;
+using QLKho_NCKH.Products.Dtos;
+using QLKho_NCKH.StockTransactions;
 
 namespace QLKho_NCKH.InventoryItems;
 
 public class InventoryItemAppService : ApplicationService, IInventoryItemAppService
 {
- private readonly IRepository<InventoryItem, int> _inventoryItemRepository;
- //private readonly ITempFileCacheManager _tempFileCacheManager;
- //private readonly MediaTypeManager MediaTypeManager;
+	private readonly IRepository<InventoryItem, int> _inventoryItemRepository;
+	//private readonly ITempFileCacheManager _tempFileCacheManager;
+	//private readonly MediaTypeManager MediaTypeManager;
 
- public InventoryItemAppService(IRepository<InventoryItem, int> inventoryItemRepository
-   //, IBlobContainerFactory blobContainerFactory
-   //, ITempFileCacheManager tempFileCacheManager
-   //, MediaTypeManager mediaTypeManager
+	public InventoryItemAppService(IRepository<InventoryItem, int> inventoryItemRepository
+	//, IBlobContainerFactory blobContainerFactory
+	//, ITempFileCacheManager tempFileCacheManager
+	//, MediaTypeManager mediaTypeManager
 
- )
- {
-   _inventoryItemRepository = inventoryItemRepository;
-   //_tempFileCacheManager = tempFileCacheManager;
-   //MediaTypeManager = mediaTypeManager;
-  }
+	)
+	{
+		_inventoryItemRepository = inventoryItemRepository;
+		//_tempFileCacheManager = tempFileCacheManager;
+		//MediaTypeManager = mediaTypeManager;
+	}
 
 
 	public async Task CreateInventoryItem(InventoryItemCreatingInput input)
@@ -60,8 +62,8 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 			};
 			await _inventoryItemRepository.InsertAsync(inventoryItem);
 		}
-		
-		
+
+
 		//await CurrentUnitOfWork.SaveChangesAsync();
 
 		//return new InventoryItemEditDto
@@ -75,30 +77,61 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 		//};
 	}
 
-	//public async Task<PagedResultDto<InventoryItemListDto>> GetInventoryItems(GetInventoryItemsInput input)
-	//{
-	//	var query = _inventoryItemRepository.GetAll()
-	//			.WhereIf(!string.IsNullOrEmpty(input.Filter), u => (true))
+	public async Task<PagedResultDto<InventoryItemListDto>> GetInventoryItems(GetInventoryItemsInput input)
+	{
+		var query = _inventoryItemRepository.GetAll()
+				 .Include(x => x.Product)
+				 .Include(x => x.StorageLocation)
+				 .WhereIf(input.WarehouseId != 0, x => x.StorageLocation.WarehouseId == input.WarehouseId);
 
+		var count = await query.CountAsync();
+		var items = await query.OrderBy(input.Sorting)
+				 .PageBy(input)
+				 .ToListAsync();
 
-	//		  ;
+		var result = items.Select(item => new InventoryItemListDto
+		{
+			ProductId = item.ProductId,
+			ProductCode = item.Product.Code,
+			StorageLocationId = item.StorageLocationId,
+			StorageLocationCode = item.StorageLocation.Code,
+			Quantity = item.Quantity,
+			ReservedQuantity = item.ReservedQuantity,
+			UnitPrice = item.UnitPrice,
+			ProductName = item.Product.Name,
+			ProductBarcode = item.Product.Barcode,
+		}).ToList();
 
-	//	var count = await query.CountAsync();
-	//	var result = await query.OrderBy(input.Sorting)
-	//			.PageBy(input)
-	//			.ToListAsync();
-	//	var listDto = ObjectMapper.Map<List<InventoryItemListDto>>(result);
-	//	return new PagedResultDto<InventoryItemListDto>(
-	//			count,
-	//			listDto
-	//			);
-	//}
+		return new PagedResultDto<InventoryItemListDto> { Items = result, TotalCount = count };
+	}
 
 	//public async Task<InventoryItemEditDto> GetInventoryItem(int id)
 	//{
-	//	var inventoryItem = await _inventoryItemRepository.GetAsync(id);
+	//	var stockTransactionDetails =  _inventoryItemRepository.GetAll().Include(x => x.StorageLocation);
 
-	//	return ObjectMapper.Map<InventoryItemEditDto>(inventoryItem);
+	//	foreach (var detail in stockTransactionDetails)
+	//	{
+	//		var inventoryItem = await _inventoryItemRepository.FirstOrDefaultAsync(x =>
+	//				x.ProductId == detail.ProductId &&
+	//				x.StorageLocationId == detail.StorageLocationId);
+
+	//		if (inventoryItem != null)
+	//		{
+	//			if (inventoryItem.Quantity < detail.Quantity)
+	//			{
+	//				throw new UserFriendlyException("Số lượng tồn kho không đủ để xuất.");
+	//			}
+
+	//			inventoryItem.Quantity -= detail.Quantity;
+
+	//			await _inventoryItemRepository.UpdateAsync(inventoryItem);
+	//		}
+	//		else
+	//		{
+	//			throw new UserFriendlyException("Không tìm thấy bản ghi tồn kho tương ứng.");
+	//		}
+	//	}
+
 	//}
 
 	//public async Task<InventoryItemEditDto> EditInventoryItem(InventoryItemEditDto input)
@@ -124,8 +157,8 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 	//}
 
 
-	}
-	////InventoryItems AutoMapper
-	//configuration.CreateMap<InventoryItem, InventoryItemEditDto>();
-	//configuration.CreateMap<InventoryItem, InventoryItemListDto>();
-	//configuration.CreateMap<InventoryItemCreatingInput, InventoryItem>();
+}
+////InventoryItems AutoMapper
+//configuration.CreateMap<InventoryItem, InventoryItemEditDto>();
+//configuration.CreateMap<InventoryItem, InventoryItemListDto>();
+//configuration.CreateMap<InventoryItemCreatingInput, InventoryItem>();

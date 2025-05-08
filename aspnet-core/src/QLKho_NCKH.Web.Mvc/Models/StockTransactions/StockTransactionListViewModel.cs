@@ -11,6 +11,8 @@ namespace QLKho_NCKH.Web.Models.StockTransactions
 		public int? FromWarehouseId { get; set; }
 		public int? ToWarehouseId { get; set; }
 		public string? ToWarehouseName { get; set; }
+		public int? CustomerId { get; set; }
+		public string? CustomerName { get; set; }
 		public string? FromWarehouseName { get; set; }
 		public int? SupplierId { get; set; }
 		public string? SupplierName { get; set; }

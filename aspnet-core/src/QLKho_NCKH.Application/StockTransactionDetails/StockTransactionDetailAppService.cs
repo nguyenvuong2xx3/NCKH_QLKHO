@@ -3,8 +3,11 @@ using Abp.Application.Services.Dto;
 using Abp.Collections.Extensions;
 using Abp.Domain.Entities;
 using Abp.Domain.Repositories;
+using Abp.Domain.Uow;
+using Abp.UI;
 using AutoMapper.Internal.Mappers;
 using Castle.MicroKernel.Registration;
+using QLKho_NCKH.Inventory;
 using QLKho_NCKH.StockTransactionDetails.Dto;
 using QLKho_NCKH.StockTransactions;
 using QLKho_NCKH.StockTransactions.Dtos;
@@ -20,10 +23,16 @@ namespace QLKho_NCKH.StockTransactionDetails
 	public class StockTransactionDetailAppService : IApplicationService, IStockTransactionDetailAppService
 	{
 		private readonly IRepository<StockTransactionDetail, int> _stockTransactionDetailRepository;
+		private readonly IRepository<StockTransaction, int> _stockTransactionRepository;
+		private readonly IRepository<InventoryItem, int> _inventoryItemRepository;
+		private readonly IUnitOfWorkManager _unitOfWorkManager;
 		//private readonly ITempFileCacheManager _tempFileCacheManager;
 		//private readonly MediaTypeManager MediaTypeManager;
 
 		public StockTransactionDetailAppService(IRepository<StockTransactionDetail, int> stockTransactionDetailRepository
+			, IRepository<InventoryItem, int> inventoryItemRepository
+			,
+IUnitOfWorkManager unitOfWorkManager
 		//, IBlobContainerFactory blobContainerFactory
 		//, ITempFileCacheManager tempFileCacheManager
 		//, MediaTypeManager mediaTypeManager
@@ -31,6 +40,8 @@ namespace QLKho_NCKH.StockTransactionDetails
 		)
 		{
 			_stockTransactionDetailRepository = stockTransactionDetailRepository;
+			_inventoryItemRepository = inventoryItemRepository;
+			_unitOfWorkManager = unitOfWorkManager;
 			//_tempFileCacheManager = tempFileCacheManager;
 			//MediaTypeManager = mediaTypeManager;
 		}
@@ -93,55 +104,40 @@ namespace QLKho_NCKH.StockTransactionDetails
 				BatchNumber = stockTransactionDetail.BatchNumber
 			};
 		}
-		//public async Task<PagedResultDto<StockTransactionDetailListDto>> GetStockTransactionDetails(GetStockTransactionDetailsInput input)
-		//{
-		//	var query = _stockTransactionDetailRepository.GetAll()
-		//			.WhereIf(!string.IsNullOrEmpty(input.Filter), u => u.Note.Contains(input.Filter) || u.BatchNumber.Contains(input.Filter))
 
-
-		//			;
-
-		//	var count = await query.CountAsync();
-		//	var result = await query.OrderBy(input.Sorting)
-		//			.PageBy(input)
-		//			.ToListAsync();
-		//	var listDto = ObjectMapper.Map<List<StockTransactionDetailListDto>>(result);
-		//	return new PagedResultDto<StockTransactionDetailListDto>(
-		//			count,
-		//			listDto
-		//			);
-		//}
-
-		//public async Task<StockTransactionDetailEditDto> GetStockTransactionDetail(int id)
-		//{
-		//	var stockTransactionDetail = await _stockTransactionDetailRepository.GetAsync(id);
-
-		//	return ObjectMapper.Map<StockTransactionDetailEditDto>(stockTransactionDetail);
-		//}
-
-		//public async Task<StockTransactionDetailEditDto> EditStockTransactionDetail(StockTransactionDetailEditDto input)
-		//{
-		//	var stockTransactionDetail = await _stockTransactionDetailRepository.GetAsync(input.Id);
-		//	stockTransactionDetail.StockTransactionId = input.StockTransactionId;
-		//	stockTransactionDetail.ProductId = input.ProductId;
-		//	stockTransactionDetail.StorageLocationId = input.StorageLocationId;
-		//	stockTransactionDetail.Quantity = input.Quantity;
-		//	stockTransactionDetail.UnitPrice = input.UnitPrice;
-		//	stockTransactionDetail.Note = input.Note;
-		//	stockTransactionDetail.BatchNumber = input.BatchNumber;
-		//	stockTransactionDetail.ExpiryDate = input.ExpiryDate;
-
-
-
-		//	await CurrentUnitOfWork.SaveChangesAsync();
-
-		//	return ObjectMapper.Map<StockTransactionDetailEditDto>(stockTransactionDetail);
-		//}
-
-		//// Permission??
-		//public async Task DeleteStockTransactionDetail(int Id)
-		//{
-		//	await _stockTransactionDetailRepository.DeleteAsync(Id);
-		//}
+		
 	}
 }
+
+//public async Task<StockTransactionDetailEditDto> GetStockTransactionDetail(int id)
+//{
+//	var stockTransactionDetail = await _stockTransactionDetailRepository.GetAsync(id);
+
+//	return ObjectMapper.Map<StockTransactionDetailEditDto>(stockTransactionDetail);
+//}
+
+//public async Task<StockTransactionDetailEditDto> EditStockTransactionDetail(StockTransactionDetailEditDto input)
+//{
+//	var stockTransactionDetail = await _stockTransactionDetailRepository.GetAsync(input.Id);
+//	stockTransactionDetail.StockTransactionId = input.StockTransactionId;
+//	stockTransactionDetail.ProductId = input.ProductId;
+//	stockTransactionDetail.StorageLocationId = input.StorageLocationId;
+//	stockTransactionDetail.Quantity = input.Quantity;
+//	stockTransactionDetail.UnitPrice = input.UnitPrice;
+//	stockTransactionDetail.Note = input.Note;
+//	stockTransactionDetail.BatchNumber = input.BatchNumber;
+//	stockTransactionDetail.ExpiryDate = input.ExpiryDate;
+
+
+
+//	await CurrentUnitOfWork.SaveChangesAsync();
+
+//	return ObjectMapper.Map<StockTransactionDetailEditDto>(stockTransactionDetail);
+//}
+
+//// Permission??
+//public async Task DeleteStockTransactionDetail(int Id)
+//{
+//	await _stockTransactionDetailRepository.DeleteAsync(Id);
+//}
+
