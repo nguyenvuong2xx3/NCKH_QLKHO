@@ -1,4 +1,5 @@
-﻿@using QLKho_NCKH.Web.Startup
+﻿@using QLKho_NCKH.Authorization
+@using QLKho_NCKH.Web.Startup
 @using QLKho_NCKH.Web.Models.Products
 @model ProductViewModel
 @{
@@ -25,10 +26,13 @@
 				<h1>@L("Products")</h1>
 			</div>
 			<div class="col-sm-6">
-				<a href="javascript:;" data-toggle="modal" data-target="#ProductCreateModal" class="btn bg-blue float-sm-right">
-					<i class="fa fa-plus-square"></i>
-					@L("Create")
-				</a>
+				@if (await PermissionChecker.IsGrantedAsync(PermissionNames.Pages_Products_Create))
+				{
+					<a href="javascript:;" class="btn bg-blue float-sm-right">
+						<i class="fa fa-plus-square"></i>
+						@L("Create")
+					</a>
+				}
 			</div>
 		</div>
 	</div>

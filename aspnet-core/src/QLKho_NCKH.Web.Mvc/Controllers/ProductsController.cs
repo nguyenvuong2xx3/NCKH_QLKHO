@@ -40,6 +40,7 @@ namespace QLKho_NCKH.Web.Controllers
 			return View(model);
 		}//Test
 
+		[AbpMvcAuthorize(PermissionNames.Pages_Products_Edit)]
 		public async Task<ActionResult> EditModal(int productId)
 		{
 			var product = await _productAppService.GetProductById(productId);

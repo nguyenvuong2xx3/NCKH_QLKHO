@@ -13,124 +13,122 @@ namespace QLKho_NCKH.Web.Startup
 		public override void SetNavigation(INavigationProviderContext context)
 		{
 			context.Manager.MainMenu
-					.AddItem(
-							new MenuItemDefinition(
-									PageNames.Home,
-									L("HomePage"),
-									url: "",
-									icon: "fas fa-home",
-									requiresAuthentication: true
+							.AddItem(
+											new MenuItemDefinition(
+															PageNames.Home,
+															L("HomePage"),
+															url: "",
+															icon: "fas fa-home",
+															requiresAuthentication: true
+											)
 							)
-					)
-					.AddItem(
-							new MenuItemDefinition(
-									PageNames.Tenants,
-									L("Tenants"),
-									url: "Tenants",
-									icon: "fas fa-building",
-									permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Tenants)
+							.AddItem(
+											new MenuItemDefinition(
+															PageNames.Tenants,
+															L("Tenants"),
+															url: "Tenants",
+															icon: "fas fa-building",
+															permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Tenants)
+											)
 							)
-					)
-					.AddItem(
-							new MenuItemDefinition(
-									PageNames.Users,
-									L("Users"),
-									url: "Users",
-									icon: "fas fa-users",
-									permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Users)
+							.AddItem(
+											new MenuItemDefinition(
+															PageNames.Users,
+															L("Users"),
+															url: "Users",
+															icon: "fas fa-users",
+															permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Users)
+											)
 							)
-					)
-					.AddItem(
-							new MenuItemDefinition(
-									PageNames.Roles,
-									L("Roles"),
-									url: "Roles",
-									icon: "fas fa-theater-masks",
-									permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
+							.AddItem(
+											new MenuItemDefinition(
+															PageNames.Roles,
+															L("Roles"),
+															url: "Roles",
+															icon: "fas fa-theater-masks",
+															permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
+											)
 							)
-					)
-					// Product Management - Parent menu with always visible children
-					.AddItem(
-							new MenuItemDefinition(
-									"ProductManagement",
-									L("ProductManagement"),
-									icon: "fas fa-boxes",
-									customData: new { alwaysOpen = true } // Add custom data to indicate this menu should always be open
-							).AddItem(
-									new MenuItemDefinition(
-											PageNames.Products,
-											L("Products"),
-											url: "Products",
-											icon: "fas fa-box",
-											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Products)
-									)
-							).AddItem(
-									new MenuItemDefinition(
-											PageNames.Categories,
-											L("Categories"),
-											url: "Categories",
-											icon: "fas fa-tags",
-											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Categories)
-									)
+							// Product Management - Parent menu with always visible children
+							.AddItem(
+											new MenuItemDefinition(
+															"ProductManagement",
+															L("ProductManagement"),
+															icon: "fas fa-boxes"
+											).AddItem(
+															new MenuItemDefinition(
+																			PageNames.Products,
+																			L("Products"),
+																			url: "Products",
+																			icon: "fas fa-box",
+																			permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Products)
+															)
+											).AddItem(
+															new MenuItemDefinition(
+																			PageNames.Categories,
+																			L("Categories"),
+																			url: "Categories",
+																			icon: "fas fa-tags",
+																			permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Categories)
+															)
+											)
 							)
-					)
-					// Inventory Management - Parent menu with always visible children
-					.AddItem(
-							new MenuItemDefinition(
-									"InventoryManagement",
-									L("InventoryManagement"),
-									icon: "fas fa-warehouse",
-									customData: new { alwaysOpen = true } // Add custom data to indicate this menu should always be open
-							).AddItem(
-									new MenuItemDefinition(
-											PageNames.Suppliers,
-											L("Suppliers"),
-											url: "Suppliers",
-											icon: "fas fa-truck",
-											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Suppliers)
-									)
-							).AddItem(
-									new MenuItemDefinition(
-											PageNames.Warehouses,
-											L("Warehouses"),
-											url: "Warehouses",
-											icon: "fas fa-warehouse",
-											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Warehouses)
-									)
-							).AddItem(
-									new MenuItemDefinition(
-											PageNames.StorageLocations,
-											L("StorageLocations"),
-											url: "StorageLocations",
-											icon: "fas fa-map-marker-alt",
-											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_StorageLocations)
-									)
-							).AddItem(
-									new MenuItemDefinition(
-											PageNames.StockTransactions,
-											L("StockTransactions"),
-											url: "StockTransactions",
-											icon: "fas fa-exchange-alt",
-											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_StockTransactions)
-									)
-							).AddItem(
-									new MenuItemDefinition(
-											PageNames.Customers,
-											L("Customers"),
-											url: "Customers",
-											icon: "fas fa-users"
-									//permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Customers)
-									)
+							// Inventory Management - Parent menu with always visible children
+							.AddItem(
+											new MenuItemDefinition(
+															"InventoryManagement",
+															L("InventoryManagement"),
+															icon: "fas fa-warehouse"
+											).AddItem(
+															new MenuItemDefinition(
+																			PageNames.Suppliers,
+																			L("Suppliers"),
+																			url: "Suppliers",
+																			icon: "fas fa-truck",
+																			permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Suppliers)
+															)
+											).AddItem(
+															new MenuItemDefinition(
+																			PageNames.Warehouses,
+																			L("Warehouses"),
+																			url: "Warehouses",
+																			icon: "fas fa-warehouse",
+																			permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Warehouses)
+															)
+											).AddItem(
+															new MenuItemDefinition(
+																			PageNames.StorageLocations,
+																			L("StorageLocations"),
+																			url: "StorageLocations",
+																			icon: "fas fa-map-marker-alt",
+																			permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_StorageLocations)
+															)
+											).AddItem(
+															new MenuItemDefinition(
+																			PageNames.StockTransactions,
+																			L("StockTransactions"),
+																			url: "StockTransactions",
+																			icon: "fas fa-exchange-alt",
+																			permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_StockTransactions)
+															)
+											).AddItem(
+															new MenuItemDefinition(
+																			PageNames.Customers,
+																			L("Customers"),
+																			url: "Customers",
+																			icon: "fas fa-users"
+															//permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Customers)
+															)
+											)
 							)
-					)
-					.AddItem(
-							new MenuItemDefinition(
-									PageNames.About,
-									L("About"),
-									url: "About",
-									icon: "fas fa-info-circle"
-							)
-					);
+							.AddItem(
+											new MenuItemDefinition(
+															PageNames.About,
+															L("About"),
+															url: "About",
+															icon: "fas fa-info-circle"
+											)
+							);
 		}
 
 		private static ILocalizableString L(string name)
