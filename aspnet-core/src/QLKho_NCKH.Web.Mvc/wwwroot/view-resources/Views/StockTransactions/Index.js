@@ -53,12 +53,26 @@
         data: 'status',
         className: 'dt-center',
         render: function (data) {
-          var badgeClass = data === 2 ? 'bg-success' : 'bg-warning';
+          var badgeClass = data === 1 ? 'bg-success' : 'bg-warning';
           return `<span class="badge ${badgeClass}">${getStatusText(data)}</span>`;
         }
       },
       {
         targets: 6,
+        data: 'creationTime',
+        render: function (data, type, row) {
+          if (data) {
+            var date = new Date(data);
+            var day = date.getDate().toString().padStart(2, '0'); // Lấy ngày, đảm bảo có 2 chữ số
+            var month = (date.getMonth() + 1).toString().padStart(2, '0'); // Lấy tháng, đảm bảo có 2 chữ số
+            var year = date.getFullYear(); // Lấy năm
+            return day + '/' + month + '/' + year; // Định dạng dd/mm/yyyy
+          }
+          return ''; // Trả về chuỗi rỗng nếu không có dữ liệu
+        }
+      },
+      {
+        targets: 7,
         data: null,
         sortable: false,
         autoWidth: false,

@@ -41,7 +41,7 @@ namespace YourProject.Domain.Transactions
 		public int? CustomerId { get; set; } // Cho phép null nếu xuất kho không liên quan khách hàng
 		public string ReferenceNumber { get; set; }
 		public string Note { get; set; }
-		public TransactionStatusEnum Status { get; set; } = TransactionStatusEnum.Draft;
+		public TransactionStatusEnum Status { get; set; } = TransactionStatusEnum.Pending;
 
 		public ICollection<StockTransactionDetail> Details { get; set; } = new List<StockTransactionDetail>();
 	}

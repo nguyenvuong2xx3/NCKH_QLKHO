@@ -24,7 +24,6 @@ namespace QLKho_NCKH.EnumCustom
 
 	public enum TransactionStatusEnum
 	{
-		Draft,      // Nháp
 		Pending,    // Chờ duyệt
 		Approved,   // Đã duyệt
 		Completed,  // Hoàn thành
