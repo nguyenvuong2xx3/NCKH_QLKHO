@@ -1,6 +1,7 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.Extensions;
 using Abp.Runtime.Validation;
+using QLKho_NCKH.EnumCustom;
 using QLKho_NCKH.InventoryItems.Dto;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace QLKho_NCKH.StockTransactions.Dtos
 	public class GetStockTransactionsInput : PagedAndSortedResultRequestDto, IShouldNormalize
 	{
 		public string Filter { get; set; }
+		public TransactionStatusEnum? Status { get; set; } // Thêm trường này
 
 		//public DateTime? StartDate { get; set; }
 

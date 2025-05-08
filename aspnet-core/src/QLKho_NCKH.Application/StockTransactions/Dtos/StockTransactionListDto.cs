@@ -22,6 +22,7 @@ namespace QLKho_NCKH.StockTransactions.Dtos
 		public string? ToWarehouseName { get; set; }
 		public string ReferenceNumber { get; set; }
 		public string Note { get; set; }
+		public DateTime CreationTime { get; set; }
 		public TransactionStatusEnum Status { get; set; }
 		public StockTransactionListDto()
 		{

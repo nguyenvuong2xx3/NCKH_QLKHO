@@ -96,7 +96,10 @@ namespace QLKho_NCKH.StockTransactions
 			var getAll = await _warehouseRepository.GetAllAsync();
 			var query = _stockTransactionRepository.GetAll()
 					.WhereIf(!string.IsNullOrEmpty(input.Filter), u => u.TransactionCode.Contains(input.Filter)
-					|| u.ReferenceNumber.Contains(input.Filter) || u.Note.Contains(input.Filter));
+					|| u.ReferenceNumber.Contains(input.Filter) || u.Note.Contains(input.Filter))
+					.WhereIf(input.Status.HasValue,
+						u => u.Status == input.Status.Value); // Thêm điều kiện lọc theo status
+
 
 			var count = await query.CountAsync();
 			var result = await query.OrderByDescending(x => x.CreationTime)
@@ -121,7 +124,8 @@ namespace QLKho_NCKH.StockTransactions
 					Note = item.Note,
 					Status = item.Status,
 					FromWarehouseName = warehouses.FromWarehouse?.Name,
-					ToWarehouseName = warehouses.ToWarehouse?.Name
+					ToWarehouseName = warehouses.ToWarehouse?.Name,
+					CreationTime = item.CreationTime
 				});
 			}
 
