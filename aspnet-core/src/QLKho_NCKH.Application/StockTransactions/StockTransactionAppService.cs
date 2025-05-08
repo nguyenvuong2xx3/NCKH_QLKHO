@@ -26,8 +26,8 @@ namespace QLKho_NCKH.StockTransactions
 		private readonly IRepository<Warehouse, int> _warehouseRepository;
 
 		private readonly IUnitOfWorkManager _unitOfWorkManager;
-		public StockTransactionAppService(IRepository<StockTransaction, int> stockTransactionRepository, 
-			IRepository<StockTransactionDetail, int> stockTransactionDetailRepository, 
+		public StockTransactionAppService(IRepository<StockTransaction, int> stockTransactionRepository,
+			IRepository<StockTransactionDetail, int> stockTransactionDetailRepository,
 			IUnitOfWorkManager unitOfWorkManager,
 			IRepository<Warehouse, int> warehouseRepository)
 		{
@@ -62,7 +62,7 @@ namespace QLKho_NCKH.StockTransactions
 		}
 		public async Task CreateImportRequest(CreateImportRequestDto input)
 		{
-			
+
 			var master = new StockTransaction
 			{
 				TransactionCode = input.TransactionCode,
@@ -98,7 +98,8 @@ namespace QLKho_NCKH.StockTransactions
 					.WhereIf(!string.IsNullOrEmpty(input.Filter), u => u.TransactionCode.Contains(input.Filter)
 					|| u.ReferenceNumber.Contains(input.Filter) || u.Note.Contains(input.Filter))
 					.WhereIf(input.Status.HasValue,
-						u => u.Status == input.Status.Value); // Thêm điều kiện lọc theo status
+						u => u.Status == input.Status.Value) // Thêm điều kiện lọc theo status
+					.WhereIf(input.StartTime.HasValue && input.EndTime.HasValue, u => u.CreationTime >= input.StartTime.Value && u.CreationTime <= input.EndTime.Value);
 
 
 			var count = await query.CountAsync();

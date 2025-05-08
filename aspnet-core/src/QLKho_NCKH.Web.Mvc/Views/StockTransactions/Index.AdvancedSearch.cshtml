@@ -2,18 +2,20 @@
 <div class="abp-advanced-search">
   <form id="StockTransactionSearchForm" class="form-horizontal">
     <div class="row">
-      <div class="col-md-6">
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <button id="SearchButton" type="button" class="btn bg-blue btn-search">
-              <span class="fas fa-search" aria-hidden="true"></span>
-            </button>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>@L("CreationTimeRange")</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+            </div>
+            <input type="text" id="StartEndRange" name="StartEndRange" class="form-control" placeholder="@L("SelectDateRange")" autocomplete="off">
           </div>
-          <input type="text" name="Filter" class="form-control txt-search" placeholder="@L("SearchPlaceholder")" />
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div class="form-group">
+          <label>@L("Status")</label>
           <select name="Status" class="form-control select2">
             <option value="">@L("AllStatuses")</option>
             @foreach (var status in Enum.GetValues(typeof(TransactionStatusEnum)))
@@ -23,6 +25,19 @@
           </select>
         </div>
       </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>@L("Search")</label>
+          <div class="input-group">
+            <input type="text" name="Filter" class="form-control" placeholder="@L("SearchPlaceholder")" />
+            <div class="input-group-append">
+              <button id="SearchButton" type="button" class="btn btn-primary">
+                <i class="fas fa-search"></i> @L("Search")
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </form>
 </div>
@@ -30,5 +45,9 @@
 <style>
   .select2 {
     width: 100% !important;
+  }
+
+  .input-group-text {
+    background-color: #f8f9fa;
   }
 </style>
