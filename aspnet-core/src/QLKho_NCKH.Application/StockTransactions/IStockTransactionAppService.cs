@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Abp.Application.Services.Dto;
+using Microsoft.AspNetCore.Mvc;
+using QLKho_NCKH.EnumCustom;
 using QLKho_NCKH.StockTransactions.Dtos;
 using System;
 using System.Collections.Generic;
@@ -13,5 +15,10 @@ namespace QLKho_NCKH.StockTransactions
 		Task<StockTransactionDto> CreateStockTransactionImport(CreateStockTransactionImportDto input);
 
 		Task CreateImportRequest(CreateImportRequestDto input);
+
+		Task<PagedResultDto<StockTransactionListDto>> GetStockTransactions(GetStockTransactionsInput input);
+		Task<StockTransactionListDto> GetStockTransaction(int id);
+
+		Task Update(StockTransactionUpdateInput input);
 	}
 }

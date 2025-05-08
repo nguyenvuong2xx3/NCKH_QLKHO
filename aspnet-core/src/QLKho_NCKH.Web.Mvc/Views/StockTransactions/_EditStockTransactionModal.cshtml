@@ -1,0 +1,93 @@
+﻿@using Abp.Authorization.Users
+@using QLKho_NCKH.Web.Models.Common.Modals
+@using QLKho_NCKH.Web.Models.StockTransactions
+
+@model StockTransactionListViewModel
+@{
+	Layout = null;
+}
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditStockTransaction")))
+<script src="~/view-resources/Views/StockTransactions/_EditModal.js" asp-append-version="true"></script>
+
+<form name="StockTransactionEditForm" role="form" class="form-horizontal">
+	<input type="hidden" name="Id" value="@Model.Id" />
+	<div class="modal-body">
+		<div class="tab-content mt-4">
+			<div role="tabpanel" class="tab-pane container active" id="edit-stocktransaction-details">
+				<!-- Mã giao dịch -->
+				<div class="form-group row required">
+					<label class="col-md-3 col-form-label">@L("TransactionCode")</label>
+					<div class="col-md-9">
+						<input type="text" class="form-control" name="TransactionCode" value="@Model.TransactionCode" readonly maxlength="20">
+					</div>
+				</div>
+
+				<!-- Loại giao dịch -->
+				<div class="form-group row required">
+					<label class="col-md-3 col-form-label">@L("TransactionType")</label>
+					<div class="col-md-9">
+						<input type="text" class="form-control" value="@Model.TransactionType" readonly>
+					</div>
+				</div>
+
+				<!-- Ngày giao dịch -->
+				<div class="form-group row required">
+					<label class="col-md-3 col-form-label">@L("TransactionDate")</label>
+					<div class="col-md-9">
+						<input type="text" class="form-control date-picker" name="TransactionDate" value="@Model.TransactionDate.ToString("dd/MM/yyyy")" readonly>
+					</div>
+				</div>
+
+				<!-- Kho nguồn -->
+				<div class="form-group row">
+					<label class="col-md-3 col-form-label">@L("FromWarehouse")</label>
+					<div class="col-md-9">
+						<input type="text" class="form-control" value="@Model.FromWarehouseId" readonly>
+						<input type="hidden" name="FromWarehouseId" value="@Model.FromWarehouseId">
+					</div>
+				</div>
+
+				<!-- Kho đích -->
+				<div class="form-group row">
+					<label class="col-md-3 col-form-label">@L("ToWarehouse")</label>
+					<div class="col-md-9">
+						<input type="text" class="form-control" value="@Model.ToWarehouseId" readonly>
+						<input type="hidden" name="ToWarehouseId" value="@Model.ToWarehouseId">
+					</div>
+				</div>
+
+				<!-- Số tham chiếu -->
+				<div class="form-group row">
+					<label class="col-md-3 col-form-label">@L("ReferenceNumber")</label>
+					<div class="col-md-9">
+						<input type="text" class="form-control" name="ReferenceNumber" value="@Model.ReferenceNumber" readonly>
+					</div>
+				</div>
+
+				<!-- Ghi chú -->
+				<div class="form-group row">
+					<label class="col-md-3 col-form-label">@L("Note")</label>
+					<div class="col-md-9">
+						<textarea class="form-control" name="Note" readonly>@Model.Note</textarea>
+					</div>
+				</div>
+
+				<!-- Trạng thái -->
+				<div class="form-group row required">
+					<label class="col-md-3 col-form-label">@L("Status")</label>
+					<div class="col-md-9">
+						<input type="text" class="form-control" name="Status" value="@Model.Status" readonly>
+						<select class="form-control" name="Status">
+							@* <option value="0" @(Model.Status == "Draft" ? "selected" : "")>Nháp</option> *@
+							@* <option value="1" @(Model.Status == "Pending" ? "selected" : "")>Chờ duyệt</option> *@
+							@* <option value="2" @(Model.Status == "Approved" ? "selected" : "")>Đã duyệt</option> *@
+							@* <option value="3" @(Model.Status == "Completed" ? "selected" : "")>Hoàn thành</option> *@
+							@* <option value="4" @(Model.Status == "Cancelled" ? "selected" : "")>Đã hủy</option> *@
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+</form>

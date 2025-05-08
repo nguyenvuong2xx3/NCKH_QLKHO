@@ -1,17 +1,17 @@
 ﻿using Abp.Application.Services;
+using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
-using Castle.MicroKernel.Registration;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Abp.Linq.Extensions;
+using Microsoft.EntityFrameworkCore;
 using QLKho_NCKH.EnumCustom;
 using QLKho_NCKH.StockTransactions.Dtos;
+using QLKho_NCKH.Suppliers.Dtos;
+using QLKho_NCKH.Suppliers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Transactions;
 using YourProject.Domain.Transactions;
 
 namespace QLKho_NCKH.StockTransactions
@@ -80,6 +80,74 @@ namespace QLKho_NCKH.StockTransactions
 
 				};
 				await _stockTransactionDetailRepository.InsertAsync(detail);
+			}
+		}
+		public async Task<PagedResultDto<StockTransactionListDto>> GetStockTransactions(GetStockTransactionsInput input)
+		{
+			var query = _stockTransactionRepository.GetAll()
+					.WhereIf(!string.IsNullOrEmpty(input.Filter), u => u.TransactionCode.Contains(input.Filter)
+					|| u.ReferenceNumber.Contains(input.Filter) || u.Note.Contains(input.Filter));
+
+			var count = await query.CountAsync();
+			var result = await query.OrderByDescending(x => x.CreationTime)
+			.PageBy(input)
+			.ToListAsync();
+
+			var StockTransactionsDtos = new List<StockTransactionListDto>();
+
+			foreach (var item in result)
+			{
+				StockTransactionsDtos.Add(new StockTransactionListDto
+				{
+
+					Id = item.Id,
+					TransactionCode = item.TransactionCode,
+					TransactionDate = item.TransactionDate,
+					FromWarehouseId = item.FromWarehouseId ?? 0,
+					ToWarehouseId = item.ToWarehouseId ?? 0,
+					SupplierId = item.SupplierId,
+					ReferenceNumber = item.ReferenceNumber,
+					Note = item.Note,
+					Status = item.Status
+				});
+			}
+			return new PagedResultDto<StockTransactionListDto>()
+			{
+				TotalCount = count,
+				Items = StockTransactionsDtos
+			};
+
+		}
+		public async Task<StockTransactionListDto> GetStockTransaction(int id)
+		{
+			var stockTransaction = await _stockTransactionRepository.GetAsync(id);
+
+			return new StockTransactionListDto
+			{
+				Id = stockTransaction.Id,
+				TransactionCode = stockTransaction.TransactionCode,
+				TransactionDate = stockTransaction.TransactionDate,
+				FromWarehouseId = stockTransaction.FromWarehouseId ?? 0,
+				ToWarehouseId = stockTransaction.ToWarehouseId ?? 0,
+				SupplierId = stockTransaction.SupplierId,
+				ReferenceNumber = stockTransaction.ReferenceNumber,
+				Note = stockTransaction.Note,
+				Status = stockTransaction.Status, // Không cần cast nếu kiểu đúng
+				//TransactionType = stockTransaction.TransactionType.ToString() // Enum to string (nếu là enum)
+			};
+		}
+
+		public async Task Update(StockTransactionUpdateInput input)
+		{
+			var query = await _stockTransactionRepository.GetAsync(input.Id);
+			if (query != null)
+			{
+				query.Status = TransactionStatusEnum.Draft;
+				await _stockTransactionRepository.UpdateAsync(query);
+			}
+			else
+			{
+				throw new Exception("Không tìm thấy giao dịch với ID đã cho.");
 			}
 		}
 	}

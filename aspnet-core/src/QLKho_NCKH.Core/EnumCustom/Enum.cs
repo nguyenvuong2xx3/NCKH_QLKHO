@@ -22,7 +22,7 @@ namespace QLKho_NCKH.EnumCustom
 		Adjustment  // Điều chỉnh tồn kho	
 	}
 
-	public enum TransactionStatus
+	public enum TransactionStatusEnum
 	{
 		Draft,      // Nháp
 		Pending,    // Chờ duyệt
@@ -30,6 +30,13 @@ namespace QLKho_NCKH.EnumCustom
 		Completed,  // Hoàn thành
 		Cancelled   // Đã hủy
 	}
+	//{
+	//	Draft,      // Nháp
+	//	Pending,    // Chờ duyệt
+	//	Approved,   // Đã duyệt
+	//	Completed,  // Hoàn thành
+	//	Cancelled   // Đã hủy
+	//}
 
 	public enum InventoryActionType
 	{

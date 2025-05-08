@@ -1,14 +1,19 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Abp.Collections.Extensions;
+using Abp.Domain.Entities;
 using Abp.Domain.Repositories;
 using AutoMapper.Internal.Mappers;
+using Castle.MicroKernel.Registration;
 using QLKho_NCKH.StockTransactionDetails.Dto;
 using QLKho_NCKH.StockTransactions;
+using QLKho_NCKH.StockTransactions.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YourProject.Domain.Transactions;
 
 namespace QLKho_NCKH.StockTransactionDetails
 {
@@ -67,7 +72,27 @@ namespace QLKho_NCKH.StockTransactionDetails
 				ExpiryDate = stockTransactionDetail.ExpiryDate
 			};
 		}
+		public async Task<StockTransactionDetailCreatingInput> GetStockTransactionDetail(int id)
+		{
+			var stockTransactionDetail = await _stockTransactionDetailRepository.FirstOrDefaultAsync(x => x.StockTransactionId == id);
 
+			if (stockTransactionDetail == null)
+			{
+				throw new EntityNotFoundException($"Không tìm thấy chi tiết giao dịch kho với ID {id}");
+			}
+
+			return new StockTransactionDetailCreatingInput
+			{
+				StockTransactionId = stockTransactionDetail.StockTransactionId,
+				ProductId = stockTransactionDetail.ProductId,
+				StorageLocationId = stockTransactionDetail.StorageLocationId,
+				Quantity = stockTransactionDetail.Quantity,
+				UnitPrice = stockTransactionDetail.UnitPrice,
+				Note = stockTransactionDetail.Note,
+				ExpiryDate = stockTransactionDetail.ExpiryDate,
+				BatchNumber = stockTransactionDetail.BatchNumber
+			};
+		}
 		//public async Task<PagedResultDto<StockTransactionDetailListDto>> GetStockTransactionDetails(GetStockTransactionDetailsInput input)
 		//{
 		//	var query = _stockTransactionDetailRepository.GetAll()
