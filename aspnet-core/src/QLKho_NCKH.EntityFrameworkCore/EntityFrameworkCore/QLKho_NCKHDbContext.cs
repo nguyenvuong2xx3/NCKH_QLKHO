@@ -25,7 +25,6 @@ namespace QLKho_NCKH.EntityFrameworkCore
 		public DbSet<Supplier> Suppliers { get; set; }
 		public DbSet<Customer> Customers { get; set; }
 		public DbSet<StockTransactionDetail> StockTransactionDetails { get; set; }
-		public DbSet<Customer> Customers { get; set; }
 		public DbSet<StockTransaction> StockTransactions { get; set; }
 
 		public QLKho_NCKHDbContext(DbContextOptions<QLKho_NCKHDbContext> options)

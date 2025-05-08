@@ -15,21 +15,14 @@ namespace QLKho_NCKH.Web.Startup
 			context.Manager.MainMenu
 					.AddItem(
 							new MenuItemDefinition(
-									PageNames.About,
-									L("About"),
-									url: "About",
-									icon: "fas fa-info-circle"
-							)
-					)
-					.AddItem(
-							new MenuItemDefinition(
 									PageNames.Home,
 									L("HomePage"),
 									url: "",
 									icon: "fas fa-home",
 									requiresAuthentication: true
 							)
-					).AddItem(
+					)
+					.AddItem(
 							new MenuItemDefinition(
 									PageNames.Tenants,
 									L("Tenants"),
@@ -37,7 +30,8 @@ namespace QLKho_NCKH.Web.Startup
 									icon: "fas fa-building",
 									permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Tenants)
 							)
-					).AddItem(
+					)
+					.AddItem(
 							new MenuItemDefinition(
 									PageNames.Users,
 									L("Users"),
@@ -45,7 +39,8 @@ namespace QLKho_NCKH.Web.Startup
 									icon: "fas fa-users",
 									permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Users)
 							)
-					).AddItem(
+					)
+					.AddItem(
 							new MenuItemDefinition(
 									PageNames.Roles,
 									L("Roles"),
@@ -54,145 +49,88 @@ namespace QLKho_NCKH.Web.Startup
 									permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
 							)
 					)
-					//.AddItem( // Menu items below is just for demonstration!
-					//		new MenuItemDefinition(
-					//				"MultiLevelMenu",
-					//				L("MultiLevelMenu"),
-					//				icon: "fas fa-circle"
-					//		).AddItem(
-					//				new MenuItemDefinition(
-					//						"AspNetBoilerplate",
-					//						new FixedLocalizableString("ASP.NET Boilerplate"),
-					//						icon: "far fa-circle"
-					//				).AddItem(
-					//						new MenuItemDefinition(
-					//								"AspNetBoilerplateHome",
-					//								new FixedLocalizableString("Home"),
-					//								url: "https://aspnetboilerplate.com?ref=abptmpl",
-					//								icon: "far fa-dot-circle"
-					//						)
-					//				).AddItem(
-					//						new MenuItemDefinition(
-					//								"AspNetBoilerplateTemplates",
-					//								new FixedLocalizableString("Templates"),
-					//								url: "https://aspnetboilerplate.com/Templates?ref=abptmpl",
-					//								icon: "far fa-dot-circle"
-					//						)
-					//				).AddItem(
-					//						new MenuItemDefinition(
-					//								"AspNetBoilerplateSamples",
-					//								new FixedLocalizableString("Samples"),
-					//								url: "https://aspnetboilerplate.com/Samples?ref=abptmpl",
-					//								icon: "far fa-dot-circle"
-					//						)
-					//				).AddItem(
-					//						new MenuItemDefinition(
-					//								"AspNetBoilerplateDocuments",
-					//								new FixedLocalizableString("Documents"),
-					//								url: "https://aspnetboilerplate.com/Pages/Documents?ref=abptmpl",
-					//								icon: "far fa-dot-circle"
-					//						)
-					//				)
-							//).AddItem(
-							//		new MenuItemDefinition(
-							//				"AspNetZero",
-							//				new FixedLocalizableString("ASP.NET Zero"),
-							//				icon: "far fa-circle"
-							//		).AddItem(
-							//				new MenuItemDefinition(
-							//						"AspNetZeroHome",
-							//						new FixedLocalizableString("Home"),
-							//						url: "https://aspnetzero.com?ref=abptmpl",
-							//						icon: "far fa-dot-circle"
-							//				)
-							//		).AddItem(
-							//				new MenuItemDefinition(
-							//						"AspNetZeroFeatures",
-							//						new FixedLocalizableString("Features"),
-							//						url: "https://aspnetzero.com/Features?ref=abptmpl",
-							//						icon: "far fa-dot-circle"
-							//				)
-							//		).AddItem(
-							//				new MenuItemDefinition(
-							//						"AspNetZeroPricing",
-							//						new FixedLocalizableString("Pricing"),
-							//						url: "https://aspnetzero.com/Pricing?ref=abptmpl#pricing",
-							//						icon: "far fa-dot-circle"
-							//				)
-							//		).AddItem(
-							//				new MenuItemDefinition(
-							//						"AspNetZeroFaq",
-							//						new FixedLocalizableString("Faq"),
-							//						url: "https://aspnetzero.com/Faq?ref=abptmpl",
-							//						icon: "far fa-dot-circle"
-							//				)
-							//		).AddItem(
-							//				new MenuItemDefinition(
-							//						"AspNetZeroDocuments",
-							//						new FixedLocalizableString("Documents"),
-							//						url: "https://aspnetzero.com/Documents?ref=abptmpl",
-							//						icon: "far fa-dot-circle"
-							//				)
-							//		)
-							//)
-					//)
+					// Product Management - Parent menu with always visible children
 					.AddItem(
 							new MenuItemDefinition(
-									PageNames.Products,
-									L("Products"),
-									url: "Products",
-									icon: "fas fa-theater-masks",
-							permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Products)
+									"ProductManagement",
+									L("ProductManagement"),
+									icon: "fas fa-boxes",
+									customData: new { alwaysOpen = true } // Add custom data to indicate this menu should always be open
+							).AddItem(
+									new MenuItemDefinition(
+											PageNames.Products,
+											L("Products"),
+											url: "Products",
+											icon: "fas fa-box",
+											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Products)
+									)
+							).AddItem(
+									new MenuItemDefinition(
+											PageNames.Categories,
+											L("Categories"),
+											url: "Categories",
+											icon: "fas fa-tags",
+											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Categories)
+									)
 							)
-					).AddItem(
+					)
+					// Inventory Management - Parent menu with always visible children
+					.AddItem(
 							new MenuItemDefinition(
-									PageNames.Categories,
-									L("Categories"),
-									url: "Categories",
-									icon: "fas fa-theater-masks",
-							permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Categories)
+									"InventoryManagement",
+									L("InventoryManagement"),
+									icon: "fas fa-warehouse",
+									customData: new { alwaysOpen = true } // Add custom data to indicate this menu should always be open
+							).AddItem(
+									new MenuItemDefinition(
+											PageNames.Suppliers,
+											L("Suppliers"),
+											url: "Suppliers",
+											icon: "fas fa-truck",
+											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Suppliers)
+									)
+							).AddItem(
+									new MenuItemDefinition(
+											PageNames.Warehouses,
+											L("Warehouses"),
+											url: "Warehouses",
+											icon: "fas fa-warehouse",
+											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Warehouses)
+									)
+							).AddItem(
+									new MenuItemDefinition(
+											PageNames.StorageLocations,
+											L("StorageLocations"),
+											url: "StorageLocations",
+											icon: "fas fa-map-marker-alt",
+											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_StorageLocations)
+									)
+							).AddItem(
+									new MenuItemDefinition(
+											PageNames.StockTransactions,
+											L("StockTransactions"),
+											url: "StockTransactions",
+											icon: "fas fa-exchange-alt",
+											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_StockTransactions)
+									)
+							).AddItem(
+									new MenuItemDefinition(
+											PageNames.Customers,
+											L("Customers"),
+											url: "Customers",
+											icon: "fas fa-users"
+									//permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Customers)
+									)
 							)
-					).AddItem(
+					)
+					.AddItem(
 							new MenuItemDefinition(
-									PageNames.Suppliers,
-									L("Suppliers"),
-									url: "Suppliers",
-									icon: "fas fa-theater-masks",
-							permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Suppliers)
+									PageNames.About,
+									L("About"),
+									url: "About",
+									icon: "fas fa-info-circle"
 							)
-					).AddItem(
-							new MenuItemDefinition(
-									PageNames.Warehouses,
-									L("Warehouses"),
-									url: "Warehouses",
-									icon: "fas fa-theater-masks",
-							permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Warehouses)
-							)
-					).AddItem(
-							new MenuItemDefinition(
-									PageNames.StorageLocations,
-									L("StorageLocations"),
-									url: "StorageLocations",
-									icon: "fas fa-theater-masks",
-							permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_StorageLocations)
-							)
-					).AddItem(
-							new MenuItemDefinition(
-									PageNames.StockTransactions,
-									L("StockTransactions"),
-									url: "StockTransactions",
-									icon: "fas fa-theater-masks",
-							permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_StockTransactions)
-							)
-					).AddItem(
-							new MenuItemDefinition(
-									PageNames.Customers,
-									L("Customers"),
-									url: "Customers",
-									icon: "fas fa-theater-masks",
-							permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_StockTransactions)
-							)
-					); 
+					);
 		}
 
 		private static ILocalizableString L(string name)
