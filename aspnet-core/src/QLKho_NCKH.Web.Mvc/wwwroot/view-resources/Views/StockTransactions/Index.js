@@ -33,27 +33,8 @@
 		_selectedDateRange.StartTime = picker.startDate.format('YYYY-MM-DDT00:00:00Z');
 		_selectedDateRange.EndTime = picker.endDate.format('YYYY-MM-DDT23:59:59Z');
 	});
-    e.preventDefault();
-    abp.ajax({
-      url: abp.appPath + 'StockTransactions/Edit?StockTransactionId=' + stockTransactionId,
-      type: 'POST',
-      dataType: 'html',
-      success: function (content) {
-        $('#StockTransactionEditModal div.modal-content').html(content);
-      },
-      error: function (e) {
-      }
-    })
-  });
-  function getStatusText(status) {
-    switch (status) {
-      case 0: return 'Chờ duyệt';
-      case 1: return 'Đã duyệt';
-      //case 2: return 'Đã duyệt';
-      //case 3: return 'Hoàn thành';
-      default: return 'Đã hủy';
-    }
-  }
+
+	
 
 	// Xử lý khi hủy chọn date range
 	$('#StartEndRange').on('cancel.daterangepicker', function (ev, picker) {
@@ -172,13 +153,27 @@
 		})
 	});
 	function getStatusText(status) {
-		switch (status) {
-			case 0: return 'Chờ duyệt';
-			//case 1: return 'Chờ duyệt';
-			case 2: return 'Đã duyệt';
-			case 3: return 'Hoàn thành';
-			default: return 'Đã hủy';
+		//console.log(status)
+		//switch (status) {
+		//	case 0: return 'Chờ duyệt';
+		//	//case 1: return 'Chờ duyệt';
+		//	case 2: return 'Đã duyệt';
+		//	case 3: return 'Hoàn thành';
+		//	default: return 'Đã hủy';
+		//}
+		if (status == 0) {
+			return 'Chờ duyệt';
 		}
+		if (status == 1) {
+			return 'Đã duyệt';
+		}
+		if (status == 2) {
+			return 'Hoàn thành';
+		}
+		if (status == 3) {
+			return 'Đã hủy';
+		}
+		return 'Chưa xác định';
 	}
 
 	// Xử lý tìm kiếm
@@ -209,21 +204,22 @@
 
     deleteSupplier(stockTransactionId, stockTransactionName);
   });
-  function deleteSupplier(stockTransactionId, stockTransactionName) {
-    abp.message.confirm(
-      abp.utils.formatString(
-        l('AreYouSureWantToDelete'),
-        stockTransactionName),
-      null,
-      (isConfirmed) => {
-        if (isConfirmed) {
-          _stockTransactionService.deleteStockTransaction(
-            stockTransactionId
-          ).done(() => {
-            abp.notify.info(l('SuccessfullyDeleted'));
-            _$stockTransactionTable.ajax.reload();
-          });
-        }
-      }
-    );
+function deleteSupplier(stockTransactionId, stockTransactionName) {
+	abp.message.confirm(
+		abp.utils.formatString(
+			l('AreYouSureWantToDelete'),
+			stockTransactionName),
+		null,
+		(isConfirmed) => {
+			if (isConfirmed) {
+				_stockTransactionService.deleteStockTransaction(
+					stockTransactionId
+				).done(() => {
+					abp.notify.info(l('SuccessfullyDeleted'));
+					_$stockTransactionTable.ajax.reload();
+				});
+			}
+		}
+	);
+};
 })(jQuery);
