@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MyProject.Carts;
+using QLKho_NCKH.Carts;
+using QLKho_NCKH.Web.Views;
 
 namespace MyProject.Web.Views.Shared.Components.CartMenu
 {
-	public class CartMenuViewComponent : MyProjectViewComponent
+	public class CartMenuViewComponent : QLKho_NCKHViewComponent
 	{
 		private readonly ICartFrontendAppService _cartFrontendAppService;
 
