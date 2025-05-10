@@ -12,7 +12,7 @@ namespace QLKho_NCKH.Web.Models.Carts
 		public string Name { get; set; }
 		public string Description { get; set; }
 
-		public decimal Price;
+		public decimal UnitPrice;
 
 		public int ProductId { get; set; }
 		public decimal TotalPrice { get; set; }

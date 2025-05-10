@@ -12,10 +12,10 @@ namespace QLKho_NCKH.Carts.Dto
 		public int Quantity { get; set; }
 		public string Name { get; set; }
 		public string Image { get; set; }
-		public decimal Price { get; set; }
+		public decimal UnitPrice { get; set; }
 		public long UserId { get; set; }
 		public int ProductId { get; set; }
 		public int CartItem { get; set; }
-		public decimal TotalPrice => Quantity * Price;
+		public decimal TotalPrice => Quantity * UnitPrice;
 	}
 }

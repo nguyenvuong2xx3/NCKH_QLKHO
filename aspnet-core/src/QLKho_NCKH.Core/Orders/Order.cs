@@ -46,9 +46,9 @@ namespace QLKho_NCKH.Orders
 		public decimal DiscountPrice { get; set; } = 0; // giảm giá cho sản phẩm nếu có 
 		public decimal TotalPrice => (UnitPrice * Quantity) - DiscountPrice; // tổng giá tiền cho sản phẩm 
 
-		[Required]
-		public int InventoryItemId { get; set; }
-		[ForeignKey("InventoryItemId")]
-		public InventoryItem InventoryItem { get; set; }
+		//[Required]
+		//public int InventoryItemId { get; set; }
+		//[ForeignKey("InventoryItemId")]
+		//public InventoryItem InventoryItem { get; set; }
 	}
 }

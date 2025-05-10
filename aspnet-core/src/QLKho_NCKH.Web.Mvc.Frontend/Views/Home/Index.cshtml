@@ -18,7 +18,7 @@
 }
 
 <link href="/css/inventory.css" rel="stylesheet" />
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" asp-append-version="true"></script>
 
 <div class="container mt-4 inventory-container">
   <!-- Search and Filter Section -->
@@ -171,7 +171,6 @@
   <!-- Modal content will be loaded via AJAX -->
 </div>
 
-@section Scripts {
   <script>
     $(document).ready(function () {
         // Search functionality
@@ -234,4 +233,3 @@
         }
     });
   </script>
-}

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Abp.Application.Services.Dto;
 using Abp.AspNetCore.Mvc.Authorization;
+using Abp.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using QLKho_NCKH.Authorization.Users;
 using QLKho_NCKH.Carts;
 using QLKho_NCKH.Controllers;
 using QLKho_NCKH.Products;
@@ -17,13 +20,14 @@ namespace QLKho_NCKH.Web.Controllers
 	{
 		private readonly ICartAppService _cartAppService;
 		private readonly IProductAppService _productAppService;
-		private readonly IUserAppService _userAppService;
+		private readonly IRepository<User, long> _userRepository;
 
-		public CartsController(ICartAppService cartAppService, IProductAppService productAppService, IUserAppService userAppService)
+		public CartsController(ICartAppService cartAppService, IProductAppService productAppService, IRepository<User, long> userRepository) //IUserAppService userAppService
 		{
 			_cartAppService = cartAppService;
 			_productAppService = productAppService;
-			_userAppService = userAppService;
+			//_userAppService = userAppService;
+			_userRepository = userRepository;
 		}
 
 		public async Task<ActionResult> Index()
@@ -32,12 +36,12 @@ namespace QLKho_NCKH.Web.Controllers
 
 			// Lấy UserId từ AbpSession
 			var userId = AbpSession.UserId ?? 0; // Nếu null thì gán 0
-			//var nameUser = await _userAppService.GetNameUser(userId);
+			var nameUser = await _userRepository.GetAsync(userId);
 
 			var cartItems = new CartViewListModel
 			{
 				UserId = userId,
-				//NameUser = nameUser,
+				NameUser = nameUser.Name,
 				Carts = new List<CartViewModel>() // Khởi tạo danh sách rỗng
 			};
 
@@ -57,8 +61,8 @@ namespace QLKho_NCKH.Web.Controllers
 					Id = item.Id,
 					ProductId = item.ProductId,
 					Name = item.Name,
-					Price = item.Price,
-					TotalPrice = item.Quantity * item.Price,
+					UnitPrice = item.UnitPrice,
+					TotalPrice = item.Quantity * item.UnitPrice,
 					Quantity = item.Quantity,
 					Image = item.Image
 				});

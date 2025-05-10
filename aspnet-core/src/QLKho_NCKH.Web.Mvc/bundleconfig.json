@@ -313,5 +313,17 @@
     "inputFiles": [
       "wwwroot/view-resources/Views/StockTransactions/_EditModal.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/libs/abp-web-resources/abp/framework/scripts/libs/abp.moment.min.js",
+    "inputFiles": [
+      "wwwroot/libs/abp-web-resources/abp/framework/scripts/libs/abp.moment.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/libs/abp-web-resources/abp/framework/scripts/libs/abp.jtable.min.js",
+    "inputFiles": [
+      "wwwroot/libs/abp-web-resources/abp/framework/scripts/libs/abp.jtable.js"
+    ]
   }
 ]

@@ -8,7 +8,9 @@ using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
 using Abp.Runtime.Session;
+using Microsoft.EntityFrameworkCore;
 using QLKho_NCKH.Carts.Dto;
+using QLKho_NCKH.Inventory;
 using QLKho_NCKH.InventoryItems;
 using QLKho_NCKH.Products;
 namespace QLKho_NCKH.Carts
@@ -18,47 +20,64 @@ namespace QLKho_NCKH.Carts
 		//private readonly IRepository<Cart> _cartRepository;
 		private readonly IRepository<CartItem> _cartItemRepository;
 		private readonly IRepository<Product> _productRepository;
-		private readonly IInventoryItemAppService _inventoryItemAppService;
+		private readonly IRepository<InventoryItem> _inventoryItemRepository;
 
 		public CartAppService(
 			//IRepository<Cart> cartRepository, 
 			IRepository<Product> productRepository,
 			IRepository<CartItem> cartItemRepository,
-			IInventoryItemAppService inventoryItemAppService)
+			IRepository<InventoryItem> inventoryItemRepository)
 		{
 			//	_cartRepository = cartRepository;
 			_productRepository = productRepository;
 			_cartItemRepository = cartItemRepository;
-			_inventoryItemAppService = inventoryItemAppService;
+			_inventoryItemRepository = inventoryItemRepository;
 		}
 		public async Task<List<CartsDto>> GetAllCart()
 		{
-			if (AbpSession.UserId != null)
-			{
-				var productList = await _productRepository.GetAllListAsync();
-
-				var cart = await _cartItemRepository.GetAllListAsync(c => c.UserId == AbpSession.UserId);
-				if (cart != null)
-				{
-					return cart.Select(c => new CartsDto
-					{
-						Id = c.Id,
-						ProductId = c.ProductId,
-						Quantity = c.Quantity,
-						UserId = c.UserId,
-						Name = productList.FirstOrDefault(p => p.Id == c.ProductId)?.Name
-					}).ToList();
-				}
-				else
-				{
-					return new List<CartsDto>();
-				}
-			}
-			else
+			if (AbpSession.UserId == null)
 			{
 				return null;
 			}
+
+			// Lấy danh sách cart của user
+			var cartItems = await _cartItemRepository.GetAllListAsync(c => c.UserId == AbpSession.UserId);
+
+			if (cartItems == null || !cartItems.Any())
+			{
+				return new List<CartsDto>();
+			}
+
+			// Lấy danh sách ProductId có trong giỏ hàng
+			var productIds = cartItems.Select(c => c.ProductId).Distinct().ToList();
+
+			// Lấy thông tin InventoryItem và Product tương ứng
+			var inventoryItems = await _inventoryItemRepository.GetAll()
+					.Include(i => i.Product).ToListAsync();
+			inventoryItems.Where(i => productIds.Contains(i.ProductId));
+
+			// Gộp dữ liệu lại
+			var result = cartItems.Select(cart =>
+			{
+				var inventory = inventoryItems.FirstOrDefault(i => i.ProductId == cart.ProductId);
+				var product = inventory?.Product;
+
+				return new CartsDto
+				{
+					Id = cart.Id,
+					ProductId = cart.ProductId,
+					Quantity = cart.Quantity,
+					UserId = cart.UserId,
+					Name = product?.Name,
+					UnitPrice = inventory?.UnitPrice ?? 0,
+					//TotalPrice = (inventory?.Price ?? 0) * cart.Quantity,
+					//Location = inventory?.Location
+				};
+			}).ToList();
+
+			return result;
 		}
+
 
 		public async Task AddToCart(int productId, int quantity, bool check)
 		{
