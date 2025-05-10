@@ -11,6 +11,8 @@ using QLKho_NCKH.Suppliers;
 using QLKho_NCKH.StockTransactions;
 using YourProject.Domain.Transactions;
 using QLKho_NCKH.Customers;
+using QLKho_NCKH.Carts;
+using QLKho_NCKH.Orders;
 
 namespace QLKho_NCKH.EntityFrameworkCore
 {
@@ -26,6 +28,9 @@ namespace QLKho_NCKH.EntityFrameworkCore
 		public DbSet<Customer> Customers { get; set; }
 		public DbSet<StockTransactionDetail> StockTransactionDetails { get; set; }
 		public DbSet<StockTransaction> StockTransactions { get; set; }
+		public DbSet<Cart> Carts { get; set; }
+		public DbSet<Order> Oders { get; set; }
+		public DbSet<OrderDetail> OrderDetails { get; set; }
 
 		public QLKho_NCKHDbContext(DbContextOptions<QLKho_NCKHDbContext> options)
 				: base(options)
