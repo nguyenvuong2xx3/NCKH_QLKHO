@@ -8,3 +8,6 @@ aspnet-core/src/QLKho_NCKH.Web.Mvc/appsettings.json
 aspnet-core/src/QLKho_NCKH.Web.Mvc/App_Data/Logs/Logs.txt.1
 aspnet-core/src/QLKho_NCKH.Web.Mvc/App_Data/Logs/Logs.txt.2
 aspnet-core/src/QLKho_NCKH.Web.Mvc/App_Data/Logs/Logs.txt.3
+aspnet-core/src/QLKho_NCKH.Web.Mvc.Frontend/App_Data/Logs/Logs.txt
+aspnet-core/src/QLKho_NCKH.Web.Mvc.Frontend/App_Data/Logs/Logs.txt
+aspnet-core/src/QLKho_NCKH.Web.Mvc.Frontend/App_Data/Logs/Logs.txt

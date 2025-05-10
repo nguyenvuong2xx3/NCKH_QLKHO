@@ -16,6 +16,10 @@ namespace QLKho_NCKH.Web.Models.Products
 			Products = products;
 		}
 
+		public int CurrentPage { get; set; }
+		public int TotalPages { get; set; }
+		public int count { get; set; }
+
 		public List<SupplierDto> Suppliers { get; set; }
 	}
 }
