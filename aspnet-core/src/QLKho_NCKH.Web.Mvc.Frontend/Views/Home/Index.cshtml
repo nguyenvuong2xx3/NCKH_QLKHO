@@ -1,21 +1,237 @@
-﻿@using QLKho_NCKH.Web.Startup
+﻿@using QLKho_NCKH.Web.Models.Products
+@using QLKho_NCKH.Web.Startup
 @{
-    ViewBag.Title = L("HomePage");
-    ViewBag.CurrentPageName = PageNames.Home;
+  ViewBag.Title = "Trang chủ Quản lý Kho";
+  ViewBag.CurrentPageName = PageNames.Home;
 }
+@model ProductViewModel
 
 @section scripts
 {
-    <environment names="Development">
-        <script src="~/libs/chartjs/dist/Chart.js" asp-append-version="true"></script>
-        <script src="~/view-resources/Views/Home/Index.js" asp-append-version="true"></script>
-    </environment>
+  <environment names="Development">
+    <script src="~/view-resources/Views/Home/Index.js" asp-append-version="true"></script>
+  </environment>
 
-    <environment names="Staging,Production">
-        <script src="~/view-resources/Views/_Bundles/home-index.min.js" asp-append-version="true"></script>
-    </environment>
+  <environment names="Staging,Production">
+    <script src="~/view-resources/Views/Home/Index.min.js" asp-append-version="true"></script>
+  </environment>
 }
 
-<div>
-  <h1>Home</h1>
+<link href="/css/inventory.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<div class="container mt-4 inventory-container">
+  <!-- Search and Filter Section -->
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <div class="input-group">
+        <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm sản phẩm theo tên, mã hoặc mô tả...">
+        <button id="searchBtn" class="btn btn-primary">Tìm kiếm</button>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <select id="sortSelect" class="form-control">
+        <option value="name_asc">Tên A-Z</option>
+        <option value="name_desc">Tên Z-A</option>
+        <option value="code_asc">Mã tăng dần</option>
+        <option value="code_desc">Mã giảm dần</option>
+        <option value="date_desc" selected>Mới nhất</option>
+        <option value="date_asc">Cũ nhất</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Inventory Summary -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card summary-card">
+        <div class="card-body">
+          <h5 class="card-title">Tổng sản phẩm</h5>
+          <p class="card-text display-4"></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card summary-card">
+        <div class="card-body">
+          <h5 class="card-title">Đang hoạt động</h5>
+          <p class="card-text display-4"></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card summary-card">
+        <div class="card-body">
+          <h5 class="card-title">Theo dõi tồn kho</h5>
+          <p class="card-text display-4"></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card summary-card">
+        <div class="card-body">
+          <h5 class="card-title">Sắp hết hàng</h5>
+          <p class="card-text display-4 text-warning"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product List -->
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4>Danh sách sản phẩm trong kho</h4>
+      <div>
+        <span class="badge badge-info mr-2">Tổng: @Model.Products.Count</span>
+        <button id="exportBtn" class="btn btn-sm btn-secondary">Xuất Excel</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover inventory-table">
+          <thead>
+            <tr>
+              <th>Mã SP</th>
+              <th>Tên sản phẩm</th>
+              <th>Danh mục</th>
+              <th>Đơn vị</th>
+              <th>Trọng lượng</th>
+              <th>Thể tích</th>
+              <th>Trạng thái</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach (var product in Model.Products)
+            {
+              <tr>
+                <td>@product.Code</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    @if (!string.IsNullOrEmpty(product.Image))
+                    {
+                      <img src="@product.Image" class="product-thumbnail mr-2" alt="@product.Name">
+                    }
+                    <span>@product.Name</span>
+                  </div>
+                </td>
+                <td>@product.CategoryName</td>
+                <td>@product.Unit</td>
+                <td>@product.Weight</td>
+                <td>@product.Volume</td>
+                <td>
+                  @if (product.IsActive)
+                  {
+                    <span class="badge badge-success">Đang hoạt động</span>
+                  }
+                  else
+                  {
+                    <span class="badge badge-secondary">Ngừng kinh doanh</span>
+                  }
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-info btn-view-detail" data-id="@product.Id">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn btn-sm btn-warning btn-edit" data-id="@product.Id">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      @if (Model.TotalPages > 1)
+      {
+        <nav aria-label="Page navigation">
+          <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+              <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a class="page-link" href="#" data-page="@i">@i</a>
+              </li>
+            }
+          </ul>
+        </nav>
+      }
+    </div>
+  </div>
 </div>
+
+<!-- Product Detail Modal -->
+<div class="modal fade" id="productDetailModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Modal content will be loaded via AJAX -->
+</div>
+
+<!-- Edit Product Modal -->
+<div class="modal fade" id="editProductModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <!-- Modal content will be loaded via AJAX -->
+</div>
+
+@section Scripts {
+  <script>
+    $(document).ready(function () {
+        // Search functionality
+        $('#searchBtn').click(function () {
+            loadProducts(1);
+        });
+
+        $('#searchInput').keypress(function (e) {
+            if (e.which === 13) {
+                loadProducts(1);
+            }
+        });
+
+        // Sort functionality
+        $('#sortSelect').change(function () {
+            loadProducts(1);
+        });
+
+        // Pagination
+        $('.page-link').click(function (e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            loadProducts(page);
+        });
+
+        // View detail
+        $('.btn-view-detail').click(function () {
+            var productId = $(this).data('id');
+            $('#productDetailModal').load('@Url.Action("GetProductDetail", "Home")?id=' + productId, function () {
+                $(this).modal('show');
+            });
+        });
+
+        // Edit product
+        $('.btn-edit').click(function () {
+            var productId = $(this).data('id');
+            $('#editProductModal').load('@Url.Action("EditProduct", "Home")?id=' + productId, function () {
+                $(this).modal('show');
+            });
+        });
+
+        // Export to Excel
+        $('#exportBtn').click(function () {
+            var search = $('#searchInput').val();
+            var sort = $('#sortSelect').val();
+            window.location.href = '@Url.Action("ExportToExcel", "Home")?search=' + search + '&sort=' + sort;
+        });
+
+        function loadProducts(page) {
+            var search = $('#searchInput').val();
+            var sort = $('#sortSelect').val();
+
+            $.get('@Url.Action("Index", "Home")', {
+                page: page,
+                search: search,
+                sort: sort
+            }, function (data) {
+                $('.inventory-container').html($(data).find('.inventory-container').html());
+            });
+        }
+    });
+  </script>
+}
