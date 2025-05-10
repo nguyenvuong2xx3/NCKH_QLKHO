@@ -133,19 +133,20 @@
 
 	// xóa sản phẩm trong giỏ hàng
 
-	$(".btn-delete").on("click", function (e) {
-		var productId = $(this).data("id");
+	let currentProductIdToDelete = null;
 
-		// Hiển thị modal xác nhận xóa
+	$(".btn-delete").on("click", function () {
+		currentProductIdToDelete = $(this).data("id");
 		$("#confirmDeleteModal").modal("show");
+	});
 
-		// Khi người dùng nhấn xác nhận xóa
-		$("#confirmDeleteBtn").off("click").on("click", function () {
-			_cartService.clearProduct(productId).done(function () {
+	$("#confirmDeleteBtn").on("click", function () {
+		if (currentProductIdToDelete) {
+			_cartService.clearProduct(currentProductIdToDelete).done(function () {
 				abp.notify.success("Xóa sản phẩm thành công!");
 				location.reload();
 			});
-		});
+		}
 	});
 
 
