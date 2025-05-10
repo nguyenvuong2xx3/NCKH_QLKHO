@@ -14,6 +14,7 @@ namespace QLKho_NCKH.Web.Models.Carts
 
 		public decimal Price;
 
+		public int ProductId { get; set; }
 		public decimal TotalPrice { get; set; }
 		public DateTime CreationTime { get; set; }
 

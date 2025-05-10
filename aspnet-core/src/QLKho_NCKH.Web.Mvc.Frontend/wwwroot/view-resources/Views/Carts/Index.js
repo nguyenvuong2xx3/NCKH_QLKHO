@@ -2,6 +2,8 @@
 
 (function ($) {
 	var _cartService = abp.services.app.cart;
+
+	var _productId = $(this).data('id');
 	$('.btn-reduce').on('click', function (e) {
 		e.preventDefault(); // Ngăn hành vi mặc định
 
@@ -170,25 +172,32 @@
 		let orderItems = [];
 
 		$(".cart-item").each(function () {
+			const productId = $(this).find(".btn-reduce").data("id"); // lấy từ nút xóa
+			const quantity = parseInt($(this).find(".quantity-input").val()) || 0;
+			const unitPrice = parseFloat($(this).find(".product-price").data("unit-price")) || 0;
+
 			const item = {
-				ProductId: $(this).find(".btn-delete").data("id"),
-				Quantity: $(this).find(".quantity-input").val(),
-				UnitPrice: parseFloat($(this).find(".product-price").data("unit-price")),
-				DiscountPrice: 0 // Nếu có giảm giá thì thay đổi giá trị này
+				ProductId: productId,
+				Quantity: quantity,
+				UnitPrice: unitPrice,
+				DiscountPrice: 0 // bạn có thể tính giảm giá từ radio nếu muốn
 			};
+
 			orderItems.push(item);
 		});
+
+		const totalAmount = orderItems.reduce((sum, item) => sum + item.UnitPrice * item.Quantity, 0);
 
 		const orderData = {
 			UserId: userId,
 			NameUser: nameUser,
-			TotalAmount: orderItems.reduce((sum, item) => sum + item.UnitPrice * item.Quantity, 0),
-			DiscountAmount: 0, // Nếu có giảm giá tổng thể thì tính toán
+			TotalAmount: totalAmount,
+			DiscountAmount: 0,
 			PaymentMethod: 0,
 			Items: orderItems
 		};
 
-		console.log(orderData);
+		console.log("Dữ liệu gửi đi:", orderData);
 
 		$.ajax({
 			url: "/Orders/CreateOrder",
@@ -196,21 +205,21 @@
 			contentType: "application/json",
 			data: JSON.stringify(orderData),
 			success: function (response) {
-				console.log("Response từ server:", response);
+				console.log("Phản hồi từ server:", response);
 				if (response.success && response.result && response.result.orderId) {
 					const orderId = response.result.orderId;
-					console.log("Order ID:", orderId);
 					window.location.href = "/Orders/Success?orderId=" + orderId;
 				} else {
-					alert("Đặt hàng thành công nhưng không lấy được mã đơn hàng.");
+					alert("Đặt hàng thành công nhưng không có mã đơn hàng.");
 				}
 			},
 			error: function (error) {
-				console.error("Lỗi khi đặt hàng:", error);
-				alert("Đặt hàng thất bại, vui lòng thử lại.");
+				console.error("Lỗi khi gửi đơn hàng:", error);
+				alert("Đặt hàng thất bại. Vui lòng thử lại.");
 			}
 		});
 	});
+
 
 })(jQuery);
 

@@ -110,10 +110,10 @@
             </button>
 
             <div class="d-flex align-items-center">
-              <button class="btn btn-outline-secondary btn-sm btn-reduce" data-id="@item.Id">-</button>
+              <button class="btn btn-outline-secondary btn-sm btn-reduce" data-id="@item.ProductId">-</button>
               <input data-id="@item.Id" type="text" class="quantity-input form-control text-center mx-1"
                      value="@item.Quantity" style="width: 45px;">
-              <button class="btn btn-outline-secondary btn-sm btn-increase" data-id="@item.Id">+</button>
+							<button class="btn btn-outline-secondary btn-sm btn-increase" data-id="@item.ProductId">+</button>
             </div>
 
             <span data-unit-price="@item.Price" class="product-price text-danger fw-bold mt-2">

@@ -17,34 +17,36 @@ namespace QLKho_NCKH.Carts
 	{
 		//private readonly IRepository<Cart> _cartRepository;
 		private readonly IRepository<CartItem> _cartItemRepository;
-		private readonly IProductAppService _productAppService;
+		private readonly IRepository<Product> _productRepository;
 		private readonly IInventoryItemAppService _inventoryItemAppService;
 
 		public CartAppService(
 			//IRepository<Cart> cartRepository, 
-			IProductAppService productAppService,
+			IRepository<Product> productRepository,
 			IRepository<CartItem> cartItemRepository,
 			IInventoryItemAppService inventoryItemAppService)
 		{
-		//	_cartRepository = cartRepository;
-			_productAppService = productAppService;
+			//	_cartRepository = cartRepository;
+			_productRepository = productRepository;
 			_cartItemRepository = cartItemRepository;
 			_inventoryItemAppService = inventoryItemAppService;
 		}
 		public async Task<List<CartsDto>> GetAllCart()
 		{
-			if(AbpSession.UserId != null)
+			if (AbpSession.UserId != null)
 			{
+				var productList = await _productRepository.GetAllListAsync();
+
 				var cart = await _cartItemRepository.GetAllListAsync(c => c.UserId == AbpSession.UserId);
-				if (cart != null)	
+				if (cart != null)
 				{
-					
 					return cart.Select(c => new CartsDto
 					{
 						Id = c.Id,
 						ProductId = c.ProductId,
 						Quantity = c.Quantity,
 						UserId = c.UserId,
+						Name = productList.FirstOrDefault(p => p.Id == c.ProductId)?.Name
 					}).ToList();
 				}
 				else
