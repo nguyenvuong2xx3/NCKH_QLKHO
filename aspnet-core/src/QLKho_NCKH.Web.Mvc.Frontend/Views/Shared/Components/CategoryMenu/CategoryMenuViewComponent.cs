@@ -1,26 +1,28 @@
-﻿//using Abp.Configuration.Startup;
-//using Microsoft.AspNetCore.Mvc;
-//using System.Threading.Tasks;
+﻿using Abp.Configuration.Startup;
+using Microsoft.AspNetCore.Mvc;
+using MyProject.Categories;
+using QLKho_NCKH.Categories.Dto;
+using System.Threading.Tasks;
 
-//namespace QLKho_NCKH.Web.Views.Shared.Components.CategoryMenu
-//{
-//	public class CategoryMenuViewComponent : QLKho_NCKHViewComponent
-//	{
-//		private readonly ICategoryFontendAppService _categoryFontendAppService;
+namespace QLKho_NCKH.Web.Views.Shared.Components.CategoryMenu
+{
+	public class CategoryMenuViewComponent : QLKho_NCKHViewComponent
+	{
+		private readonly ICategoryFontendAppService _categoryFontendAppService;
 
-//		public CategoryMenuViewComponent(ICategoryFontendAppService categoryFontendAppService)
-//		{
-//			_categoryFontendAppService = categoryFontendAppService;
-//		}
+		public CategoryMenuViewComponent(ICategoryFontendAppService categoryFontendAppService)
+		{
+			_categoryFontendAppService = categoryFontendAppService;
+		}
 
-//		public async Task<IViewComponentResult> InvokeAsync()
-//		{
-//			var model = new CategoryMenuViewModel
-//			{
-//				Categories = await _categoryFontendAppService.GetCategory(new GetAllCategoriesInput())
-//			};
+		public async Task<IViewComponentResult> InvokeAsync()
+		{
+			var model = new CategoryMenuViewModel
+			{
+				Categories = await _categoryFontendAppService.GetCategory(new GetAllCategoriesInput())
+			};
 
-//			return View(model);
-//		}
-//	}
-//}
+			return View(model);
+		}
+	}
+}

@@ -14,6 +14,7 @@ namespace QLKho_NCKH.Products.Dtos
 		public string Filter { get; set; }
 
 		public int SupplierId { get; set; }
+		public int CategoryId { get; set; }
 
 		public int warehouseId { get; set; }
 		public void Normalize()

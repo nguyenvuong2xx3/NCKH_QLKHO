@@ -1,0 +1,532 @@
+﻿@using QLKho_NCKH.Web.Models.Products
+@model ProductDetailModel
+
+@section scripts {
+  <environment names="Development">
+    <script src="~/view-resources/Views/Products/ProductDetail.js" asp-append-version="true"></script>
+  </environment>
+  <environment names="Staging,Production">
+    <script src="~/view-resources/Views/Products/ProductDetail.min.js" asp-append-version="true"></script>
+  </environment>
+}
+
+<style>
+  /* Main container */
+  .product-detail-container {
+    background-color: #f8f9fa;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+  }
+
+  /* Product image */
+  .product-image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: white;
+    padding: 1rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  }
+
+  .product-main-image {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: contain;
+    transition: transform 0.3s;
+  }
+
+    .product-main-image:hover {
+      transform: scale(1.03);
+    }
+
+  /* Product info */
+  .product-info-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    height: 100%;
+  }
+
+  .product-title {
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+  }
+
+  .product-code {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .product-price {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #e74c3c;
+  }
+
+  .product-original-price {
+    text-decoration: line-through;
+    color: #95a5a6;
+    font-size: 1.2rem;
+  }
+
+  .product-discount {
+    background: #e74c3c;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+  }
+
+  /* Promotions */
+  .promotion-box {
+    border-left: 4px solid #3498db;
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0 5px 5px 0;
+    margin: 1rem 0;
+  }
+
+  .promotion-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+  }
+
+  .promotion-badge {
+    background: #3498db;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  /* Action buttons */
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .btn-add-to-cart {
+    background: #3498db;
+    border: none;
+    flex: 1;
+    padding: 0.8rem;
+    font-weight: 600;
+  }
+
+  .btn-buy-now {
+    background: #2ecc71;
+    border: none;
+    flex: 1;
+    padding: 0.8rem;
+    font-weight: 600;
+  }
+
+  /* Specifications */
+  .specs-container {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  }
+
+  .specs-table {
+    width: 100%;
+  }
+
+    .specs-table tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    .specs-table td {
+      padding: 0.8rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    .specs-table .spec-name {
+      font-weight: 600;
+      color: #34495e;
+      width: 30%;
+    }
+
+  /* Reviews */
+  .reviews-container {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  }
+
+  .rating-stars {
+    color: #f39c12;
+    font-size: 1.2rem;
+  }
+
+  /* Related products */
+  .related-products {
+    margin-top: 2rem;
+  }
+
+  .related-product-card {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%;
+  }
+
+    .related-product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+  .related-product-img {
+    height: 180px;
+    object-fit: contain;
+    padding: 1rem;
+    background: #f8f9fa;
+  }
+
+  /* Quantity input */
+  .quantity-input {
+    width: 80px;
+    text-align: center;
+  }
+</style>
+
+<div class="container product-detail-container mt-4">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb bg-white p-2 rounded shadow-sm">
+      <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Trang chủ</a></li>
+      <li class="breadcrumb-item"><a href="#">Danh mục</a></li>
+      <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+    </ol>
+  </nav>
+
+  <div class="row mt-4">
+    <!-- Product Images -->
+    <div class="col-lg-6">
+      <div class="product-image-container mb-4">
+        <img src="@(string.IsNullOrEmpty(Model.Image) ? "/img/default-product.png" : Model.Image)"
+             class="product-main-image"
+             alt="@Model.Name"
+             id="mainProductImage">
+
+        <!-- Thumbnail gallery (you can add more images here) -->
+        <div class="d-flex mt-3">
+          <div class="thumbnail-item mr-2">
+            <img src="@(string.IsNullOrEmpty(Model.Image) ? "/img/default-product.png" : Model.Image)"
+                 class="img-thumbnail"
+                 width="60"
+                 onclick="changeMainImage(this)">
+          </div>
+          <!-- Add more thumbnails if available -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Info -->
+    <div class="col-lg-6">
+      <div class="product-info-card">
+        <h1 class="product-title">@Model.Name</h1>
+        <div class="product-code">Mã sản phẩm: <span class="text-primary">@Model.Code</span></div>
+
+        <div class="d-flex align-items-center mb-3">
+          <div class="rating-stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star-half-alt"></i>
+            <span class="text-muted ml-2">(12 đánh giá)</span>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center mb-4">
+          @* <div class="product-price">@String.Format("{0:N0}đ", Model.Price)</div> *@
+          @* <div class="product-original-price ml-2">@String.Format("{0:N0}đ", Model.Price * 1.2)</div> *@
+          <div class="product-discount">-20%</div>
+        </div>
+
+        <!-- Promotions -->
+        <div class="promotion-box">
+          <h5><i class="fas fa-gift text-primary mr-2"></i> Khuyến mãi đặc biệt</h5>
+          <div class="promotion-item">
+            <div class="promotion-badge">1</div>
+            <div>Giảm ngay 500.000đ khi thanh toán qua VNPAY</div>
+          </div>
+          <div class="promotion-item">
+            <div class="promotion-badge">2</div>
+            <div>Tặng phiếu mua hàng trị giá 300.000đ cho đơn tiếp theo</div>
+          </div>
+          <div class="promotion-item">
+            <div class="promotion-badge">3</div>
+            <div>Bảo hành 24 tháng tại các trung tâm bảo hành chính hãng</div>
+          </div>
+        </div>
+
+        <!-- Quantity -->
+        <div class="d-flex align-items-center mt-4">
+          <label class="font-weight-bold mr-3">Số lượng:</label>
+          <div class="input-group quantity-group" style="width: 120px;">
+            <button class="btn btn-outline-secondary quantity-minus" type="button">-</button>
+            <input type="number" class="form-control text-center quantity-input" value="1" min="1">
+            <button class="btn btn-outline-secondary quantity-plus" type="button">+</button>
+          </div>
+          <span class="text-muted ml-2">@Model.Unit sẵn có</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button class="btn btn-add-to-cart btn-lg text-white">
+            <i class="fas fa-cart-plus mr-2"></i> Thêm vào giỏ
+          </button>
+          <button class="btn btn-buy-now btn-lg text-white">
+            <i class="fas fa-bolt mr-2"></i> Mua ngay
+          </button>
+        </div>
+
+        <!-- Delivery info -->
+        <div class="mt-4 p-3 bg-light rounded">
+          <div class="d-flex align-items-center mb-2">
+            <i class="fas fa-truck text-success mr-2"></i>
+            <span>Giao hàng nhanh trong 2 giờ (nội thành Hà Nội, HCM)</span>
+          </div>
+          <div class="d-flex align-items-center">
+            <i class="fas fa-shield-alt text-primary mr-2"></i>
+            <span>Đổi trả trong 7 ngày nếu có lỗi từ nhà sản xuất</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Tabs -->
+  <ul class="nav nav-tabs mt-5" id="productTabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="specs-tab" data-toggle="tab" href="#specs" role="tab">Thông số kỹ thuật</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="desc-tab" data-toggle="tab" href="#desc" role="tab">Mô tả sản phẩm</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="reviews-tab" data-toggle="tab" href="#reviews" role="tab">Đánh giá</a>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="productTabsContent">
+    <!-- Specifications Tab -->
+    <div class="tab-pane fade show active" id="specs" role="tabpanel">
+      <div class="specs-container">
+        <table class="specs-table">
+          <tr>
+            <td class="spec-name">Mã sản phẩm</td>
+            <td>@Model.Code</td>
+          </tr>
+          <tr>
+            @* <td class="spec-name">Danh mục</td> *@
+            @* <td>@Model.CategoryName</td> *@
+          </tr>
+          <tr>
+            <td class="spec-name">Đơn vị tính</td>
+            <td>@Model.Unit</td>
+          </tr>
+          <tr>
+            <td class="spec-name">Trọng lượng</td>
+            <td>@Model.Weight kg</td>
+          </tr>
+          <tr>
+            <td class="spec-name">Kích thước</td>
+            <td>@Model.Volume m³</td>
+          </tr>
+          <tr>
+            <td class="spec-name">Tình trạng</td>
+            @* <td> *@
+            @*   @if (Model.IsActive) *@
+            @*   { *@
+            @*     <span class="badge badge-success">Còn hàng</span> *@
+            @*   } *@
+            @*   else *@
+            @*   { *@
+            @*     <span class="badge badge-danger">Hết hàng</span> *@
+            @*   } *@
+            @* </td> *@
+          </tr>
+          <tr>
+            <td class="spec-name">Bảo hành</td>
+            <td>12 tháng</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Description Tab -->
+    <div class="tab-pane fade" id="desc" role="tabpanel">
+      <div class="p-4 bg-white rounded shadow-sm">
+        <h5 class="font-weight-bold">Mô tả chi tiết</h5>
+        <div class="product-description mt-3">
+          @Html.Raw(Model.Description)
+        </div>
+      </div>
+    </div>
+
+    <!-- Reviews Tab -->
+    <div class="tab-pane fade" id="reviews" role="tabpanel">
+      <div class="reviews-container">
+        <h5 class="font-weight-bold mb-4">Đánh giá sản phẩm</h5>
+
+        <!-- Review Form -->
+        <div class="review-form mb-5">
+          <h6>Viết đánh giá của bạn</h6>
+          <div class="rating mb-2">
+            <i class="far fa-star rating-star" data-value="1"></i>
+            <i class="far fa-star rating-star" data-value="2"></i>
+            <i class="far fa-star rating-star" data-value="3"></i>
+            <i class="far fa-star rating-star" data-value="4"></i>
+            <i class="far fa-star rating-star" data-value="5"></i>
+          </div>
+          <textarea class="form-control mb-2" rows="3" placeholder="Nhập đánh giá của bạn..."></textarea>
+          <button class="btn btn-primary">Gửi đánh giá</button>
+        </div>
+
+        <!-- Reviews List -->
+        <div class="review-list">
+          <div class="review-item mb-4 pb-3 border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="font-weight-bold">Nguyễn Văn A</div>
+              <small class="text-muted">2 ngày trước</small>
+            </div>
+            <div class="rating-stars mb-1">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <p>Sản phẩm tốt, đóng gói cẩn thận, giao hàng nhanh. Tôi rất hài lòng!</p>
+          </div>
+
+          <div class="review-item mb-4 pb-3 border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="font-weight-bold">Trần Thị B</div>
+              <small class="text-muted">1 tuần trước</small>
+            </div>
+            <div class="rating-stars mb-1">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="far fa-star"></i>
+            </div>
+            <p>Sản phẩm chất lượng tốt nhưng giao hàng hơi chậm. Nhân viên tư vấn nhiệt tình.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Products -->
+  <div class="related-products">
+    <h4 class="font-weight-bold mb-4">Sản phẩm tương tự</h4>
+    <div class="row">
+      <div class="col-md-3 mb-4">
+        <div class="card related-product-card">
+          <img src="/img/Products/product1.jpg" class="card-img-top related-product-img" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">Sản phẩm tương tự 1</h5>
+            <div class="d-flex justify-content-between align-items-center">
+              <p class="card-text text-danger font-weight-bold mb-0">5.990.000đ</p>
+              <small class="text-muted"><s>7.990.000đ</s></small>
+            </div>
+            <div class="rating-stars small">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+              <small class="text-muted">(15)</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 mb-4">
+        <div class="card related-product-card">
+          <img src="/img/Products/product2.jpg" class="card-img-top related-product-img" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">Sản phẩm tương tự 2</h5>
+            <div class="d-flex justify-content-between align-items-center">
+              <p class="card-text text-danger font-weight-bold mb-0">4.590.000đ</p>
+              <small class="text-muted"><s>5.990.000đ</s></small>
+            </div>
+            <div class="rating-stars small">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="far fa-star"></i>
+              <small class="text-muted">(8)</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 mb-4">
+        <div class="card related-product-card">
+          <img src="/img/Products/product3.jpg" class="card-img-top related-product-img" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">Sản phẩm tương tự 3</h5>
+            <div class="d-flex justify-content-between align-items-center">
+              <p class="card-text text-danger font-weight-bold mb-0">7.290.000đ</p>
+              <small class="text-muted"><s>8.990.000đ</s></small>
+            </div>
+            <div class="rating-stars small">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <small class="text-muted">(23)</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 mb-4">
+        <div class="card related-product-card">
+          <img src="/img/Products/product4.jpg" class="card-img-top related-product-img" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">Sản phẩm tương tự 4</h5>
+            <div class="d-flex justify-content-between align-items-center">
+              <p class="card-text text-danger font-weight-bold mb-0">3.990.000đ</p>
+              <small class="text-muted"><s>4.990.000đ</s></small>
+            </div>
+            <div class="rating-stars small">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+              <i class="far fa-star"></i>
+              <small class="text-muted">(5)</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

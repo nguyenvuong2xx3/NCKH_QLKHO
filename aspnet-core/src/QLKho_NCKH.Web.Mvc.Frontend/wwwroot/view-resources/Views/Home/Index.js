@@ -1,95 +1,144 @@
-﻿$(function () {
+﻿(function ($) {
+	//var _productService = abp.services.app.product;
+	//var _cartService = abp.services.app.cart;
 
-    'use strict';
+	$('#searchForm').on('submit', function (e) {
+		e.preventDefault(); // Ngăn reload trang
 
-    /* ChartJS
-     * -------
-     * Here we will create a few charts using ChartJS
-     */
+		var keyword = $('#searchInput').val().trim(); // Lấy từ khóa tìm kiếm
 
-    //-----------------------
-    //- MONTHLY SALES CHART -
-    //-----------------------
+		if (keyword) {
+      window.location.href = "/Home/SearchProducts?keyword=" + encodeURIComponent(keyword);
+		} else {
+			window.location.href = "/";
+		}
+	});
 
-    // Get context with jQuery - using jQuery's .get() method.
-    var salesChartCanvas = $('#salesChart').get(0).getContext('2d');
-    // This will get the first returned node in the jQuery collection.
 
-    var salesChartData = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        datasets: [
-            {
-                label: 'Electronics',
-                fill: '#dee2e6',
-                borderColor: '#ced4da',
-                pointBackgroundColor: '#ced4da',
-                pointBorderColor: '#c1c7d1',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgb(220,220,220)',
-                spanGaps: true,
-                data: [65, 59, 80, 81, 56, 55, 40]
-            },
-            {
-                label: 'Digital Goods',
-                fill: 'rgba(0, 123, 255, 0.9)',
-                borderColor: 'rgba(0, 123, 255, 1)',
-                pointBackgroundColor: '#3b8bba',
-                pointBorderColor: 'rgba(0, 123, 255, 1)',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgba(0, 123, 255, 1)',
-                spanGaps: true,
-                data: [28, 48, 40, 19, 86, 27, 90]
-            }
-        ]
-    };
+	$('.btn-view-detail').on('click', function (e) {
+		e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
 
-    var salesChartOptions = {
-        //Boolean - If we should show the scale at all
-        showScale: true,
-        //Boolean - Whether grid lines are shown across the chart
-        scaleShowGridLines: false,
-        //String - Colour of the grid lines
-        scaleGridLineColor: 'rgba(0,0,0,.05)',
-        //Number - Width of the grid lines
-        scaleGridLineWidth: 1,
-        //Boolean - Whether to show horizontal lines (except X axis)
-        scaleShowHorizontalLines: true,
-        //Boolean - Whether to show vertical lines (except Y axis)
-        scaleShowVerticalLines: true,
-        //Boolean - Whether the line is curved between points
-        bezierCurve: true,
-        //Number - Tension of the bezier curve between points
-        bezierCurveTension: 0.3,
-        //Boolean - Whether to show a dot for each point
-        pointDot: false,
-        //Number - Radius of each point dot in pixels
-        pointDotRadius: 4,
-        //Number - Pixel width of point dot stroke
-        pointDotStrokeWidth: 1,
-        //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-        pointHitDetectionRadius: 20,
-        //Boolean - Whether to show a stroke for datasets
-        datasetStroke: true,
-        //Number - Pixel width of dataset stroke
-        datasetStrokeWidth: 2,
-        //Boolean - Whether to fill the dataset with a color
-        datasetFill: true,
-        //String - A legend template
-        legendTemplate: '<ul class="<%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span style="background-color:<%=datasets[i].lineColor%>"></span><%=datasets[i].label%></li><%}%></ul>',
-        //Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-        maintainAspectRatio: false,
-        //Boolean - whether to make the chart responsive to window resizing
-        responsive: true
-    };
+		var productId = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
 
-    //Create the line chart
-    var salesChart = new Chart(salesChartCanvas, {
-        type: 'line',
-        data: salesChartData,
-        options: salesChartOptions
+		if (productId) {
+			window.location.href = "/Home/GetDetailProduct?Id=" + productId; // Chuyển hướng đến trang chi tiết sản phẩm
+		} else {
+			console.log("Không tìm thấy sản phẩm!"); // Báo lỗi nếu không có ID
+		}
+	});
+
+
+	$('.cart').on('click', function (e) {
+		e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
+
+		var userId = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
+		window.location.href = "/Carts/Index"
+	});
+
+
+	$('.btn-add-cart').on('click', function (e) {
+		var _cartService = abp.services.app.cart;
+		e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
+			
+		var productId = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
+		bool = true;
+		_cartService.addToCart(
+			productId, 1, bool
+		).done(function () {
+			abp.notify.info("Thêm sản phẩm vào giỏ hàng thành công");
+			window.location.href = "/Carts/Index"
+		});
+  });
+
+  $('.btn-all-product').on('click', function (e) {
+    // Mặc định là null
+    window.location.href = "/Home/PageAllProduct"
+  });
+
+  $('.btn-all-product-byId').on('click', function (e) {
+    e.preventDefault(); 
+    var categoryId = $(this).data('id');
+
+    window.location.href = "/Home/PageAllProduct?categoryId=" + categoryId;
+  });
+
+
+  $(document).ready(function () {
+    let currentIndex = 0;
+    const pageSize = 5;
+    const totalProducts = $(".product-card").length;
+    let animating = false; // Ngăn chặn spam click
+
+    function updateView(direction) {
+      if (animating) return; // Ngăn chặn spam click
+      animating = true;
+
+      let start = currentIndex;
+      let end = currentIndex + pageSize;
+
+      let oldProducts = $(".product-card.active");
+      let newProducts = $(".product-card").slice(start, end);
+
+      // Gán vị trí ban đầu cho nhóm sản phẩm mới
+      newProducts.css({
+        display: "block",
+        opacity: 0,
+        position: "relative",
+        left: direction === "next" ? "200px" : "-200px"
+      });
+
+      // Di chuyển nhóm sản phẩm cũ ra ngoài màn hình
+      oldProducts.animate(
+        {
+          left: direction === "next" ? "-200px" : "200px",
+          opacity: 0.6
+        },
+        500,
+        function () {
+          $(this).removeClass("active").hide();
+        }
+      );
+
+      // Hiển thị nhóm sản phẩm mới với hiệu ứng trượt vào
+      setTimeout(() => {
+        newProducts.addClass("active").animate(
+          {
+            left: "0",
+            opacity: 1
+          },
+          500,
+          function () {
+            animating = false; // Cho phép click tiếp
+          }
+        );
+
+        // Cập nhật trạng thái nút điều hướng
+        $("#prevBtn").prop("disabled", currentIndex === 0);
+        $("#nextBtn").prop("disabled", currentIndex + pageSize >= totalProducts);
+      }, 500); // Chờ nhóm cũ trượt xong mới hiển thị nhóm mới
+    }
+
+    $("#nextBtn").click(function () {
+      if (currentIndex + pageSize < totalProducts) {
+        currentIndex += pageSize;
+        updateView("next");
+      }
     });
 
-    //---------------------------
-    //- END MONTHLY SALES CHART -
-    //---------------------------
-});
+    $("#prevBtn").click(function () {
+      if (currentIndex - pageSize >= 0) {
+        currentIndex -= pageSize;
+        updateView("prev");
+      }
+    });
+
+    // Hiển thị sản phẩm đầu tiên khi load
+    updateView("next");
+  });
+
+ 
+
+
+})(jQuery);
+
+
