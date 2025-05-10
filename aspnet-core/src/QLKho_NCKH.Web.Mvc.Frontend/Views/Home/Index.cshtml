@@ -4,7 +4,7 @@
   ViewBag.Title = "Trang chủ Quản lý Kho";
   ViewBag.CurrentPageName = PageNames.Home;
 }
-@model ProductViewModel
+@model ProductCategoryViewModel
 
 @section scripts
 {
@@ -43,12 +43,12 @@
               <div class="card mb-3">
                 <div class="card-body">
                   <div class="product-image">
-                    <img data-id="@product.Id" class="product-image btn-view-detail" style="width: 160px; height: 160px;" src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)" alt="@product.Name">
+                    @* <img data-id="@product.Id" class="product-image btn-view-detail" style="width: 160px; height: 160px;" src="@(string.IsNullOrEmpty(product.ProductBarcode) ? "/img/default.jpg" : product.Image)" alt="@product.ProductName"> *@
                   </div>
                   <div class="product-name" style="width: 100%">
-                    <h3 class="card-title ">@product.Name</h3>
+                    <h3 class="card-title ">@product.ProductName</h3>
                   </div>
-                  <p class="card-text product_price">100000000</p>
+                  <p class="card-text product_price">@product.UnitPrice</p>
 
                   @* <a href="@Url.Action("Detail", "Product", new { id = product.Id })" class="btn btn-info">Xem chi tiết</a> *@
                   <div class="block-smem-price">

@@ -19,16 +19,20 @@ using QLKho_NCKH.Inventory;
 using QLKho_NCKH.Products;
 using QLKho_NCKH.Products.Dtos;
 using QLKho_NCKH.StockTransactions;
+using QLKho_NCKH.Categories;
 
 namespace QLKho_NCKH.InventoryItems;
 
 public class InventoryItemAppService : ApplicationService, IInventoryItemAppService
 {
 	private readonly IRepository<InventoryItem, int> _inventoryItemRepository;
+	private readonly IRepository<Category> _categoryRepository;
+
 	//private readonly ITempFileCacheManager _tempFileCacheManager;
 	//private readonly MediaTypeManager MediaTypeManager;
 
 	public InventoryItemAppService(IRepository<InventoryItem, int> inventoryItemRepository
+	, IRepository<Category> categoryRepository
 	//, IBlobContainerFactory blobContainerFactory
 	//, ITempFileCacheManager tempFileCacheManager
 	//, MediaTypeManager mediaTypeManager
@@ -36,6 +40,7 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 	)
 	{
 		_inventoryItemRepository = inventoryItemRepository;
+		_categoryRepository = categoryRepository;
 		//_tempFileCacheManager = tempFileCacheManager;
 		//MediaTypeManager = mediaTypeManager;
 	}
@@ -77,13 +82,48 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 		//};
 	}
 
+
+	//public async Task<PagedResultDto<InventoryItemListDto>> GetInventoryItemsProduct(GetInventoryItemsInput input)
+	//{
+	//	var query = _inventoryItemRepository.GetAll()
+	//			 .Include(x => x.Product);
+
+	//	var count = await query.CountAsync();
+	//	var items = await query.OrderBy(input.Sorting)
+	//			 .PageBy(input)
+	//			 .ToListAsync();
+	//	var result = items.Select(item => new InventoryItemListDto
+	//	{
+	//		ProductId = item.ProductId,
+	//		ProductCode = item.Product.Code,
+	//		StorageLocationId = item.StorageLocationId,
+	//		StorageLocationCode = item.StorageLocation.Code,
+	//		Quantity = item.Quantity,
+	//		ReservedQuantity = item.ReservedQuantity,
+	//		UnitPrice = item.UnitPrice,
+	//		ProductName = item.Product.Name,
+	//		ProductBarcode = item.Product.Barcode,
+	//	}).ToList();
+	//	return new PagedResultDto<InventoryItemListDto> { Items = result, TotalCount = count };
+
 	public async Task<PagedResultDto<InventoryItemListDto>> GetInventoryItems(GetInventoryItemsInput input)
 	{
-		var query = _inventoryItemRepository.GetAll()
-				 .Include(x => x.Product)
-				 .Include(x => x.StorageLocation)
-				 .WhereIf(input.WarehouseId != 0, x => x.StorageLocation.WarehouseId == input.WarehouseId);
+		if (input.CategoryId != 0)
+		{
+			var getallcategory = await _categoryRepository.GetAllAsync();
+			var categoryList = getallcategory.ToList();
+		}
 
+		var query = _inventoryItemRepository.GetAll()
+				.Include(x => x.Product)
+				.Include(x => x.StorageLocation)
+				.WhereIf(input.WarehouseId != 0, x => x.StorageLocation.WarehouseId == input.WarehouseId)
+				.WhereIf(input.Filter != null, x => x.Product.Name.Contains(input.Filter));
+
+		if (input.CategoryId != 0)
+		{
+			query = query.WhereIf(input.CategoryId != null, x => x.Product.CategoryId == input.CategoryId);
+		}
 		var count = await query.CountAsync();
 		var items = await query.OrderBy(input.Sorting)
 				 .PageBy(input)
@@ -93,6 +133,7 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 		{
 			ProductId = item.ProductId,
 			ProductCode = item.Product.Code,
+			Description = item.Product.Description,
 			StorageLocationId = item.StorageLocationId,
 			StorageLocationCode = item.StorageLocation.Code,
 			Quantity = item.Quantity,

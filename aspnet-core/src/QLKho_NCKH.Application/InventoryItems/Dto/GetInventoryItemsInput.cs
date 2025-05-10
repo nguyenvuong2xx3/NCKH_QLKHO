@@ -17,6 +17,7 @@ namespace QLKho_NCKH.InventoryItems.Dto
 
 		public DateTime? EndDate { get; set; }
 
+		public int CategoryId { get; set; }
 		public int? ProductId { get; set; }
 		public int? StorageLocationId { get; set; }
 		public int? Quantity { get; set; }

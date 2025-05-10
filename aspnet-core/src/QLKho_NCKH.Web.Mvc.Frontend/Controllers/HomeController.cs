@@ -10,6 +10,8 @@ using QLKho_NCKH.Web.Models.Products;
 using QLKho_NCKH.Web.Models.Categories;
 using System.Collections.Generic;
 using QLKho_NCKH.Categories;
+using QLKho_NCKH.InventoryItems;
+using QLKho_NCKH.InventoryItems.Dto;
 
 namespace QLKho_NCKH.Web.Controllers
 {
@@ -19,27 +21,121 @@ namespace QLKho_NCKH.Web.Controllers
 		private readonly IProductAppService _productAppService;
 		private readonly ICategoryAppService _categoryAppService;
 
-		public HomeController(IProductAppService productAppService, ICategoryAppService categoryAppService)
+		private readonly IInventoryItemAppService _inventoryItemAppService;
+
+		public HomeController(IProductAppService productAppService, ICategoryAppService categoryAppService , IInventoryItemAppService inventoryItemAppService)
 		{
 			_productAppService = productAppService;
 			_categoryAppService = categoryAppService;
+			_inventoryItemAppService = inventoryItemAppService;
 		}
 
+		//public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+		//{
+		//	var categories = await _categoryAppService.GetAllCategories();
+
+		//	// Tạo danh sách view model cho từng danh mục và sản phẩm
+		//	var categoryProducts = new List<CategoryProductViewModel>();
+
+		//	foreach (var category in categories)
+		//	{
+		//		// Lấy sản phẩm theo danh mục
+		//		var result = await _inventoryItemAppService.GetInventoryItems(new GetInventoryItemsInput
+		//		{
+
+		//			CategoryId = category.Id,
+		//			Filter = "",
+		//			MaxResultCount = 20,
+		//			Sorting = "CreationTime DESC"
+		//		});
+
+		//		categoryProducts.Add(new CategoryProductViewModel
+		//		{
+		//			CategoryId = category.Id,
+		//			CategoryName = category.Name,
+		//			Products = result.Items,
+		//		});
+		//	}
+
+		//	// Thống kê tổng quan
+		//	var allProducts = await _productAppService.GetAllProducts(new ProductInput());
+		//	var activeProducts = allProducts.Items.Count(p => p.IsActive);
+
+		//	var model = new ProductSearchViewModel()
+		//	{
+		//		//CurrentPage = page,
+		//		TotalCount = result.TotalCount,
+		//		//TotalCount = allProducts.TotalCount,
+		//		//ActiveCount = activeProducts,
+		//		CategoryProducts = categoryProducts
+		//	};
+
+		//	return View(model);
+		//	//var result = await _inventoryItemAppService.GetInventoryItems(new GetInventoryItemsInput
+		//	//{
+		//	//	Filter = "",
+		//	//	MaxResultCount = 20,
+		//	//	Sorting = "CreationTime DESC"
+		//	//});
+
+		//	var model = new ProductSearchViewModel
+		//	{
+		//		Items = result.Items,
+		//		TotalCount = result.TotalCount,
+		//		Keyword = ""
+		//	};
+		//	return View(model);
+		//	// Lấy danh sách tất cả danh mục
+		//	//var categories = await _categoryAppService.GetAllCategories();
+
+		//	//// Tạo danh sách view model cho từng danh mục và sản phẩm
+		//	//var categoryProducts = new List<CategoryProductViewModel>();
+
+		//	//foreach (var category in categories)
+		//	//{
+		//	//	// Lấy sản phẩm theo danh mục
+		//	//	var productsResult = await _productAppService.GetAllProducts(new ProductInput
+		//	//	{
+		//	//		CategoryId = category.Id,
+		//	//		MaxResultCount = 10, // Lấy 10 sản phẩm mỗi danh mục
+		//	//		Sorting = "CreationTime DESC"
+		//	//	});
+
+		//	//	categoryProducts.Add(new CategoryProductViewModel
+		//	//	{
+		//	//		CategoryId = category.Id,
+		//	//		CategoryName = category.Name,
+		//	//		Products = productsResult.Items.ToList()
+		//	//	});
+		//	//}
+
+		//	//// Thống kê tổng quan
+		//	//var allProducts = await _productAppService.GetAllProducts(new ProductInput());
+		//	//var activeProducts = allProducts.Items.Count(p => p.IsActive);
+
+		//	//var model = new ProductViewModel(allProducts.Items.ToList())
+		//	//{
+		//	//	CurrentPage = page,
+		//	//	TotalPages = (int)Math.Ceiling((double)allProducts.TotalCount / pageSize),
+		//	//	//TotalCount = allProducts.TotalCount,
+		//	//	//ActiveCount = activeProducts,
+		//	//	CategoryProducts = categoryProducts
+		//	//};
+
+		//	//return View(model);
+		//}
 		public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
 		{
-			// Lấy danh sách tất cả danh mục
 			var categories = await _categoryAppService.GetAllCategories();
 
-			// Tạo danh sách view model cho từng danh mục và sản phẩm
 			var categoryProducts = new List<CategoryProductViewModel>();
 
 			foreach (var category in categories)
 			{
-				// Lấy sản phẩm theo danh mục
-				var productsResult = await _productAppService.GetAllProducts(new ProductInput
+				var result = await _inventoryItemAppService.GetInventoryItems(new GetInventoryItemsInput
 				{
 					CategoryId = category.Id,
-					MaxResultCount = 10, // Lấy 10 sản phẩm mỗi danh mục
+					MaxResultCount = 20,
 					Sorting = "CreationTime DESC"
 				});
 
@@ -47,21 +143,20 @@ namespace QLKho_NCKH.Web.Controllers
 				{
 					CategoryId = category.Id,
 					CategoryName = category.Name,
-					Products = productsResult.Items.ToList()
+					Products = result.Items.ToList()
 				});
 			}
 
-			// Thống kê tổng quan
 			var allProducts = await _productAppService.GetAllProducts(new ProductInput());
 			var activeProducts = allProducts.Items.Count(p => p.IsActive);
 
-			var model = new ProductViewModel(allProducts.Items.ToList())
+			var model = new ProductCategoryViewModel
 			{
+				CategoryProducts = categoryProducts,
+				TotalCount = allProducts.TotalCount,
+				ActiveCount = activeProducts,
 				CurrentPage = page,
-				TotalPages = (int)Math.Ceiling((double)allProducts.TotalCount / pageSize),
-				//TotalCount = allProducts.TotalCount,
-				//ActiveCount = activeProducts,
-				CategoryProducts = categoryProducts
+				TotalPages = (int)Math.Ceiling((double)allProducts.TotalCount / pageSize)
 			};
 
 			return View(model);
@@ -69,15 +164,25 @@ namespace QLKho_NCKH.Web.Controllers
 
 		public async Task<IActionResult> SearchProducts(string keyword)
 		{
-			var result = await _productAppService.GetAllProducts(new ProductInput
+
+			//GetInventoryItems
+			//var result = await _productAppService.GetAllProducts(new ProductInput
+			//{
+			//	Filter = keyword,
+			//	MaxResultCount = 20
+			//});
+			var result = await _inventoryItemAppService.GetInventoryItems(new GetInventoryItemsInput
 			{
 				Filter = keyword,
-				MaxResultCount = 20
+				MaxResultCount = 20,
+				Sorting = "CreationTime DESC"
 			});
 
-			var model = new ProductViewModel(result.Items.ToList())
+			var model = new ProductSearchViewModel
 			{
-				count = result.Items.Count
+				Items = result.Items,
+				TotalCount = result.TotalCount,
+				Keyword = keyword
 			};
 
 			return View("_ProductSearchResults", model);
