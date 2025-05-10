@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 namespace QLKho_NCKH.Carts
 {
 	[Table("AppCarts")]
-	public class Cart: FullAuditedEntity<int>
+	public class CartItem : FullAuditedEntity<int>
 	{
-			public int InventoryItemId { get; set; }
-			[ForeignKey("InventoryItemId")]
-			public InventoryItem InventoryItem { get; set; }
+			public int ProductId { get; set; }
+			[ForeignKey("ProductId")]
+			public Product Product { get; set; }
 			public long UserId { get; set; }
 			[ForeignKey("UserId")]
 			public User User { get; set; }

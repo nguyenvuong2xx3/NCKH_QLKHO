@@ -46,4 +46,10 @@ namespace QLKho_NCKH.EnumCustom
 		StockTake,
 		Adjustment
 	}
+	public enum ProductState : byte
+	{
+		Available = 0,
+		OutOfStock = 1,
+		Discontinued = 2
+	}
 }

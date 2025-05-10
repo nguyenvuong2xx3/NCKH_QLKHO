@@ -28,7 +28,7 @@ namespace QLKho_NCKH.EntityFrameworkCore
 		public DbSet<Customer> Customers { get; set; }
 		public DbSet<StockTransactionDetail> StockTransactionDetails { get; set; }
 		public DbSet<StockTransaction> StockTransactions { get; set; }
-		public DbSet<Cart> Carts { get; set; }
+		public DbSet<CartItem> Carts { get; set; }
 		public DbSet<Order> Oders { get; set; }
 		public DbSet<OrderDetail> OrderDetails { get; set; }
 
