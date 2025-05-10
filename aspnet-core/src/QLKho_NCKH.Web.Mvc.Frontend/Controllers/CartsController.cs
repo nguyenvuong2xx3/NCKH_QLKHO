@@ -46,21 +46,22 @@ namespace QLKho_NCKH.Web.Controllers
 
 			foreach (var item in carts)
 			{
-				//var product = await _productAppService.GetAsync(new Abp.Application.Services.Dto.EntityDto<int>
+				//var product = await _productAppService.GetAsync(new Abp.Application.Services.Dto.
 				//{
 				//	Id = item.ProductId
 				//});
 
-				//// Thêm sản phẩm vào danh sách giỏ hàng
-				//cartItems.Carts.Add(new CartViewModel
-				//{
-				//	Id = product.Id,
-				//	Name = product.Name,
-				//	Price = product.Price,
-				//	TotalPrice = item.Quantity * product.Price,
-				//	Quantity = item.Quantity,
-				//	Image = product.Image
-				//});
+				// Thêm sản phẩm vào danh sách giỏ hàng
+				cartItems.Carts.Add(new CartViewModel
+				{
+					Id = item.Id,
+					ProductId = item.ProductId,
+					Name = item.Name,
+					Price = item.Price,
+					TotalPrice = item.Quantity * item.Price,
+					Quantity = item.Quantity,
+					Image = item.Image
+				});
 			}
 
 			return View(cartItems);
