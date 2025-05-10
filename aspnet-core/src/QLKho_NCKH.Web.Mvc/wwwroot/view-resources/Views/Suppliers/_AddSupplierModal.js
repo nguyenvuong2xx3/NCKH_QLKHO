@@ -126,20 +126,46 @@
       });
     };
 
+    //this.save = function () {
+    //  var selectedRow = dataTable.row($('input[name="selectedSupplier"]:checked').closest('tr')).data();
+
+    //  if (!selectedRow) {
+    //    abp.message.warn(abp.localization.localize('PleaseSelectASupplier', 'QLKho_NCKH'));
+    //    return;
+    //  }
+
+    //  _modalManager.setResult({
+    //    supplierId: selectedRow.id,
+    //    supplierName: selectedRow.name
+    //  });
+
+    //  _modalManager.close();
+    //};
+
     this.save = function () {
-      var selectedRow = dataTable.row($('input[name="selectedSupplier"]:checked').closest('tr')).data();
+      try {
+        var selectedRow = dataTable.row($('input[name="selectedSupplier"]:checked').closest('tr')).data();
 
-      if (!selectedRow) {
-        abp.message.warn(abp.localization.localize('PleaseSelectASupplier', 'QLKho_NCKH'));
-        return;
+        if (!selectedRow) {
+          abp.message.warn(abp.localization.localize('PleaseSelectASupplier', 'QLKho_NCKH'));
+          return;
+        }
+
+        // Đảm bảo chỉ đóng modal khi có kết quả hợp lệ
+        _modalManager.setResult({
+          supplierId: selectedRow.id,
+          supplierName: selectedRow.name
+        });
+
+        // Thêm delay nhỏ để đảm bảo các sự kiện hoàn tất
+        setTimeout(() => {
+          _modalManager.close();
+        }, 100);
+
+      } catch (e) {
+        console.error('Lỗi khi lưu nhà cung cấp:', e);
+        abp.notify.error('Đã xảy ra lỗi khi lưu');
       }
-
-      _modalManager.setResult({
-        supplierId: selectedRow.id,
-        supplierName: selectedRow.name
-      });
-
-      _modalManager.close();
     };
   };
 })();

@@ -1,0 +1,161 @@
+﻿@using QLKho_NCKH.Web.Models.Common.Modals
+@using QLKho_NCKH.Web.Models.Products
+@model EditProductViewModel
+
+
+<script src="~/view-resources/Views/Products/_EditModal.js" asp-append-version="true"></script>
+
+@{
+	Layout = null;
+}
+
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditProduct")))
+<script src="~/view-resources/Views/Products/_EditModal.js" asp-append-version="true"></script>
+
+<form name="productEditForm" role="form" class="form-horizontal">
+	<input type="hidden" name="Id" value="@Model.Product.Id" />
+
+	<div class="modal-body">
+
+		<div class="form-group row mb-3 required">
+			<label class="col-md-3 col-form-label fw-bold">@L("Code")</label>
+			<div class="col-md-9">
+				<input type="text" class="form-control" name="Code" value="@Model.Product.Code" required maxlength="256" placeholder="Nhập mã sản phẩm...">
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 required">
+			<label class="col-md-3 col-form-label fw-bold">@L("ProductName")</label>
+			<div class="col-md-9">
+				<input type="text" class="form-control" name="Name" value="@Model.Product.Name" required maxlength="256" placeholder="Nhập tên sản phẩm...">
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 required">
+			<label class="col-md-3 col-form-label fw-bold">@L("Description")</label>
+			<div class="col-md-9">
+				<textarea class="form-control" name="Description" required maxlength="500" rows="3" placeholder="Nhập mô tả sản phẩm...">@Model.Product.Description</textarea>
+			</div>
+		</div>
+
+		<div class="form-group row mb-3">
+			<label class="col-md-3 col-form-label fw-bold">@L("Barcode")</label>
+			<div class="col-md-9">
+				<input type="text" class="form-control" name="Barcode" value="@Model.Product.Barcode" maxlength="256" placeholder="Nhập mã vạch...">
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 required">
+			<label for="CategoryDisplayEdit" class="col-md-3 col-form-label fw-bold">@L("Category")</label>
+			<div class="input-group">
+				<input type="text" id="CategoryDisplayEdit" class="form-control" value="@Model.Category?.Name" readonly required />
+				<button type="button" id="EditCategoryBtn" class="btn btn-success btn-sm" title="@L("Category")">
+					<i class="fa fa-id-card"></i>
+				</button>
+			</div>
+			<input type="hidden" id="CategoryIdEdit" name="CategoryId" value="@Model.Product.CategoryId" />
+		</div>
+
+		<div class="form-group row mb-3">
+			<label class="col-md-3 col-form-label fw-bold">@L("Unit")</label>
+			<div class="col-md-9">
+				<input type="text" class="form-control" name="Unit" value="@Model.Product.Unit" maxlength="100" placeholder="Nhập đơn vị tính...">
+			</div>
+		</div>
+
+		<div class="form-group row mb-3">
+			<label class="col-md-3 col-form-label fw-bold">@L("Weight")</label>
+			<div class="col-md-9">
+				<input type="number" class="form-control" name="Weight" value="@Model.Product.Weight" step="0.01" placeholder="Nhập trọng lượng...">
+			</div>
+		</div>
+
+		<div class="form-group row mb-3">
+			<label class="col-md-3 col-form-label fw-bold">@L("Volume")</label>
+			<div class="col-md-9">
+				<input type="number" class="form-control" name="Volume" value="@Model.Product.Volume" step="0.01" placeholder="Nhập thể tích...">
+			</div>
+		</div>
+
+		<div class="form-group row mb-3 required">
+			<label class="col-md-3 col-form-label fw-bold">@L("IsActive")</label>
+			<div class="col-md-9">
+				<select class="form-control" name="IsActive" required>
+					<option value="@Model.Product.IsActive">Hoạt động</option>
+					@* <option value="true" @(Model.Product.IsActive ? "selected" : "")>Hoạt động</option> *@
+					@* <option value="false" @(!Model.Product.IsActive ? "selected" : "")>Không hoạt động</option> *@
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label">@L("Supplier")</label>
+			<div class="input-group">
+				<input type="text" id="SupplierDisplayEdit" class="form-control" value="@Model.Supplier?.Name" readonly required />
+				<button type="button" id="EditSupplierBtn" class="btn btn-success btn-sm" title="@L("Supplier")">
+					<i class="fa fa-id-card"></i>
+				</button>
+			</div>
+			<input type="hidden" id="SupplierIdEdit" name="SupplierId" value="@Model.Product.SupplierId" />
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label">@L("CurrentImage")</label>
+			<div class="col-md-9">
+				<div class="d-flex align-items-center">
+					<img id="productImage" src="@Model.Product.Image" class="img-thumbnail" style="max-width: 150px;" />
+					<button type="button" id="deleteImageBtn" class="btn btn-danger ml-2"
+									style="@(string.IsNullOrEmpty(Model.Product.Image) ? "display: none;" : " ")">
+						Xóa Ảnh
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="newImage">@L("UploadNewImage")</label>
+			<div class="col-md-9">
+				<input type="file" id="newImage" class="form-control" name="ImageFile" accept="image/*">
+			</div>
+		</div>
+
+	</div>
+
+	@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+</form>
+
+
+<style>
+	.modal.fade {
+		z-index: 1050 !important; /* Đảm bảo modal cha luôn hiển thị trên */
+	}
+
+	.modal.show {
+		z-index: 1060 !important; /* Z-index của modal con */
+	}
+
+	.modal-backdrop.show {
+		z-index: 1055 !important; /* Z-index của backdrop modal con */
+	}
+
+	.modal {
+		overflow-y: auto !important;
+	}
+
+	.modal-open {
+		overflow: hidden !important;
+	}
+
+	.has-error .form-control {
+		border-color: #d9534f;
+	}
+
+	.error {
+		color: #d9534f;
+		font-size: 0.875em;
+		margin-top: 0.25rem;
+	}
+
+
+</style>
+

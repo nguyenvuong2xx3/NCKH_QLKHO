@@ -1,0 +1,129 @@
+﻿@using Abp.Authorization.Users
+@using QLKho_NCKH.Web.Models.Common.Modals
+@using QLKho_NCKH.Web.Models.storageLocations
+@model storageLocationListViewModel
+@{
+  Layout = null;
+}
+<div class="modal fade" id="TransferModal" tabindex="-1" role="dialog" aria-labelledby="TransferModalLabel" data-backdrop="static">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("TransferItemsBetweenWarehouses")))
+      <form name="StorageLocationTransferForm" role="form" class="form-horizontal">
+        <div class="modal-body">
+          <div class="tab-content mt-4">
+            <div role="tabpanel" class="tab-pane container active" id="transfer-details">
+              <!-- Source Warehouse -->
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label">@L("FromWarehouse")</label>
+                <div class="col-md-9">
+                  <div class="input-group">
+                    <input type="text" id="FromWarehouseDisplay" class="form-control" readonly required />
+                    <div class="input-group-append">
+                      <button type="button" id="SelectFromWarehouseBtn" class="btn btn-success" title="@L("SelectFromWarehouse")">
+                        <i class="fa fa-id-card"></i> @L("Select")
+                      </button>
+                    </div>
+                  </div>
+                  <input type="hidden" id="FromWarehouseId" name="FromWarehouseId" />
+                </div>
+              </div>
+
+              <!-- Destination Warehouse -->
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label">@L("ToWarehouse")</label>
+                <div class="col-md-9">
+                  <div class="input-group">
+                    <input type="text" id="ToWarehouseDisplay" class="form-control" readonly required />
+                    <div class="input-group-append">
+                      <button type="button" id="SelectToWarehouseBtn" class="btn btn-success" title="@L("SelectToWarehouse")">
+                        <i class="fa fa-id-card"></i> @L("Select")
+                      </button>
+                    </div>
+                  </div>
+                  <input type="hidden" id="ToWarehouseId" name="ToWarehouseId" />
+                </div>
+              </div>
+
+              <!-- Products Selection -->
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label">@L("Products")</label>
+                <div class="col-md-9">
+                  <div class="input-group">
+                    <input type="text" id="ProductsTransferDisplay" class="form-control" readonly required />
+                    <div class="input-group-append">
+                      <button type="button" id="AddProductsTransferBtn" class="btn btn-success" title="@L("Products")">
+                        <i class="fa fa-id-card"></i> @L("Select")
+                      </button>
+                    </div>
+                  </div>
+                  <input type="hidden" id="ProductsIdTransfer" name="ProductId" />
+                </div>
+              </div>
+
+              <!-- Products Table -->
+              <div class="form-group row">
+                <div class="col-md-12">
+                  <table id="productTransferTable" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>@L("ProductCode")</th>
+                        <th>@L("ProductName")</th>
+                        <th>@L("Quantity")</th>
+                        <th>@L("CurrentLocation")</th>
+                        <th>@L("NewLocation")</th>
+                        <th>@L("Actions")</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- Products will be added here via JavaScript -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Transfer Date -->
+              <div class="form-group row required">
+                <label class="col-md-3 col-form-label">@L("TransferDate")</label>
+                <div class="col-md-9">
+                  <input type="datetime-local" class="form-control" name="TransferDate" required />
+                </div>
+              </div>
+
+              <!-- Notes -->
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label">@L("Notes")</label>
+                <div class="col-md-9">
+                  <textarea class="form-control" name="Notes" rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .modal {
+    z-index: 1050 !important;
+  }
+
+  .modal-backdrop {
+    z-index: 1040 !important;
+  }
+
+  #productTransferTable {
+    width: 100%;
+  }
+
+    #productTransferTable th {
+      white-space: nowrap;
+    }
+
+  .input-group-append .btn {
+    border-radius: 0 4px 4px 0;
+  }
+</style>

@@ -1,0 +1,51 @@
+﻿@using Abp.Authorization.Users
+@using QLKho_NCKH.Web.Models.Common.Modals
+@using QLKho_NCKH.Web.Models.Warehouses
+@model WarehouseEditViewModel
+@{
+	Layout = null;
+}
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditWarehouse")))
+<script src="~/view-resources/Views/Warehouses/_EditModal.js" asp-append-version="true"></script>
+
+<form name="WarehouseEditForm" role="form" class="form-horizontal">
+  <input type="hidden" name="Id" value="@Model.Id" />
+  <div class="modal-body">
+    <div class="tab-content mt-4">
+      <div role="tabpanel" class="tab-pane container active" id="create-warehouses-details">
+        <div class="form-group row required">
+          <label class="col-md-3 col-form-label">@L("Code")</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" name="Code" value="@Model.Code" required maxlength="256" placeholder="Nhập mã kho (VD: KHO001)">
+          </div>
+        </div>
+        <div class="form-group row required">
+          <label class="col-md-3 col-form-label">@L("Name")</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" name="Name" value="@Model.Name" required maxlength="256" placeholder="Nhập tên kho (VD: Kho chính)">
+          </div>
+        </div>
+        <div class="form-group row required">
+          <label class="col-md-3 col-form-label">@L("Location")</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" name="Location" value="@Model.Location" required maxlength="256" placeholder="Nhập địa chỉ kho (VD: 123 Đường ABC, Quận 1)">
+          </div>
+        </div>
+        <div class="form-group row required">
+          <label class="col-md-3 col-form-label">@L("TotalArea")</label>
+          <div class="col-md-9">
+            <input type="tel" class="form-control" name="TotalArea" value="@Model.TotalArea" required maxlength="20" placeholder="Nhập diện tích (VD: 500m2)">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-3 col-form-label">@L("IsActive")</label>
+          <div class="col-md-9">
+            <input type="checkbox" name="IsActive" value="true" @(Model.IsActive ? "checked" : "") />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+</form>
+

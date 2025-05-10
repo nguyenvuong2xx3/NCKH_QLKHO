@@ -1,0 +1,153 @@
+﻿@using QLKho_NCKH.Web.Models.Common.Modals
+@using QLKho_NCKH.Web.Models.Products
+@model ProductViewModel
+
+@section scripts
+{
+	<environment names="Development">
+		<script src="~/view-resources/Views/Products/Create.js" asp-append-version="true"></script>
+	</environment>
+}
+
+@{
+	Layout = null;
+}
+
+<div class="modal fade" id="ProductCreateModal" tabindex="-1" role="dialog" aria-labelledby="ProductCreateModalLabel" data-backdrop="static">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewProduct")))
+
+			<form name="productCreateForm" role="form" class="form-horizontal">
+				<div class="modal-body">
+
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("Code")</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="Code" required maxlength="256" placeholder="Nhập mã sản phẩm...">
+						</div>
+					</div>
+
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("ProductName")</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="Name" required maxlength="256" placeholder="Nhập tên sản phẩm...">
+						</div>
+					</div>
+
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("Description")</label>
+						<div class="col-md-9">
+							<textarea class="form-control" name="Description" required maxlength="500" rows="3" placeholder="Nhập mô tả sản phẩm..."></textarea>
+						</div>
+					</div>
+
+					<div class="form-group row mb-3">
+						<label class="col-md-3 col-form-label fw-bold">@L("Barcode")</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="Barcode" maxlength="256" placeholder="Nhập mã vạch...">
+						</div>
+					</div>
+
+					<div class="form-group row required">
+						<label class="col-md-3 col-form-label">@L("Category")</label>
+						<div class="input-group">
+							<input type="text" id="CategoryDisplay" class="form-control" readonly required placeholder="Chọn danh mục..."/>
+							<button type="button" id="CreateCategoryBtn" class="btn btn-success btn-sm" title="@L("Category")">
+								<i class="fa fa-id-card"></i>
+							</button>
+						</div>
+						<input type="hidden" id="CategoryIdCreate" name="CategoryId" />
+					</div>
+
+					<div class="form-group row mb-3">
+						<label class="col-md-3 col-form-label fw-bold">@L("Unit")</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="Unit" maxlength="100" placeholder="Nhập đơn vị tính...">
+						</div>
+					</div>
+
+					<div class="form-group row mb-3">
+						<label class="col-md-3 col-form-label fw-bold">@L("Weight")</label>
+						<div class="col-md-9">
+							<input type="number" class="form-control" name="Weight" step="0.01" placeholder="Nhập trọng lượng...">
+						</div>
+					</div>
+
+					<div class="form-group row mb-3">
+						<label class="col-md-3 col-form-label fw-bold">@L("Volume")</label>
+						<div class="col-md-9">
+							<input type="number" class="form-control" name="Volume" step="0.01" placeholder="Nhập thể tích...">
+						</div>
+					</div>
+
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("IsActive")</label>
+						<div class="col-md-9">
+							<select class="form-control" name="IsActive" required>
+								<option value="true">Hoạt động</option>
+								<option value="false">Không hoạt động</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group row required">
+						<label class="col-md-3 col-form-label">@L("Supplier")</label>
+						<div class="input-group">
+							<input type="text" id="SupplierDisplay" class="form-control" readonly required placeholder="Chọn nhà cung cấp..." />
+							<button type="button" id="AddSupplierBtn" class="btn btn-success btn-sm" title="@L("Supplier")">
+								<i class="fa fa-id-card"></i>
+							</button>
+						</div>
+						<input type="hidden" id="SupplierIdCreate" name="SupplierId" />
+					</div>
+
+					<div class="row mb-3 form-group">
+						<label class="col-md-3 col-form-label fw-bold">@L("ProductImage")</label>
+						<div class="col-md-9">
+							<div class="d-flex align-items-center">
+								<div class="border rounded shadow-sm p-2 text-center"
+										 style="width: 200px; height: 100px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+									<img id="previewImage" src="/img/products/default.jpg"
+											 class="img-fluid rounded"
+											 style="max-width: 100%; height: auto; object-fit: cover;">
+								</div>
+								<div class="ms-3 m-5">
+									<input type="file" id="imageUpload" class="d-none" name="ImageFile" accept="image/*">
+									<label for="imageUpload" class="btn btn-outline-primary">
+										<i class="fas fa-upload"></i> Chọn ảnh
+									</label>
+									<div id="imageError" class="text-danger mt-2"></div> <!-- Thông báo lỗi -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+			</form>
+		</div>
+	</div>
+</div>
+<style>
+	.modal.fade {
+		z-index: 1050 !important; /* Đảm bảo modal cha luôn hiển thị trên */
+	}
+
+	.modal.show {
+		z-index: 1060 !important; /* Z-index của modal con */
+	}
+
+	.modal-backdrop.show {
+		z-index: 1055 !important; /* Z-index của backdrop modal con */
+	}
+
+	.modal {
+		overflow-y: auto !important;
+	}
+
+	.modal-open {
+		overflow: hidden !important;
+	}
+
+</style>

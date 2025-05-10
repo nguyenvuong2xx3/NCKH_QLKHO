@@ -1,0 +1,18 @@
+﻿namespace QLKho_NCKH.Web.Startup
+{
+    public class PageNames
+    {
+        public const string Home = "Home";
+        public const string About = "About";
+        public const string Tenants = "Tenants";
+        public const string Users = "Users";
+        public const string Roles = "Roles"; 
+        public const string Products = "Products"; 
+        public const string Categories = "Categories";
+		    public const string Suppliers = "Suppliers";
+		    public const string Warehouses = "Warehouses";
+		    public const string StorageLocations = "StorageLocations";
+		    public const string StockTransactions = "StockTransactions";
+		    public const string Customers = "Customers";
+	}
+}

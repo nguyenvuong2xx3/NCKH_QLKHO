@@ -24,7 +24,7 @@
       if (result) {
         $('#CategoryDisplayEdit').val(result.categoryName.trim());
         $('#CategoryIdEdit').val(result.categoryId);
-        _addCategoryEditModal.close(); // Đóng modal con
+        $('.AddCategoryModal').modal('hide'); 
       }
     });
   });
@@ -35,7 +35,8 @@
       if (result) {
         $('#SupplierDisplayEdit').val(result.supplierName.trim());
         $('#SupplierIdEdit').val(result.supplierId);
-        _addSupplierEditModal.close(); // Đóng modal con
+        //_addSupplierEditModal.close(); // Đóng modal con
+        $('.AddSupplierModal').modal('hide');
       }
     });
   });
