@@ -1,6 +1,7 @@
 ﻿using QLKho_NCKH.Categories.Dto;
 using QLKho_NCKH.Products.Dtos;
 using QLKho_NCKH.Suppliers.Dtos;
+using QLKho_NCKH.Web.Models.Categories;
 using System.Collections.Generic;
 
 namespace QLKho_NCKH.Web.Models.Products
@@ -9,11 +10,13 @@ namespace QLKho_NCKH.Web.Models.Products
 	{
 		public IReadOnlyList<ProductListDto> Products;
 
-		public List<CategoryListDto> Categories { get; set; }	
+		public List<CategoryListDto> Categories { get; set; }
+		public List<CategoryProductViewModel> CategoryProducts { get; set; }
 
 		public ProductViewModel(IReadOnlyList<ProductListDto> products)
 		{
 			Products = products;
+			Categories = new List<CategoryListDto>();
 		}
 
 		public int CurrentPage { get; set; }

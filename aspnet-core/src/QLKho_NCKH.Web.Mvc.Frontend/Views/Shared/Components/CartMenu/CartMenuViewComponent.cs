@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using QLKho_NCKH.Carts;
-using QLKho_NCKH.Web.Views;
 
-namespace MyProject.Web.Views.Shared.Components.CartMenu
+namespace QLKho_NCKH.Web.Views.Shared.Components.CartMenu
 {
 	public class CartMenuViewComponent : QLKho_NCKHViewComponent
 	{

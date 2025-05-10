@@ -146,18 +146,20 @@ namespace QLKho_NCKH.Products
 								 x => x.Name.Contains(input.Filter) || x.Description.Contains(input.Filter))
 				// only add this WHERE if SupplierId > 0
 				.WhereIf(input.SupplierId > 0,
-								 x => x.SupplierId == input.SupplierId);
+								 x => x.SupplierId == input.SupplierId)
+				.WhereIf(input.CategoryId > 0,
+								 x => x.CategoryId == input.CategoryId);
 
 
 			// … ordering, paging, projection, etc.
 
-		//.WhereIf(input.CategoryId.HasValue,
-		//				 x => x.CategoryId == input.CategoryId.Value)
-		//.WhereIf(input.State.HasValue,
-		//				 x => x.State == input.State.Value);
+			//.WhereIf(input.CategoryId.HasValue,
+			//				 x => x.CategoryId == input.CategoryId.Value)
+			//.WhereIf(input.State.HasValue,
+			//				 x => x.State == input.State.Value);
 
-		// Sắp xếp dữ liệu
-		query = query.OrderBy(input.Sorting ?? "CreationTime DESC");
+			// Sắp xếp dữ liệu
+			query = query.OrderBy(input.Sorting ?? "CreationTime DESC");
 
 			// Đếm tổng số bản ghi
 			var totalCount = await query.CountAsync();

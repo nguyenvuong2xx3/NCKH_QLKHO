@@ -1,7 +1,7 @@
 ﻿using Abp.Application.Services.Dto;
 using QLKho_NCKH.Categories.Dto;
 
-namespace MyProject.Web.Views.Shared.Components.CategoryMenu
+namespace QLKho_NCKH.Web.Views.Shared.Components.CategoryMenu
 {
 	public class CategoryMenuViewModel
 	{

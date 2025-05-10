@@ -1,7 +1,7 @@
 ﻿using Abp.Application.Services.Dto;
 using QLKho_NCKH.Carts.Dto;
 
-namespace MyProject.Web.Views.Shared.Components.CartMenu
+namespace QLKho_NCKH.Web.Views.Shared.Components.CartMenu
 {
 	public class CartMenuViewModel
 	{
