@@ -108,30 +108,97 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 	//	}).ToList();
 	//	return new PagedResultDto<InventoryItemListDto> { Items = result, TotalCount = count };
 
+	//public async Task<PagedResultDto<InventoryItemListDto>> GetInventoryItems(GetInventoryItemsInput input)
+	//{
+	//	if (input.CategoryId != 0)
+	//	{
+	//		var getallcategory = await _categoryRepository.GetAllAsync();
+	//		var categoryList = getallcategory.ToList();
+	//	}
+
+	//	//var query = _inventoryItemRepository.GetAll()
+	//	//		.Include(x => x.Product)
+	//	//		.Include(x => x.StorageLocation)
+	//	//		.WhereIf(input.WarehouseId != 0, x => x.StorageLocation.WarehouseId == input.WarehouseId)
+	//	//		.WhereIf(input.Filter != null, x => x.Product.Name.Contains(input.Filter))
+	//	//    .OrderBy(x => x.ProductId) // đảm bảo trước khi group
+
+	//	//// group để chỉ lấy một item theo mỗi ProductId
+	//	//.GroupBy(x => x.ProductId)
+	//	//.Select(g => g.FirstOrDefault());
+	//	var query = _inventoryItemRepository.GetAll()
+	//	.Include(x => x.Product)
+	//	.Include(x => x.StorageLocation)
+	//	.WhereIf(input.WarehouseId != 0, x => x.StorageLocation.WarehouseId == input.WarehouseId)
+	//	.WhereIf(!string.IsNullOrEmpty(input.Filter), x => x.Product.Name.Contains(input.Filter))
+	//	.WhereIf(input.CategoryId != 0, x => x.Product.CategoryId == input.CategoryId);
+
+	//	// Thực hiện truy vấn và đưa về memory
+	//	var allItems = await query.ToListAsync();
+
+	//	// Group theo ProductId và chỉ lấy 1 item cho mỗi ProductId
+	//	var groupedItems = allItems
+	//			.GroupBy(x => x.ProductId)
+	//			.Select(g => g.First())
+	//			.ToList();
+
+	//	//if (input.CategoryId != 0)
+	//	//{
+	//	//	query = query.WhereIf(input.CategoryId != null, x => x.Product.CategoryId == input.CategoryId);
+	//	//}
+	//	var count = await groupedItems.CountAsync();
+	//	var items = await query.OrderBy(input.Sorting)
+	//			 .PageBy(input)
+	//			 .ToListAsync();
+
+	//	var result = items.Select(item => new InventoryItemListDto
+	//	{
+	//		ProductId = item.ProductId,
+	//		ProductImage = item.Product.Image,
+	//		ProductCode = item.Product.Code,
+	//		Description = item.Product.Description,
+	//		StorageLocationId = item.StorageLocationId,
+	//		StorageLocationCode = item.StorageLocation.Code,
+	//		Quantity = item.Quantity,
+	//		ReservedQuantity = item.ReservedQuantity,
+	//		UnitPrice = item.UnitPrice,
+	//		ProductName = item.Product.Name,
+	//		ProductBarcode = item.Product.Barcode,
+	//	}).ToList();
+
+	//	return new PagedResultDto<InventoryItemListDto> { Items = result, TotalCount = count };
+	//}
 	public async Task<PagedResultDto<InventoryItemListDto>> GetInventoryItems(GetInventoryItemsInput input)
 	{
-		if (input.CategoryId != 0)
-		{
-			var getallcategory = await _categoryRepository.GetAllAsync();
-			var categoryList = getallcategory.ToList();
-		}
-
+		// Bước 1: truy vấn dữ liệu đã lọc
 		var query = _inventoryItemRepository.GetAll()
-				.Include(x => x.Product)
-				.Include(x => x.StorageLocation)
-				.WhereIf(input.WarehouseId != 0, x => x.StorageLocation.WarehouseId == input.WarehouseId)
-				.WhereIf(input.Filter != null, x => x.Product.Name.Contains(input.Filter));
+			.Include(x => x.Product)
+			.Include(x => x.StorageLocation)
+			.WhereIf(input.WarehouseId != 0, x => x.StorageLocation.WarehouseId == input.WarehouseId)
+			.WhereIf(!string.IsNullOrEmpty(input.Filter), x => x.Product.Name.Contains(input.Filter))
+			.WhereIf(input.CategoryId != 0, x => x.Product.CategoryId == input.CategoryId);
 
-		if (input.CategoryId != 0)
-		{
-			query = query.WhereIf(input.CategoryId != null, x => x.Product.CategoryId == input.CategoryId);
-		}
-		var count = await query.CountAsync();
-		var items = await query.OrderBy(input.Sorting)
-				 .PageBy(input)
-				 .ToListAsync();
+		// Bước 2: đưa vào bộ nhớ (ToListAsync)
+		var allItems = await query.ToListAsync();
 
-		var result = items.Select(item => new InventoryItemListDto
+		// Bước 3: group theo ProductId để loại trùng, mỗi sản phẩm chỉ lấy 1 item
+		var groupedItems = allItems
+			.GroupBy(x => x.ProductId)
+			.Select(g => g.First())
+			.ToList();
+
+		// Bước 4: đếm số lượng sau khi đã loại trùng
+		var totalCount = groupedItems.Count;
+
+		// Bước 5: phân trang thủ công sau khi đã group
+		var pagedItems = groupedItems
+			.AsQueryable()
+			.OrderBy(input.Sorting ?? "ProductId") // tránh lỗi nếu input.Sorting null
+			.PageBy(input)
+			.ToList();
+
+		// Bước 6: map sang DTO
+		var result = pagedItems.Select(item => new InventoryItemListDto
 		{
 			ProductId = item.ProductId,
 			ProductImage = item.Product.Image,
@@ -146,8 +213,14 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 			ProductBarcode = item.Product.Barcode,
 		}).ToList();
 
-		return new PagedResultDto<InventoryItemListDto> { Items = result, TotalCount = count };
+		// Trả về kết quả
+		return new PagedResultDto<InventoryItemListDto>
+		{
+			Items = result,
+			TotalCount = totalCount
+		};
 	}
+
 
 	public async Task<InventoryItemEditDto> GetInventoryItem(int productId)
 	{
@@ -170,8 +243,6 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 			ProductBarcode = productDetails.FirstOrDefault().Product.Barcode,
 			Description = productDetails.FirstOrDefault().Product.Description
 		};
-
-
 	}
 
 		//}
