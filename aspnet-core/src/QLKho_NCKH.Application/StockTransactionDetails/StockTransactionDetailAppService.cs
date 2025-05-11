@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YourProject.Domain.Transactions;
 
 namespace QLKho_NCKH.StockTransactionDetails
 {

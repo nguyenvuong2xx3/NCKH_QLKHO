@@ -1,16 +1,15 @@
-﻿// YourProject.Domain/Transactions/StockTransaction.cs
-using System;
-using System.Collections.Generic;
+﻿//using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Abp.Domain.Entities.Auditing;
 using QLKho_NCKH.Suppliers;
 using QLKho_NCKH.Warehouses;
 using System.ComponentModel.DataAnnotations.Schema;
-using QLKho_NCKH.StockTransactions;
 using QLKho_NCKH.EnumCustom;
-using QLKho_NCKH.Customers;
+using QLKho_NCKH.Authorization.Users;
+using System;
+using System.Collections.Generic;
 
-namespace YourProject.Domain.Transactions
+namespace QLKho_NCKH.StockTransactions
 {
 
 	[Table("AppStockTransactions")]
@@ -36,9 +35,9 @@ namespace YourProject.Domain.Transactions
 		public Supplier Supplier { get; set; }
 		public int? SupplierId { get; set; }
 
-		[ForeignKey(nameof(CustomerId))]
-		public Customer Customer { get; set; }
-		public int? CustomerId { get; set; } // Cho phép null nếu xuất kho không liên quan khách hàng
+		[ForeignKey(nameof(UserId))]
+		public User User { get; set; }
+		public long? UserId { get; set; } // Cho phép null nếu xuất kho không liên quan khách hàng
 		public string ReferenceNumber { get; set; }
 		public string Note { get; set; }
 		public TransactionStatusEnum Status { get; set; } = TransactionStatusEnum.Pending;

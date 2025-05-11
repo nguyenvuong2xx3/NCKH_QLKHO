@@ -1,76 +1,67 @@
 ﻿(function ($) {
-	//var _productService = abp.services.app.product;
-	//var _cartService = abp.services.app.cart;
+  $('#searchForm').on('submit', function (e) {
+    e.preventDefault();
+    var keyword = $('#searchInput').val().trim();
 
-	$('#searchForm').on('submit', function (e) {
-		e.preventDefault(); // Ngăn reload trang
-
-		var keyword = $('#searchInput').val().trim(); // Lấy từ khóa tìm kiếm
-
-		if (keyword) {
+    if (keyword) {
       window.location.href = "/Home/SearchProducts?keyword=" + encodeURIComponent(keyword);
-		} else {
-			window.location.href = "/";
-		}
-	});
+    } else {
+      window.location.href = "/";
+    }
+  });
 
+  $('.btn-view-detail').on('click', function (e) {
+    e.preventDefault();
+    var productId = $(this).data('id');
 
-	$('.btn-view-detail').on('click', function (e) {
-		e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
+    if (productId) {
+      window.location.href = "/Home/GetDetailProduct?Id=" + productId;
+    } else {
+      console.log("Không tìm thấy sản phẩm!");
+    }
+  });
 
-		var productId = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
+  $('.cart').on('click', function (e) {
+    e.preventDefault();
+    window.location.href = "/Carts/Index";
+  });
 
-		if (productId) {
-			window.location.href = "/Home/GetDetailProduct?Id=" + productId; // Chuyển hướng đến trang chi tiết sản phẩm
-		} else {
-			console.log("Không tìm thấy sản phẩm!"); // Báo lỗi nếu không có ID
-		}
-	});
+  $('.btn-add-cart').on('click', function (e) {
+		console.log("click!!!");
+    var _cartService = abp.services.app.cart;
+    e.preventDefault();
 
+    var productId = $(this).data('id');
+    var bool = true;
 
-	$('.cart').on('click', function (e) {
-		e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
-
-		var userId = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
-		window.location.href = "/Carts/Index"
-	});
-
-
-	$('.btn-add-cart').on('click', function (e) {
-		var _cartService = abp.services.app.cart;
-		e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
-			
-		var productId = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
-		bool = true;
-		_cartService.addToCart(
-			productId, 1, bool
-		).done(function () {
-			abp.notify.info("Thêm sản phẩm vào giỏ hàng thành công");
-			window.location.href = "/Carts/Index"
-		});
+    _cartService.addToCart(
+      productId,
+      1,
+      bool
+    ).done(function () {
+      abp.notify.info("Thêm sản phẩm vào giỏ hàng thành công");
+      window.location.href = "/Carts/Index";
+    });
   });
 
   $('.btn-all-product').on('click', function (e) {
-    // Mặc định là null
-    window.location.href = "/Home/PageAllProduct"
+    window.location.href = "/Home/PageAllProduct";
   });
 
   $('.btn-all-product-byId').on('click', function (e) {
-    e.preventDefault(); 
+    e.preventDefault();
     var categoryId = $(this).data('id');
-
     window.location.href = "/Home/PageAllProduct?categoryId=" + categoryId;
   });
-
 
   $(document).ready(function () {
     let currentIndex = 0;
     const pageSize = 5;
     const totalProducts = $(".product-card").length;
-    let animating = false; // Ngăn chặn spam click
+    let animating = false;
 
     function updateView(direction) {
-      if (animating) return; // Ngăn chặn spam click
+      if (animating) return;
       animating = true;
 
       let start = currentIndex;
@@ -79,7 +70,6 @@
       let oldProducts = $(".product-card.active");
       let newProducts = $(".product-card").slice(start, end);
 
-      // Gán vị trí ban đầu cho nhóm sản phẩm mới
       newProducts.css({
         display: "block",
         opacity: 0,
@@ -87,7 +77,6 @@
         left: direction === "next" ? "200px" : "-200px"
       });
 
-      // Di chuyển nhóm sản phẩm cũ ra ngoài màn hình
       oldProducts.animate(
         {
           left: direction === "next" ? "-200px" : "200px",
@@ -99,8 +88,7 @@
         }
       );
 
-      // Hiển thị nhóm sản phẩm mới với hiệu ứng trượt vào
-      setTimeout(() => {
+      setTimeout(function () {
         newProducts.addClass("active").animate(
           {
             left: "0",
@@ -108,14 +96,13 @@
           },
           500,
           function () {
-            animating = false; // Cho phép click tiếp
+            animating = false;
           }
         );
 
-        // Cập nhật trạng thái nút điều hướng
         $("#prevBtn").prop("disabled", currentIndex === 0);
         $("#nextBtn").prop("disabled", currentIndex + pageSize >= totalProducts);
-      }, 500); // Chờ nhóm cũ trượt xong mới hiển thị nhóm mới
+      }, 500);
     }
 
     $("#nextBtn").click(function () {
@@ -132,13 +119,6 @@
       }
     });
 
-    // Hiển thị sản phẩm đầu tiên khi load
     updateView("next");
   });
-
- 
-
-
 })(jQuery);
-
-

@@ -9,7 +9,6 @@ using QLKho_NCKH.Warehouses;
 using QLKho_NCKH.Inventory;
 using QLKho_NCKH.Suppliers;
 using QLKho_NCKH.StockTransactions;
-using YourProject.Domain.Transactions;
 using QLKho_NCKH.Customers;
 using QLKho_NCKH.Carts;
 using QLKho_NCKH.Orders;
