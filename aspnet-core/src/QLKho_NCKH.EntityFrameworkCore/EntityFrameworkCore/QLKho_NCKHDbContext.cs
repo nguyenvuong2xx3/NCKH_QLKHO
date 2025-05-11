@@ -12,6 +12,7 @@ using QLKho_NCKH.StockTransactions;
 using QLKho_NCKH.Customers;
 using QLKho_NCKH.Carts;
 using QLKho_NCKH.Orders;
+using QLKho_NCKH.Sliders;
 
 namespace QLKho_NCKH.EntityFrameworkCore
 {
@@ -29,6 +30,7 @@ namespace QLKho_NCKH.EntityFrameworkCore
 		public DbSet<StockTransaction> StockTransactions { get; set; }
 		public DbSet<CartItem> Carts { get; set; }
 		public DbSet<Order> Oders { get; set; }
+		public DbSet<Slider> Sliders { get; set; }
 		public DbSet<OrderDetail> OrderDetails { get; set; }
 
 		public QLKho_NCKHDbContext(DbContextOptions<QLKho_NCKHDbContext> options)

@@ -48,7 +48,14 @@ namespace QLKho_NCKH.Web.Startup
 															icon: "fas fa-theater-masks",
 															permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
 											)
-							)
+							).AddItem(
+										new MenuItemDefinition(
+										PageNames.Sliders,
+										L("SliderList"),
+										url: "Sliders",
+										icon: "fa fa-th-large"
+										)
+								)
 							// Product Management - Parent menu with always visible children
 							.AddItem(
 											new MenuItemDefinition(

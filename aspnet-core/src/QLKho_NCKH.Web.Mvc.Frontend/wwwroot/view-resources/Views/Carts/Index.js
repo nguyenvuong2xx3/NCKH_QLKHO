@@ -165,7 +165,7 @@
     _stockTransactionService.createExportRequest(exportRequest)
       .done(function () {
         abp.notify.info('Tạo phiếu xuất kho thành công');
-        //window.location.href = "/Orders/Success";
+        window.location.href = "/Orders/Success";
       })
       .fail(function (error) {
         abp.notify.error(error.message || 'Có lỗi xảy ra khi tạo phiếu xuất kho');

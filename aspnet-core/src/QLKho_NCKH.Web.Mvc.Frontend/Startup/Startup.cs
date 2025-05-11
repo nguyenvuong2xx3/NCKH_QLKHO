@@ -90,6 +90,12 @@ namespace QLKho_NCKH.Web.Startup
 				RequestPath = "/products"
 			});
 
+			app.UseStaticFiles(new StaticFileOptions
+			{
+				FileProvider = new PhysicalFileProvider(@"E:\UploadImgKho\"),
+				RequestPath = "/sliders"
+			});
+
 
 			app.UseRouting();
 

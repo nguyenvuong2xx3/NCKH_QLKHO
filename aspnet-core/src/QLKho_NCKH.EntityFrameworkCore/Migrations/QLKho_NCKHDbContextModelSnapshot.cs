@@ -2038,6 +2038,35 @@ namespace QLKho_NCKH.Migrations
                     b.ToTable("AppProducts", (string)null);
                 });
 
+            modelBuilder.Entity("QLKho_NCKH.Sliders.Slider", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppSliders");
+                });
+
             modelBuilder.Entity("QLKho_NCKH.StockTransactions.StockTransaction", b =>
                 {
                     b.Property<int>("Id")
