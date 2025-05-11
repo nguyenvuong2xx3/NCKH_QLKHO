@@ -2038,6 +2038,85 @@ namespace QLKho_NCKH.Migrations
                     b.ToTable("AppProducts", (string)null);
                 });
 
+            modelBuilder.Entity("QLKho_NCKH.StockTransactions.StockTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("FromWarehouseId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReferenceNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ToWarehouseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TransactionCode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("FromWarehouseId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.HasIndex("ToWarehouseId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AppStockTransactions");
+                });
+
             modelBuilder.Entity("QLKho_NCKH.StockTransactions.StockTransactionDetail", b =>
                 {
                     b.Property<int>("StockTransactionId")
@@ -2262,80 +2341,6 @@ namespace QLKho_NCKH.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AppWarehouses", (string)null);
-                });
-
-            modelBuilder.Entity("YourProject.Domain.Transactions.StockTransaction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int?>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("DeleterUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("FromWarehouseId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReferenceNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SupplierId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ToWarehouseId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TransactionCode")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TransactionType")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("FromWarehouseId");
-
-                    b.HasIndex("SupplierId");
-
-                    b.HasIndex("ToWarehouseId");
-
-                    b.ToTable("AppStockTransactions");
                 });
 
             modelBuilder.Entity("Abp.Application.Features.EditionFeatureSetting", b =>
@@ -2667,6 +2672,37 @@ namespace QLKho_NCKH.Migrations
                     b.Navigation("Supplier");
                 });
 
+            modelBuilder.Entity("QLKho_NCKH.StockTransactions.StockTransaction", b =>
+                {
+                    b.HasOne("QLKho_NCKH.Customers.Customer", null)
+                        .WithMany("StockTransactions")
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("QLKho_NCKH.Warehouses.Warehouse", "FromWarehouse")
+                        .WithMany()
+                        .HasForeignKey("FromWarehouseId");
+
+                    b.HasOne("QLKho_NCKH.Suppliers.Supplier", "Supplier")
+                        .WithMany("StockTransactions")
+                        .HasForeignKey("SupplierId");
+
+                    b.HasOne("QLKho_NCKH.Warehouses.Warehouse", "ToWarehouse")
+                        .WithMany()
+                        .HasForeignKey("ToWarehouseId");
+
+                    b.HasOne("QLKho_NCKH.Authorization.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("FromWarehouse");
+
+                    b.Navigation("Supplier");
+
+                    b.Navigation("ToWarehouse");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("QLKho_NCKH.StockTransactions.StockTransactionDetail", b =>
                 {
                     b.HasOne("QLKho_NCKH.Products.Product", "Product")
@@ -2675,7 +2711,7 @@ namespace QLKho_NCKH.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("YourProject.Domain.Transactions.StockTransaction", "StockTransaction")
+                    b.HasOne("QLKho_NCKH.StockTransactions.StockTransaction", "StockTransaction")
                         .WithMany("Details")
                         .HasForeignKey("StockTransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2703,33 +2739,6 @@ namespace QLKho_NCKH.Migrations
                         .IsRequired();
 
                     b.Navigation("Warehouse");
-                });
-
-            modelBuilder.Entity("YourProject.Domain.Transactions.StockTransaction", b =>
-                {
-                    b.HasOne("QLKho_NCKH.Customers.Customer", "Customer")
-                        .WithMany("StockTransactions")
-                        .HasForeignKey("CustomerId");
-
-                    b.HasOne("QLKho_NCKH.Warehouses.Warehouse", "FromWarehouse")
-                        .WithMany()
-                        .HasForeignKey("FromWarehouseId");
-
-                    b.HasOne("QLKho_NCKH.Suppliers.Supplier", "Supplier")
-                        .WithMany("StockTransactions")
-                        .HasForeignKey("SupplierId");
-
-                    b.HasOne("QLKho_NCKH.Warehouses.Warehouse", "ToWarehouse")
-                        .WithMany()
-                        .HasForeignKey("ToWarehouseId");
-
-                    b.Navigation("Customer");
-
-                    b.Navigation("FromWarehouse");
-
-                    b.Navigation("Supplier");
-
-                    b.Navigation("ToWarehouse");
                 });
 
             modelBuilder.Entity("Abp.Application.Features.EditionFeatureSetting", b =>
@@ -2813,6 +2822,11 @@ namespace QLKho_NCKH.Migrations
                     b.Navigation("StockTransactions");
                 });
 
+            modelBuilder.Entity("QLKho_NCKH.StockTransactions.StockTransaction", b =>
+                {
+                    b.Navigation("Details");
+                });
+
             modelBuilder.Entity("QLKho_NCKH.Suppliers.Supplier", b =>
                 {
                     b.Navigation("Products");
@@ -2823,11 +2837,6 @@ namespace QLKho_NCKH.Migrations
             modelBuilder.Entity("QLKho_NCKH.Warehouses.Warehouse", b =>
                 {
                     b.Navigation("StorageLocations");
-                });
-
-            modelBuilder.Entity("YourProject.Domain.Transactions.StockTransaction", b =>
-                {
-                    b.Navigation("Details");
                 });
 #pragma warning restore 612, 618
         }

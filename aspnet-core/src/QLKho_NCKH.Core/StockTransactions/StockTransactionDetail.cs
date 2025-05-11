@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YourProject.Domain.Transactions;
+using QLKho_NCKH.StockTransactions;
 
 namespace QLKho_NCKH.StockTransactions
 {

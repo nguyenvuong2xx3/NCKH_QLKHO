@@ -33,6 +33,52 @@ namespace QLKho_NCKH.Carts
 			_cartItemRepository = cartItemRepository;
 			_inventoryItemRepository = inventoryItemRepository;
 		}
+		//public async Task<List<CartsDto>> GetAllCart()
+		//{
+		//	if (AbpSession.UserId == null)
+		//	{
+		//		return null;
+		//	}
+
+		//	// Lấy danh sách cart của user
+		//	var cartItems = await _cartItemRepository.GetAllListAsync(c => c.UserId == AbpSession.UserId);
+
+		//	if (cartItems == null || !cartItems.Any())
+		//	{
+		//		return new List<CartsDto>();
+		//	}
+
+		//	// Lấy danh sách ProductId có trong giỏ hàng
+		//	var productIds = cartItems.Select(c => c.ProductId).Distinct().ToList();
+
+		//	// Lấy thông tin InventoryItem và Product tương ứng
+		//	var inventoryItems = await _inventoryItemRepository.GetAll()
+		//			.Include(i => i.Product)
+		//			.Where(i => productIds.Contains(i.ProductId))
+		//			.ToListAsync();
+
+		//	// Gộp dữ liệu lại
+		//	var result = cartItems.Select(cart =>
+		//	{
+		//		var inventory = inventoryItems.FirstOrDefault(i => i.ProductId == cart.ProductId);
+		//		var product = inventory?.Product;
+
+		//		return new CartsDto
+		//		{
+		//			Id = cart.Id,
+		//			ProductId = cart.ProductId,
+		//			Quantity = cart.Quantity,
+		//			UserId = cart.UserId,
+		//			Name = product?.Name,
+		//			UnitPrice = inventory?.UnitPrice ?? 0,
+		//			//TotalPrice = (inventory?.Price ?? 0) * cart.Quantity,
+		//			//Location = inventory?.Location
+		//			Image = product.Image
+		//		};
+		//	}).ToList();
+
+		//	return result;
+		//}
 		public async Task<List<CartsDto>> GetAllCart()
 		{
 			if (AbpSession.UserId == null)
@@ -40,7 +86,6 @@ namespace QLKho_NCKH.Carts
 				return null;
 			}
 
-			// Lấy danh sách cart của user
 			var cartItems = await _cartItemRepository.GetAllListAsync(c => c.UserId == AbpSession.UserId);
 
 			if (cartItems == null || !cartItems.Any())
@@ -48,15 +93,13 @@ namespace QLKho_NCKH.Carts
 				return new List<CartsDto>();
 			}
 
-			// Lấy danh sách ProductId có trong giỏ hàng
 			var productIds = cartItems.Select(c => c.ProductId).Distinct().ToList();
 
-			// Lấy thông tin InventoryItem và Product tương ứng
 			var inventoryItems = await _inventoryItemRepository.GetAll()
-					.Include(i => i.Product).ToListAsync();
-			inventoryItems.Where(i => productIds.Contains(i.ProductId));
+				.Include(i => i.Product)
+				.Where(i => productIds.Contains(i.ProductId))
+				.ToListAsync();
 
-			// Gộp dữ liệu lại
 			var result = cartItems.Select(cart =>
 			{
 				var inventory = inventoryItems.FirstOrDefault(i => i.ProductId == cart.ProductId);
@@ -70,14 +113,14 @@ namespace QLKho_NCKH.Carts
 					UserId = cart.UserId,
 					Name = product?.Name,
 					UnitPrice = inventory?.UnitPrice ?? 0,
-					//TotalPrice = (inventory?.Price ?? 0) * cart.Quantity,
-					//Location = inventory?.Location
-					Image = product.Image
+					//TotalPrice = (inventory?.UnitPrice ?? 0) * cart.Quantity,
+					Image = product?.Image
 				};
 			}).ToList();
 
 			return result;
 		}
+
 
 
 		public async Task AddToCart(int productId, int quantity, bool check)

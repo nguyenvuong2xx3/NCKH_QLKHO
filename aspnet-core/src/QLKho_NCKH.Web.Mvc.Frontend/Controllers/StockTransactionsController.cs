@@ -10,7 +10,6 @@ using QLKho_NCKH.StockTransactions.Dtos;
 using QLKho_NCKH.Web.Models.StockTransactions;
 using QLKho_NCKH.Web.Models.Suppliers;
 using System.Threading.Tasks;
-using YourProject.Domain.Transactions;
 
 namespace QLKho_NCKH.Web.Controllers
 {

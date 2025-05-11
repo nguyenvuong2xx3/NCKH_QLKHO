@@ -4,13 +4,10 @@ using QLKho_NCKH.EnumCustom;
 using QLKho_NCKH.InventoryItems;
 using QLKho_NCKH.InventoryItems.Dto;
 using QLKho_NCKH.StockTransactionDetails;
-using QLKho_NCKH.StockTransactionDetails.Dto;
 using QLKho_NCKH.StockTransactions;
 using QLKho_NCKH.StockTransactions.Dtos;
 using QLKho_NCKH.Web.Models.StockTransactions;
-using QLKho_NCKH.Web.Models.Suppliers;
 using System.Threading.Tasks;
-using YourProject.Domain.Transactions;
 
 namespace QLKho_NCKH.Web.Controllers
 {

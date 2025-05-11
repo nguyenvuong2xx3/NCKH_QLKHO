@@ -1,66 +1,129 @@
-﻿@using QLKho_NCKH.Web.Models.Orders
-@model OrderViewSuccess
-
-@{
-  ViewData["Title"] = "Đặt hàng thành công";
+﻿@{
+  ViewBag.Title = "Đặt hàng thành công";
+  Layout = "_Layout"; // Sử dụng layout chung của bạn
 }
-<!-- Thêm Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link href="~/css/order.css" rel="stylesheet" />
 
-<div class="order-success mt-4">
-  <div class="heading-notify text-center">
-    <i class="fa-solid fa-circle-check"></i>
-    <p style="margin-top: 16px;" class="text-success"> ĐẶT HÀNG THÀNH CÔNG</p>
-  </div>
-
-  <div class="card p-3 shadow-sm">
-    <div class="d-flex justify-content-between">
-      <h5 class="fw-bold">ĐƠN HÀNG: #@Model.Order.Id</h5>
-      <div style="gap: 10px;" class="d-flex">
-        <a href="/Home/UserProfile" class="text-primary">Quản lý đơn hàng</a>
-        <a href="#" class="text-danger">Hủy</a>
-      </div>
+<div class="order-success-container">
+  <div class="success-card">
+    <div class="success-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
     </div>
-    <ul class="order-details">
-      <li><strong>Người nhận hàng:</strong> @Model.Order.NameUser</li>
-      @* <li><strong>Giao đến:</strong> @Model.Order.Address</li> *@
-      @* <li><strong>Phí giao hàng:</strong> @Model.Order.ShippingFee.ToString("N0")đ</li> *@
-      <li class="text-danger fw-bold"><strong>Tổng tiền:</strong> @Model.Order.TotalAmount.ToString("N0")đ</li>
-    </ul>
-  </div>
+    <h2 class="success-title">Đặt hàng thành công!</h2>
+    <p class="success-message">Cảm ơn bạn đã đặt hàng. Đơn hàng của bạn đang được xử lý.</p>
 
-  <div class="card p-3">
-    <p><strong>Hình thức thanh toán:</strong> @Model.Order.PaymentMethod</p>
-    <p class="fw-bold">Chọn lại hình thức thanh toán khác:</p>
-    <div>
-      <input type="radio" name="payment" id="bankTransfer">
-      <label for="bankTransfer">Chuyển khoản ngân hàng</label>
+    <div class="order-details">
+      <p><strong>Mã đơn hàng:</strong> <span id="orderCode">@ViewBag.OrderCode</span></p>
+      <p><strong>Ngày đặt:</strong> <span id="orderDate">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span></p>
     </div>
-    <div>
-      <input type="radio" name="payment" id="atmTransfer">
-      <label for="atmTransfer">Qua thẻ ATM (có Internet Banking)</label>
-    </div>
-    <p class="text-primary">5 hình thức thanh toán khác</p>
-    <button class="btn btn-primary w-100">Xác nhận</button>
-  </div>
 
-  <div class="mt-3">
-    <h5>THỜI GIAN NHẬN HÀNG</h5>
-    <div class="border p-3">
-      <p><strong>Giao trước 19h00 Hôm nay (@DateTime.Now.ToString("dd/MM"))</strong></p>
-
-      @foreach (var item in Model.ProductList)
-      {
-        <div class="d-flex">
-          <img src="@item." alt="Sản phẩm" class="img-thumbnail me-3" style="width: 80px; height: 80px;">
-          <div class="pl-3">
-            <p>@item.Name</p>
-            <p>Màu: TRẮNG | Số lượng: </p>
-          </div>
-        </div>
-      }
+    <div class="action-buttons">
+      <a href="/" class="btn btn-continue">Tiếp tục mua sắm</a>
+      <a href="/Order/History" class="btn btn-track">Theo dõi đơn hàng</a>
     </div>
-    <button class="btn btn-outline-primary w-100 mt-3">Mua thêm sản phẩm khác</button>
   </div>
 </div>
+
+@section Styles {
+  <style>
+    .order-success-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 70vh;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    .success-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .success-icon {
+      margin-bottom: 20px;
+      animation: bounce 0.6s;
+    }
+
+    .success-title {
+      color: #4CAF50;
+      margin-bottom: 15px;
+      font-size: 24px;
+    }
+
+    .success-message {
+      color: #555;
+      margin-bottom: 25px;
+      font-size: 16px;
+    }
+
+    .order-details {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      text-align: left;
+    }
+
+      .order-details p {
+        margin: 8px 0;
+        color: #333;
+      }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .btn-continue {
+      background-color: #4CAF50;
+      color: white;
+      border: 1px solid #4CAF50;
+    }
+
+      .btn-continue:hover {
+        background-color: #45a049;
+      }
+
+    .btn-track {
+      background-color: white;
+      color: #4CAF50;
+      border: 1px solid #4CAF50;
+    }
+
+      .btn-track:hover {
+        background-color: #f1f8f1;
+      }
+
+    @@keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+
+      40% {
+        transform: translateY(-20px);
+      }
+
+      60% {
+        transform: translateY(-10px);
+      }
+    }
+  </style>
+}
