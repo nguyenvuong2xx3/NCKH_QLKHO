@@ -2,72 +2,362 @@
 @using QLKho_NCKH.Web.Models.Carts
 @model CartViewListModel
 @{
-	ViewData["Title"] = "Giỏ hàng";
+  ViewData["Title"] = "Giỏ hàng";
 }
 
 @section scripts
 {
-	<environment names="Development">
-		<script src="~/view-resources/Views/Carts/Index.js" asp-append-version="true"></script>
-	</environment>
+  <environment names="Development">
+    <script src="~/view-resources/Views/Carts/Index.js" asp-append-version="true"></script>
+  </environment>
 
-	<environment names="Staging,Production">
-		@* <script src="~/view-resources/Views/Carts/Index.min.js" asp-append-version="true"></script> *@
-	</environment>
+  <environment names="Staging,Production">
+    @* <script src="~/view-resources/Views/Carts/Index.min.js" asp-append-version="true"></script> *@
+  </environment>
 }
+
 <style>
-	/* Căn giữa nội dung giỏ hàng trống mà không ảnh hưởng đến header */
-	.empty-cart-container {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		min-height: calc(100vh - 70px); /* Trừ đi chiều cao của header */
-		padding: 20px;
-	}
+  /* Base Typography */
+  body {
+    color: #333333; /* Dark gray for primary text */
+    font-weight: 400; /* Normal weight for body text */
+    line-height: 1.5;
+  }
 
-	/* Định dạng nội dung bên trong */
-	.empty-cart-content {
-		max-width: 400px;
-		background: #fff;
-		padding: 30px;
-		border-radius: 10px;
-		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-	}
+  /* Empty Cart */
+  .empty-cart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 70px);
+    padding: 20px;
+  }
 
+  .empty-cart-content {
+    max-width: 400px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+    .empty-cart-content h4 {
+      color: #222222;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .empty-cart-content p {
+      color: #555555;
+      font-weight: 400;
+      margin-bottom: 20px;
+    }
+
+  /* Cart Container */
+  .cart-main-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .cart-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+    background: #ffffff;
+  }
+
+  /* Cart Header */
+  .cart-header {
+    background-color: #f8f9fa;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 1.1rem;
+    color: #444444;
+    font-weight: 500;
+  }
+
+    .cart-header i {
+      margin-right: 10px;
+      color: #555555;
+    }
+
+  /* Cart Items */
+  .cart-items {
+    background-color: #fff;
+  }
+
+  .cart-item {
+    padding: 18px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    transition: all 0.2s ease;
+  }
+
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+
+  /* Product Info */
+  .product-image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border: 1px solid #eeeeee;
+    border-radius: 5px;
+    margin-right: 16px;
+  }
+
+  .product-info {
+    flex-grow: 1;
+  }
+
+  .product-title {
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #222222;
+    font-size: 0.95rem;
+  }
+
+  .product-description {
+    font-size: 0.82rem;
+    color: #666666;
+    margin-bottom: 10px;
+    font-weight: 400;
+  }
+
+  /* Promo Section */
+  .promo-section {
+    margin-top: 14px;
+  }
+
+  .promo-title {
+    font-weight: 500;
+    font-size: 0.88rem;
+    margin-bottom: 8px;
+    color: #444444;
+  }
+
+  .promo-option {
+    font-size: 0.82rem;
+    color: #555555;
+  }
+
+  .more-promo {
+    font-size: 0.82rem;
+    color: #0066cc;
+    margin-top: 5px;
+    display: inline-block;
+    font-weight: 400;
+  }
+
+  /* Product Actions */
+  .product-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    min-width: 120px;
+  }
+
+  .delete-btn {
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 2px 5px;
+    margin-bottom: 12px;
+    font-weight: 400;
+  }
+
+  .quantity-control {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .quantity-btn {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #dddddd;
+    background: #f8f9fa;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #555555;
+  }
+
+  .quantity-input {
+    width: 45px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid #dddddd;
+    margin: 0 5px;
+    font-size: 0.9rem;
+    color: #333333;
+  }
+
+  .product-price {
+    font-weight: 500;
+    color: #d70018;
+    font-size: 0.95rem;
+  }
+
+  /* Cart Summary */
+  .cart-summary {
+    padding: 16px 20px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .total-label {
+    font-weight: 500;
+    font-size: 1rem;
+    color: #444444;
+  }
+
+  .total-price {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #d70018;
+  }
+
+  /* Payment Section */
+  .payment-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  }
+
+  .payment-title {
+    font-weight: 500;
+    font-size: 1.05rem;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eeeeee;
+    color: #333333;
+  }
+
+  .payment-method {
+    margin-bottom: 12px;
+  }
+
+    .payment-method .form-check-label {
+      font-weight: 400;
+      color: #444444;
+      font-size: 0.9rem;
+    }
+
+  .payment-icon {
+    margin-right: 10px;
+    font-size: 1.1rem;
+  }
+
+  .cod-icon {
+    color: #28a745;
+  }
+
+  .bank-icon {
+    color: #007bff;
+  }
+
+  .more-payment {
+    color: #0066cc;
+    font-size: 0.85rem;
+    margin-top: 10px;
+    display: inline-block;
+    font-weight: 400;
+  }
+
+  /* Policy Check */
+  .policy-check {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eeeeee;
+  }
+
+    .policy-check .form-check-label {
+      font-weight: 400;
+      font-size: 0.85rem;
+      color: #555555;
+    }
+
+  /* Checkout Button */
+  .checkout-btn {
+    background-color: #ffc107;
+    color: #222222;
+    font-weight: 500;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    margin-top: 20px;
+    transition: all 0.3s;
+    font-size: 0.95rem;
+  }
+
+    .checkout-btn:hover {
+      background-color: #e0a800;
+      transform: translateY(-2px);
+    }
+
+  /* Support Text */
+  .support-text {
+    font-size: 0.85rem;
+    color: #666666;
+    text-align: center;
+    margin-top: 20px;
+    font-weight: 400;
+  }
+
+  .support-link {
+    font-weight: 500;
+    color: #0066cc;
+  }
+
+  /* Modal */
+  .modal-title {
+    font-weight: 500;
+    color: #333333;
+  }
+
+  .modal-body {
+    color: #555555;
+    font-weight: 400;
+  }
 </style>
 
 <div class="container mt-4">
-	<div class="mx-auto col-lg-7 col-md-8 col-sm-10">
-		<!-- Tiêu đề giỏ hàng -->
-		<!-- Danh sách sản phẩm trong giỏ hàng -->
+  <div class="cart-main-container">
     @if (Model == null || Model.Carts == null || !Model.Carts.Any())
     {
-      <!-- Phần hiển thị giỏ hàng trống -->
+      <!-- Empty Cart -->
       <main class="empty-cart-container">
-        <div class="empty-cart-content text-center">
-          <!-- Hình ảnh giỏ hàng trống -->
+        <div class="empty-cart-content">
           <img src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png"
                alt="Empty Cart" width="180" class="mb-3">
-
-          <!-- Tiêu đề và nội dung -->
-          <h4 class="fw-bold text-dark">Giỏ hàng trống</h4>
-          <p class="text-muted">Không có sản phẩm nào trong giỏ hàng của bạn.</p>
-
-          <!-- Nút quay về trang chủ -->
+          <h4>Giỏ hàng trống</h4>
+          <p>Không có sản phẩm nào trong giỏ hàng của bạn.</p>
           <a href="/" class="btn btn-primary px-4 py-2 rounded-pill shadow-sm">
             🛒 Tiếp tục mua sắm
           </a>
-
-          <!-- Hỗ trợ khách hàng -->
-          <p class="mt-3 text-secondary small">
+          <p class="mt-3 support-text">
             Cần trợ giúp? Gọi ngay
-            <a href="tel:1900232460" class="text-decoration-none fw-bold">1900 232 460</a>
-            hoặc <a href="tel:02836221060" class="text-decoration-none fw-bold">028.3622.1060</a> (8h00 - 21h30)
+            <a href="tel:1900232460" class="support-link">1900 232 460</a>
+            hoặc <a href="tel:02836221060" class="support-link">028.3622.1060</a> (8h00 - 21h30)
           </p>
         </div>
       </main>
 
-      <!-- Tự động chuyển hướng về trang chủ sau 10 giây -->
       <script>
         setTimeout(function () {
             window.location.href = "/";
@@ -76,131 +366,148 @@
     }
     else
     {
-      <h3 class="text-center">🛒 Giỏ Hàng</h3>
+      <!-- Cart Card -->
+      <div class="cart-card">
+        <!-- Header -->
+        <div class="cart-header">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Giỏ hàng của bạn (@Model.Carts.Count sản phẩm)</span>
+        </div>
 
-      <!-- Các phần hiển thị giỏ hàng -->
-      @foreach (var item in Model.Carts)
-      {
-        <div class="cart-item d-flex border-bottom pb-3 mb-3 bg-white p-3 rounded">
-          <!-- Ảnh sản phẩm -->
-          <img src="@item.Image" alt="@item.Name" width="100" height="100" class="rounded border">
+        <!-- Product List -->
+        <div class="cart-items">
+          @foreach (var item in Model.Carts)
+          {
+            <div class="cart-item">
+              <!-- Product Image -->
+              <img src="@item.Image" alt="@item.Name" class="product-image">
 
-          <!-- Thông tin sản phẩm -->
-          <div class="ml-3 ms-3 flex-grow-1">
-            <h6 class="mb-1 fw-bold">@item.Name</h6>
-            <p class="text-muted small">@item.Description</p>
+              <!-- Product Info -->
+              <div class="product-info">
+                <h6 class="product-title">@item.Name</h6>
+                <p class="product-description">@item.Description</p>
 
-            <!-- Chọn khuyến mãi -->
-            <p class="fw-bold mt-3 mb-1">Chọn 1 trong 2 khuyến mãi</p>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="promo-@item.Id" id="promo1-@item.Id">
-              <label class="form-check-label small" for="promo1-@item.Id">Giảm ngay 700,000đ</label>
+                <!-- Promo Section -->
+                <div class="promo-section">
+                  <p class="promo-title">Chọn 1 trong 2 khuyến mãi</p>
+                  <div class="form-check promo-option">
+                    <input class="form-check-input" type="radio" name="promo-@item.Id" id="promo1-@item.Id">
+                    <label class="form-check-label" for="promo1-@item.Id">Giảm ngay 700,000đ</label>
+                  </div>
+                  <div class="form-check promo-option">
+                    <input class="form-check-input" type="radio" name="promo-@item.Id" id="promo2-@item.Id">
+                    <label class="form-check-label" for="promo2-@item.Id">Tặng Microsoft 365 Personal</label>
+                  </div>
+                  <a href="#" class="more-promo">5 Khuyến mãi khác ⮟</a>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="product-actions">
+                <button data-id="@item.ProductId" class="delete-btn btn-delete">
+                  <i class="fas fa-trash-alt"></i> Xóa
+                </button>
+
+                <div class="quantity-control">
+                  <button class="quantity-btn btn-reduce" data-id="@item.ProductId">-</button>
+                  <input data-id="@item.Id" type="text" class="quantity-input form-control"
+                         value="@item.Quantity">
+                  <button class="quantity-btn btn-increase" data-id="@item.ProductId">+</button>
+                </div>
+
+                <span data-unit-price="@item.UnitPrice" class="product-price">
+                  @String.Format("{0:N0} đ", item.TotalPrice)
+                </span>
+              </div>
             </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="promo-@item.Id" id="promo2-@item.Id">
-              <label class="form-check-label small" for="promo2-@item.Id">Tặng Microsoft 365 Personal</label>
-            </div>
-            <a href="#" class="text-primary small d-block mt-2">5 Khuyến mãi ⮟</a>
+          }
+        </div>
+
+        <!-- Summary -->
+        <div class="cart-summary">
+          <span class="total-label">Tổng cộng:</span>
+          <span id="totalPrice" class="total-price"></span>
+        </div>
+      </div>
+
+      <!-- Payment Section -->
+      <div class="payment-section">
+        <h5 class="payment-title">Hình thức thanh toán</h5>
+
+        <div class="form-check payment-method">
+          <input class="form-check-input" type="radio" name="paymentMethod" id="cod" checked>
+          <label class="form-check-label" for="cod">
+            <i class="fas fa-money-bill-wave payment-icon cod-icon"></i>
+            Thanh toán tiền mặt khi nhận hàng
+          </label>
+        </div>
+
+        <div class="form-check payment-method">
+          <input class="form-check-input" type="radio" name="paymentMethod" id="bankTransfer">
+          <label class="form-check-label" for="bankTransfer">
+            <i class="fas fa-university payment-icon bank-icon"></i>
+            Chuyển khoản ngân hàng
+          </label>
+        </div>
+
+        <a href="#paymentMethods" data-bs-toggle="collapse" class="more-payment">
+          5 hình thức thanh toán khác <i class="fas fa-chevron-down"></i>
+        </a>
+
+        <div class="collapse mt-2" id="paymentMethods">
+          <div class="form-check payment-method">
+            <input class="form-check-input" type="radio" name="paymentMethod" id="momo">
+            <label class="form-check-label" for="momo">Thanh toán qua Momo</label>
           </div>
-
-          <!-- Tăng giảm số lượng và xóa -->
-          <div class="d-flex flex-column align-items-end">
-						<button data-id="@item.ProductId" class="btn btn-sm text-danger btn-delete mb-2">
-              🗑️ Xóa
-            </button>
-
-            <div class="d-flex align-items-center">
-              <button class="btn btn-outline-secondary btn-sm btn-reduce" data-id="@item.ProductId">-</button>
-              <input data-id="@item.Id" type="text" class="quantity-input form-control text-center mx-1"
-                     value="@item.Quantity" style="width: 45px;">
-							<button class="btn btn-outline-secondary btn-sm btn-increase" data-id="@item.ProductId">+</button>
-            </div>
-
-						<span data-unit-price="@item.UnitPrice" class="product-price text-danger fw-bold mt-2">
-              @String.Format("{0:N0} đ", item.TotalPrice)
-            </span>
+          <div class="form-check payment-method">
+            <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard">
+            <label class="form-check-label" for="creditCard">Thanh toán bằng thẻ tín dụng</label>
+          </div>
+          <div class="form-check payment-method">
+            <input class="form-check-input" type="radio" name="paymentMethod" id="zalopay">
+            <label class="form-check-label" for="zalopay">Ví ZaloPay</label>
           </div>
         </div>
-      }
 
-      <!-- Phần tiếp theo như tổng tiền, phương thức thanh toán, nút đặt hàng -->
-			<div class="bg-light p-3 rounded">
-				<div class="d-flex justify-content-between align-items-center w-100">
-					<strong class="text-dark">Tổng cộng:</strong>
-					<span id="totalPrice" class=" fw-bold"></span>
-				</div>
-			</div>
+        <!-- Policy -->
+        <div class="form-check policy-check">
+          <input class="form-check-input" type="checkbox" id="agreePolicy" checked>
+          <label class="form-check-label" for="agreePolicy">
+            Tôi đồng ý với <a href="#" class="text-primary">Chính sách xử lý dữ liệu cá nhân</a> của Thế Giới Di Động
+          </label>
+        </div>
 
-			<!-- Phương thức thanh toán -->
-			<div class="bg-white p-3 rounded border mt-3">
-				<h5 class="fw-bold">Hình thức thanh toán</h5>
-				<div class="form-check">
-					<input class="form-check-input" type="radio" name="paymentMethod" id="cod">
-					<label class="form-check-label d-flex align-items-center" for="cod">
-						<i class="fas fa-money-bill-wave text-success me-2 pr-2"></i> Thanh toán tiền mặt khi nhận hàng
-					</label>
-				</div>
-				<div class="form-check">
-					<input class="form-check-input" type="radio" name="paymentMethod" id="bankTransfer">
-					<label class="form-check-label d-flex align-items-center" for="bankTransfer">
-						<i class="fas fa-university text-primary me-2 pr-2"></i> Chuyển khoản ngân hàng
-					</label>
-				</div>
+        <!-- Checkout Button -->
+        <button id="btnCheckout" data-userId="@Model.UserId" data-nameUser="@Model.NameUser"
+                class="checkout-btn">
+          ĐẶT HÀNG
+        </button>
+      </div>
 
-				<!-- Bootstrap collapse với icon mũi tên -->
-				<a href="#paymentMethods" data-bs-toggle="collapse" class="text-primary small d-block mt-2">
-					5 hình thức thanh toán khác <i class="fas fa-chevron-down"></i>
-				</a>
-				<!-- Danh sách ẩn -->
-				<div class="collapse mt-2" id="paymentMethods">
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="paymentMethod" id="momo">
-						<label class="form-check-label" for="momo">Thanh toán qua Momo</label>
-					</div>
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="paymentMethod" id="creditCard">
-						<label class="form-check-label" for="creditCard">Thanh toán bằng thẻ tín dụng</label>
-					</div>
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="paymentMethod" id="zalopay">
-						<label class="form-check-label" for="zalopay">Ví ZaloPay</label>
-					</div>
-				</div>
-
-
-				<!-- Chính sách -->
-				<div class="form-check mt-3">
-					<input class="form-check-input" type="checkbox" id="agreePolicy" checked>
-					<label class="form-check-label" for="agreePolicy">
-						Tôi đồng ý với <a href="#" class="text-primary">Chính sách xử lý dữ liệu cá nhân</a> của Thế Giới Di Động
-					</label>
-				</div>
-
-				<!-- Nút đặt hàng -->
-				<button id="btnCheckout" data-userId="@Model.UserId" data-nameUser="@Model.NameUser" class="btn btn-warning w-100 mt-3 fw-bold">Đặt hàng</button>
-			</div>
+      <!-- Support -->
+      <p class="support-text">
+        Cần trợ giúp? Gọi ngay <a href="tel:1900232460" class="support-link">1900 232 460</a>
+        hoặc <a href="tel:02836221060" class="support-link">028.3622.1060</a> (8h00 - 21h30)
+      </p>
     }
-	</div>
+  </div>
 
-	<!-- Modal Xác Nhận Xóa -->
-	<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa sản phẩm</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					 Bạn có chắc chắn muốn xóa nó không?
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" id="confirmCancelBtn" data-bs-dismiss="modal">Hủy</button>
-					<button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
-				</div>
-			</div>
-		</div>
-	</div>
+  <!-- Delete Confirmation Modal -->
+  <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa sản phẩm</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="confirmCancelBtn" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-
-

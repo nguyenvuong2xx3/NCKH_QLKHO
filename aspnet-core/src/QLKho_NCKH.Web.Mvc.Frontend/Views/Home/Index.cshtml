@@ -8,7 +8,7 @@
 
 @section scripts
 {
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  @* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
 
   <environment names="Development">
     <script src="~/view-resources/Views/Home/Index.js" asp-append-version="true"></script>
@@ -45,7 +45,7 @@
               <div class="card mb-3">
                 <div class="card-body">
                   <div class="product-image">
-                    <img data-id="@product.ProductId" class="product-image btn-view-detail" style="width: 160px; height: 160px;" src="@(string.IsNullOrEmpty(product.ProductBarcode) ? "/img/default.jpg" : product.ProductImage)" alt="@product.ProductName">
+                    <img data-id="@product.ProductId" class="product-image" style="width: 160px; height: 160px;" src="@(string.IsNullOrEmpty(product.ProductImage) ? "/img/default.jpg" : product.ProductImage)" alt="@product.ProductName">
                   </div>
                   <div class="product-name" style="width: 100%">
                     <h3 class="card-title ">@product.ProductName</h3>

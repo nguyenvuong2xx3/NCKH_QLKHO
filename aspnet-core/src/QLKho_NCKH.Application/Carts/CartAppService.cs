@@ -72,6 +72,7 @@ namespace QLKho_NCKH.Carts
 					UnitPrice = inventory?.UnitPrice ?? 0,
 					//TotalPrice = (inventory?.Price ?? 0) * cart.Quantity,
 					//Location = inventory?.Location
+					Image = product.Image
 				};
 			}).ToList();
 

@@ -109,7 +109,8 @@ namespace QLKho_NCKH.Web.Controllers
 				}
 
 				// Đường dẫn thư mục lưu trữ ảnh trong dự án
-				string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "Products");
+				//string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "Products");
+				string uploadsFolder = @"E:\UploadImgKho\";
 				Directory.CreateDirectory(uploadsFolder); // Tạo thư mục nếu chưa có
 
 				// Tạo tên file duy nhất
@@ -123,10 +124,10 @@ namespace QLKho_NCKH.Web.Controllers
 				}
 
 				// Trả về đường dẫn để hiển thị trên giao diện
-				return "/img/Products/" + uniqueFileName;
+				return "/products/" + uniqueFileName;
 			}
 
-			return "/img/Products/default.png"; // Trả về ảnh mặc định nếu không có ảnh upload
+			return "/products/default.png"; // Trả về ảnh mặc định nếu không có ảnh upload
 		}
 
 		public async Task<IActionResult> EditAndUploadDeleteImage([FromForm] UpdateProductDto model)
@@ -196,8 +197,11 @@ namespace QLKho_NCKH.Web.Controllers
 		{
 			if (string.IsNullOrEmpty(fileName)) return; // Kiểm tra tên file hợp lệ
 
-			string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-			string fullPath = Path.Combine(uploadsFolder, fileName.TrimStart('/')); // Loại bỏ dấu `/` đầu nếu có
+			//string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+			//string fullPath = Path.Combine(uploadsFolder, fileName.TrimStart('/')); // Loại bỏ dấu `/` đầu nếu có
+
+			string folderPath = @"E:\Uploads"; // Thư mục chứa ảnh
+			string fullPath = Path.Combine(folderPath, fileName); // Đường dẫn đầy đủ
 
 
 			if (System.IO.File.Exists(fullPath)) // Kiểm tra file có tồn tại không

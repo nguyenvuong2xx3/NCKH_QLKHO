@@ -17,85 +17,94 @@ using QLKho_NCKH.Web.Resources;
 using Abp.AspNetCore.SignalR.Hubs;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.WebEncoders;
+using Microsoft.Extensions.FileProviders;
 
 namespace QLKho_NCKH.Web.Startup
 {
-    public class Startup
-    {
-        private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly IConfigurationRoot _appConfiguration;
+	public class Startup
+	{
+		private readonly IWebHostEnvironment _hostingEnvironment;
+		private readonly IConfigurationRoot _appConfiguration;
 
-        public Startup(IWebHostEnvironment env)
-        {
-            _hostingEnvironment = env;
-            _appConfiguration = env.GetAppConfiguration();
-        }
+		public Startup(IWebHostEnvironment env)
+		{
+			_hostingEnvironment = env;
+			_appConfiguration = env.GetAppConfiguration();
+		}
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            // MVC
-            services.AddControllersWithViews(
-                    options =>
-                    {
-                        options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                        options.Filters.Add(new AbpAutoValidateAntiforgeryTokenAttribute());
-                    }
-                );
+		public void ConfigureServices(IServiceCollection services)
+		{
+			// MVC
+			services.AddControllersWithViews(
+							options =>
+							{
+								options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+								options.Filters.Add(new AbpAutoValidateAntiforgeryTokenAttribute());
+							}
+					);
 
-            IdentityRegistrar.Register(services);
-            AuthConfigurer.Configure(services, _appConfiguration);
+			IdentityRegistrar.Register(services);
+			AuthConfigurer.Configure(services, _appConfiguration);
 
-            services.Configure<WebEncoderOptions>(options =>
-            {
-                options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
-            });
+			services.Configure<WebEncoderOptions>(options =>
+			{
+				options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
+			});
 
-            services.AddScoped<IWebResourceManager, WebResourceManager>();
+			services.AddScoped<IWebResourceManager, WebResourceManager>();
 
-            services.AddSignalR();
+			services.AddSignalR();
 
-            // Configure Abp and Dependency Injection
-            services.AddAbpWithoutCreatingServiceProvider<QLKho_NCKHWebMvcModule>(
-                // Configure Log4Net logging
-                options => options.IocManager.IocContainer.AddFacility<LoggingFacility>(
-                    f => f.UseAbpLog4Net().WithConfig(
-                        _hostingEnvironment.IsDevelopment()
-                            ? "log4net.config"
-                            : "log4net.Production.config"
-                        )
-                )
-            );
-        }
+			// Configure Abp and Dependency Injection
+			services.AddAbpWithoutCreatingServiceProvider<QLKho_NCKHWebMvcModule>(
+					// Configure Log4Net logging
+					options => options.IocManager.IocContainer.AddFacility<LoggingFacility>(
+							f => f.UseAbpLog4Net().WithConfig(
+									_hostingEnvironment.IsDevelopment()
+											? "log4net.config"
+											: "log4net.Production.config"
+									)
+					)
+			);
+		}
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
-        {
-            app.UseAbp(); // Initializes ABP framework.
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+		{
+			app.UseAbp(); // Initializes ABP framework.
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-            }
+			if (env.IsDevelopment())
+			{
+				app.UseDeveloperExceptionPage();
+			}
+			else
+			{
+				app.UseExceptionHandler("/Error");
+			}
 
-            app.UseStaticFiles();
+			app.UseStaticFiles();
 
-            app.UseRouting();
+			// Thêm hỗ trợ truy cập thư mục ảnh bên ngoài
+			app.UseStaticFiles(new StaticFileOptions
+			{
+				FileProvider = new PhysicalFileProvider(@"E:\UploadImgKho\"),
+				RequestPath = "/products"
+			});
 
-            app.UseAuthentication();
 
-            app.UseJwtTokenMiddleware();
+			app.UseRouting();
 
-            app.UseAuthorization();
+			app.UseAuthentication();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapHub<AbpCommonHub>("/signalr");
-                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapControllerRoute("defaultWithArea", "{area}/{controller=Home}/{action=Index}/{id?}");
-            });
-        }
-    }
+			app.UseJwtTokenMiddleware();
+
+			app.UseAuthorization();
+
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapHub<AbpCommonHub>("/signalr");
+				endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+				endpoints.MapControllerRoute("defaultWithArea", "{area}/{controller=Home}/{action=Index}/{id?}");
+			});
+		}
+	}
 }

@@ -3,10 +3,10 @@
 
 @section scripts {
   <environment names="Development">
-    <script src="~/view-resources/Views/Products/ProductDetail.js" asp-append-version="true"></script>
+    <script src="~/view-resources/Views/Home/Index.js" asp-append-version="true"></script>
   </environment>
   <environment names="Staging,Production">
-    <script src="~/view-resources/Views/Products/ProductDetail.min.js" asp-append-version="true"></script>
+    <script src="~/view-resources/Views/Products/Index.min.js" asp-append-version="true"></script>
   </environment>
 }
 
@@ -293,7 +293,7 @@
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-          <button class="btn btn-add-to-cart btn-lg text-white">
+          <button class="btn btn-add-cart btn-lg text-white"  data-id="@Model.Id">
             <i class="fas fa-cart-plus mr-2"></i> Thêm vào giỏ
           </button>
           <button class="btn btn-buy-now btn-lg text-white">
