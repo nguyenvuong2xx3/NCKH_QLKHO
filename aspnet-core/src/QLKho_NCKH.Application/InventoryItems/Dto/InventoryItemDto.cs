@@ -20,10 +20,27 @@ namespace QLKho_NCKH.InventoryItems.Dto
 	public class InventoryItemEditDto : EntityDto<int>
 	{
 		public int ProductId { get; set; }
-		public int StorageLocationId { get; set; }
+		//public int StorageLocationId { get; set; }
+
+		public string ProductCode { get; set; }
+
+		public decimal Volume { get; set; }
+
+		public decimal Weight { get; set; }
+
 		public int Quantity { get; set; }
 		public int ReservedQuantity { get; set; }
 		public decimal UnitPrice { get; set; }
+
+		public string Unit { get; set; }
+
+		public string ProductImage { get; set; }
+
+		public string ProductName { get; set; }
+
+		public string ProductBarcode { get; set; }
+
+		public string Description { get; set; }
 
 	}
 
@@ -53,6 +70,7 @@ namespace QLKho_NCKH.InventoryItems.Dto
 		public string ProductName { get; set; }
 		public string ProductBarcode { get; set; }
 		public int ProductId { get; set; }
+		public string ProductImage { get; set; }
 		public string Description { get; set; }
 		public int StorageLocationId { get; set; }
 		public string ProductCode { get; set; }

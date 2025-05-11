@@ -8,6 +8,8 @@
 
 @section scripts
 {
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
   <environment names="Development">
     <script src="~/view-resources/Views/Home/Index.js" asp-append-version="true"></script>
   </environment>
@@ -18,7 +20,7 @@
 }
 
 <link href="/css/homeweb.css" rel="stylesheet" />
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
 
 <div class="container mt-4">
 
@@ -43,14 +45,14 @@
               <div class="card mb-3">
                 <div class="card-body">
                   <div class="product-image">
-                    @* <img data-id="@product.Id" class="product-image btn-view-detail" style="width: 160px; height: 160px;" src="@(string.IsNullOrEmpty(product.ProductBarcode) ? "/img/default.jpg" : product.Image)" alt="@product.ProductName"> *@
+                    <img data-id="@product.ProductId" class="product-image btn-view-detail" style="width: 160px; height: 160px;" src="@(string.IsNullOrEmpty(product.ProductBarcode) ? "/img/default.jpg" : product.ProductImage)" alt="@product.ProductName">
                   </div>
                   <div class="product-name" style="width: 100%">
                     <h3 class="card-title ">@product.ProductName</h3>
                   </div>
                   <p class="card-text product_price">@product.UnitPrice</p>
 
-                  @* <a href="@Url.Action("Detail", "Product", new { id = product.Id })" class="btn btn-info">Xem chi tiết</a> *@
+                  <a href="@Url.Action("GetProductDetail", "Home", new { id = product.ProductId })" class="btn btn-info">Xem chi tiết</a>
                   <div class="block-smem-price">
                     Smember giảm thêm đến <span class="text-danger">10%</span>
                   </div>
