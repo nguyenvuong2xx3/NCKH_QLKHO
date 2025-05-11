@@ -1,12 +1,11 @@
 ﻿@foreach (var product in Model.Products)
 {
-  <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
-    <!-- Responsive grid -->
+  <div class="col-lg-2-4 col-md-4 col-sm-6 mb-4 px-2"> <!-- Thêm px-2 để tạo khoảng cách ngang -->
     <div class="card product-card h-100 border-0 shadow-sm">
       <!-- Product Image -->
       <div class="card-img-top text-center p-3">
         <img class="img-fluid product-image"
-             style="max-height: 160px; width: auto; object-fit: contain;"
+             style="width: 160px; height: 160px; object-fit: contain;"
              src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)"
              alt="@product.Name"
              data-id="@product.Id">
@@ -15,22 +14,22 @@
       <!-- Card Body -->
       <div class="card-body pt-0 d-flex flex-column">
         <!-- Product Name -->
-        <h6 class="card-title mb-2 text-truncate-2" title="@product.Name">@product.Name</h6>
+        <h3 class="card-title product-name mb-1">@product.Name</h3>
 
         <!-- Price -->
-        <div class="mb-2 text-center">
-          <span class="text-danger fw-bold fs-5">@product.Price.ToString("N0") đ</span>
+        <div class="mb-1">
+          <span class="text-danger fw-bold product-price">@product.Price.ToString("N0") đ</span>
         </div>
 
         <!-- Stock -->
-        <div class="mb-2 text-center">
+        <div class="mb-1">
           <span class="badge bg-light text-dark">
             <i class="fas fa-box-open me-1"></i> @product.StockQuantity
           </span>
         </div>
 
         <!-- Discount Badge -->
-        <div class="text-center mb-3">
+        <div class="mb-2">
           <span class="badge bg-danger bg-opacity-10 text-danger">
             <i class="fas fa-tag me-1"></i> Giảm 10%
           </span>
@@ -39,19 +38,24 @@
 
       <!-- Card Footer -->
       <div class="card-footer bg-white border-top-0 pt-0 pb-3">
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex flex-column">
           <!-- Rating -->
-          <div class="product-rating text-warning">
+          <div class="product-rating text-warning mb-2">
             @for (int i = 0; i < 5; i++)
             {
               <i class="fas fa-star small"></i>
             }
           </div>
 
-          <!-- Favorite Button -->
-          <button class="btn btn-sm favorite-btn p-0" title="Yêu thích">
-            <i class="far fa-heart text-danger"></i>
-          </button>
+          <!-- Buttons -->
+          <div class="d-flex justify-content-between">
+            <a href="@Url.Action("GetProductDetail", "Home", new { id = product.Id })" 
+               class="btn btn-sm btn-info">Xem chi tiết</a>
+            
+            <button class="btn btn-sm favorite-btn p-0" title="Yêu thích">
+              <i class="far fa-heart text-danger"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -59,35 +63,106 @@
 }
 
 <style>
-  /* Custom styles */
+  /* Custom column for 5 items per row */
+  .col-lg-2-4 {
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+
+  /* Responsive adjustments */
+  @@media (max-width: 1199.98px) {
+    .col-lg-2-4 {
+      flex: 0 0 25%;
+      max-width: 25%;
+    }
+  }
+
+  @@media (max-width: 991.98px) {
+    .col-lg-2-4 {
+      flex: 0 0 33.333333%;
+      max-width: 33.333333%;
+    }
+  }
+
+  @@media (max-width: 767.98px) {
+    .col-lg-2-4 {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+  }
+
+  @@media (max-width: 575.98px) {
+    .col-lg-2-4 {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+  }
+
+  /* Card styles */
   .product-card {
     transition: all 0.3s ease;
     border-radius: 10px;
     overflow: hidden;
+    margin-bottom: 20px; /* Thêm khoảng cách dưới mỗi card */
   }
 
-    .product-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-    }
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
 
   .product-image {
     transition: transform 0.3s ease;
   }
 
-    .product-image:hover {
-      transform: scale(1.05);
-    }
+  .product-image:hover {
+    transform: scale(1.05);
+  }
 
-  .text-truncate-2 {
+  .product-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: 48px;
+    min-height: 2em;
+  }
+
+  .product-price {
+    font-size: 1.1rem;
   }
 
   .card-footer {
     margin-top: auto;
+  }
+
+  .btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+    font-size: 0.85rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .favorite-btn {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+  }
+
+  /* Ensure consistent spacing */
+  .row {
+    margin-right: -10px;
+    margin-left: -10px;
+  }
+
+  .row > [class*="col-"] {
+    padding-right: 10px;
+    padding-left: 10px;
   }
 </style>

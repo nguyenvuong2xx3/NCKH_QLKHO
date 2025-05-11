@@ -6,7 +6,7 @@
     <script src="~/view-resources/Views/Home/Index.js" asp-append-version="true"></script>
   </environment>
   <environment names="Staging,Production">
-    <script src="~/view-resources/Views/Products/Index.min.js" asp-append-version="true"></script>
+    <script src="~/view-resources/Views/Home/Index.min.js" asp-append-version="true"></script>
   </environment>
 }
 
@@ -118,7 +118,7 @@
     margin-top: 1.5rem;
   }
 
-  .btn-add-to-cart {
+  .btn-add-cart {
     background: #3498db;
     border: none;
     flex: 1;
@@ -285,7 +285,7 @@
           <label class="font-weight-bold mr-3">Số lượng:</label>
           <div class="input-group quantity-group" style="width: 120px;">
             <button class="btn btn-outline-secondary quantity-minus" type="button">-</button>
-            <input type="number" class="form-control text-center quantity-input" value="1" min="1">
+            <input id="quantity-add-detail" type="number" class="form-control text-center quantity-input" value="1" min="1">
             <button class="btn btn-outline-secondary quantity-plus" type="button">+</button>
           </div>
           <span class="text-muted ml-2">@Model.Unit sẵn có</span>

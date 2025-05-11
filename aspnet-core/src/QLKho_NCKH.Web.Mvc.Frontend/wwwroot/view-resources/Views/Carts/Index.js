@@ -123,6 +123,8 @@
 		var productId = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
 		var quantityInput = parseInt($('#quantity-add-detail').val()) || 1;
 
+		console.log(quantityInput)
+
 		bool = true;
 		_cartService.addToCart(
 			productId, quantityInput, bool

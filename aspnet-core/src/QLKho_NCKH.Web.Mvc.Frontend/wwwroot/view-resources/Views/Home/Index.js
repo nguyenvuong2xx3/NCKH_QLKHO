@@ -39,15 +39,41 @@
 	$('.btn-add-cart').on('click', function (e) {
 		var _cartService = abp.services.app.cart;
 		e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
-			
+    var quantityInput = parseInt($('#quantity-add-detail').val()) || 1;
 		var productId = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
 		bool = true;
 		_cartService.addToCart(
-			productId, 1, bool
+      productId, quantityInput , bool
 		).done(function () {
 			abp.notify.info("Thêm sản phẩm vào giỏ hàng thành công");
 			window.location.href = "/Carts/Index"
 		});
+  });
+
+  // Xử lý khi click nút giảm số lượng
+  $('.quantity-minus').on('click', function (e) {
+    e.preventDefault(); // Ngăn chặn hành vi mặc định
+
+    var input = $(this).siblings('.quantity-input'); // Tìm input liên quan
+    var currentValue = parseInt(input.val()) || 0; // Lấy giá trị hiện tại
+    var min = parseInt(input.attr('min')) || 0; // Giá trị tối thiểu
+
+    if (currentValue > min) {
+      input.val(currentValue - 1); // Giảm giá trị
+    }
+  });
+
+  // Xử lý khi click nút tăng số lượng
+  $('.quantity-plus').on('click', function (e) {
+    e.preventDefault(); // Ngăn chặn hành vi mặc định
+
+    var input = $(this).siblings('.quantity-input'); // Tìm input liên quan
+    var currentValue = parseInt(input.val()) || 0; // Lấy giá trị hiện tại
+    var max = parseInt(input.attr('max')) || Infinity; // Giá trị tối đa
+
+    if (currentValue < max) {
+      input.val(currentValue + 1); // Tăng giá trị
+    }
   });
 
   $('.btn-all-product').on('click', function (e) {
