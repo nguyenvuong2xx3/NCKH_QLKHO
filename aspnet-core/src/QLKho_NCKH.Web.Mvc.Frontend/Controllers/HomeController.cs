@@ -269,21 +269,23 @@ namespace QLKho_NCKH.Web.Controllers
 
 		public async Task<IActionResult> GetProductDetail(int id)
 		{
-			var product = await _productAppService.GetProductById(id);
+
+			var result = await _inventoryItemAppService.GetInventoryItem(id);
+			//var product = await _productAppService.GetProductById(id);
 			var model = new ProductDetailModel
 			{
-				Id = product.Id,
-				Name = product.Name,
-				Description = product.Description,
-				Code = product.Code,
-				Image = product.Image,
-				Unit = product.Unit,
-				Weight = product.Weight,
-				Volume = product.Volume,
-				Barcode = product.Barcode
+				Id = result.ProductId,
+				Name = result.ProductName,
+				Description = result.Description,
+				Code = result.ProductCode,
+				Image = result.ProductImage,
+				Unit = result.Unit,
+				Weight = result.Weight,
+				Volume = result.Volume,
+				Barcode = result.ProductBarcode
 			};
 
-			return PartialView("_DetailProductWeb", model);
+			return View("_DetailProductWeb", model);
 		}
 
 		//public async Task<IActionResult> LoadMoreProducts(int page, int pageSize = 10)

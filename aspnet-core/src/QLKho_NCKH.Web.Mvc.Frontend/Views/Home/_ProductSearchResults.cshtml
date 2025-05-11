@@ -68,9 +68,9 @@
 						<!-- Hình ảnh sản phẩm -->
 						<div class="product-image text-center">
 							<img class="product-image btn-view-detail" style="width: 160px; height: 160px;"
-									 @* src="@(string.IsNullOrEmpty(product.) ? "/img/default.jpg" : product.Image)" *@
+									  src="@(string.IsNullOrEmpty(product.ProductImage) ? "/img/default.jpg" : product.ProductImage)" 
 									 alt="@product.ProductName"
-									 data-id="@product.Id">
+									 data-id="@product.ProductId">
 						</div>
 
 						<!-- Tên sản phẩm -->

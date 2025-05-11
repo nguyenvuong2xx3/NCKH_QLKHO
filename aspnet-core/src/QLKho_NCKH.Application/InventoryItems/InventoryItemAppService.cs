@@ -20,6 +20,8 @@ using QLKho_NCKH.Products;
 using QLKho_NCKH.Products.Dtos;
 using QLKho_NCKH.StockTransactions;
 using QLKho_NCKH.Categories;
+using Abp.Collections.Extensions;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace QLKho_NCKH.InventoryItems;
 
@@ -132,6 +134,7 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 		var result = items.Select(item => new InventoryItemListDto
 		{
 			ProductId = item.ProductId,
+			ProductImage = item.Product.Image,
 			ProductCode = item.Product.Code,
 			Description = item.Product.Description,
 			StorageLocationId = item.StorageLocationId,
@@ -146,59 +149,56 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 		return new PagedResultDto<InventoryItemListDto> { Items = result, TotalCount = count };
 	}
 
-	//public async Task<InventoryItemEditDto> GetInventoryItem(int id)
-	//{
-	//	var stockTransactionDetails =  _inventoryItemRepository.GetAll().Include(x => x.StorageLocation);
+	public async Task<InventoryItemEditDto> GetInventoryItem(int productId)
+	{
+		var productDetails = _inventoryItemRepository.GetAll().Include(x => x.Product).ToList();
+				productDetails.WhereIf(productId != 0, x => x.ProductId == productId);
+		return new InventoryItemEditDto
+		{
 
-	//	foreach (var detail in stockTransactionDetails)
-	//	{
-	//		var inventoryItem = await _inventoryItemRepository.FirstOrDefaultAsync(x =>
-	//				x.ProductId == detail.ProductId &&
-	//				x.StorageLocationId == detail.StorageLocationId);
+			ProductId = productDetails.FirstOrDefault().ProductId,
+			Volume = productDetails.FirstOrDefault().Product.Volume,
+			Weight = productDetails.FirstOrDefault().Product.Weight,
+			//StorageLocationId = productDetails.FirstOrDefault().StorageLocationId,
+			Quantity = productDetails.FirstOrDefault().Quantity,
+			//ReservedQuantity = productDetails.FirstOrDefault().ReservedQuantity,
+			Unit = productDetails.FirstOrDefault().Product.Unit,
+			UnitPrice = productDetails.FirstOrDefault().UnitPrice,
+			ProductImage = productDetails.FirstOrDefault().Product.Image,
+			ProductName = productDetails.FirstOrDefault().Product.Name,
+			ProductBarcode = productDetails.FirstOrDefault().Product.Barcode,
+			Description = productDetails.FirstOrDefault().Product.Description
+		};
 
-	//		if (inventoryItem != null)
-	//		{
-	//			if (inventoryItem.Quantity < detail.Quantity)
-	//			{
-	//				throw new UserFriendlyException("Số lượng tồn kho không đủ để xuất.");
-	//			}
 
-	//			inventoryItem.Quantity -= detail.Quantity;
+	}
 
-	//			await _inventoryItemRepository.UpdateAsync(inventoryItem);
-	//		}
-	//		else
-	//		{
-	//			throw new UserFriendlyException("Không tìm thấy bản ghi tồn kho tương ứng.");
-	//		}
-	//	}
+		//}
 
-	//}
-
-	//public async Task<InventoryItemEditDto> EditInventoryItem(InventoryItemEditDto input)
-	//{
-	//	var inventoryItem = await _inventoryItemRepository.GetAsync(input.Id);
-	//	inventoryItem.ProductId = input.ProductId;
-	//	inventoryItem.StorageLocationId = input.StorageLocationId;
-	//	inventoryItem.Quantity = input.Quantity;
-	//	inventoryItem.ReservedQuantity = input.ReservedQuantity;
-	//	inventoryItem.UnitPrice = input.UnitPrice;
+		//public async Task<InventoryItemEditDto> EditInventoryItem(InventoryItemEditDto input)
+		//{
+		//	var inventoryItem = await _inventoryItemRepository.GetAsync(input.Id);
+		//	inventoryItem.ProductId = input.ProductId;
+		//	inventoryItem.StorageLocationId = input.StorageLocationId;
+		//	inventoryItem.Quantity = input.Quantity;
+		//	inventoryItem.ReservedQuantity = input.ReservedQuantity;
+		//	inventoryItem.UnitPrice = input.UnitPrice;
 
 
 
-	//	await CurrentUnitOfWork.SaveChangesAsync();
+		//	await CurrentUnitOfWork.SaveChangesAsync();
 
-	//	return ObjectMapper.Map<InventoryItemEditDto>(inventoryItem);
-	//}
+		//	return ObjectMapper.Map<InventoryItemEditDto>(inventoryItem);
+		//}
 
-	// Permission??
-	//public async Task DeleteInventoryItem(int Id)
-	//{
-	//	await  _inventoryItemRepository.DeleteAsync(Id);
-	//}
+		// Permission??
+		//public async Task DeleteInventoryItem(int Id)
+		//{
+		//	await  _inventoryItemRepository.DeleteAsync(Id);
+		//}
 
 
-}
+	}
 ////InventoryItems AutoMapper
 //configuration.CreateMap<InventoryItem, InventoryItemEditDto>();
 //configuration.CreateMap<InventoryItem, InventoryItemListDto>();
