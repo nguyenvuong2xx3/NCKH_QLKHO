@@ -25,7 +25,7 @@ namespace QLKho_NCKH.Products
 		Task<PagedResultDto<ProductListDto>> SearchProducts(GetAllProductsInput input);
 
 		Task<ProductListDto> GetProductById(int productId);
-
+		Task<Dictionary<int, ProductListDto>> GetProductsByIds(List<int> productIds);
 
 
 	}

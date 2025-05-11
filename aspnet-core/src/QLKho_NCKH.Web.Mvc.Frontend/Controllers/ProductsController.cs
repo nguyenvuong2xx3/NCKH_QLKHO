@@ -29,16 +29,16 @@ namespace QLKho_NCKH.Web.Controllers
 			_categoryAppService = categoryAppService;
 			_supplierAppService = supplierAppService;
 		}
-		public async Task<ActionResult> Index(ProductInput input)
-		{
-			var output = await _productAppService.GetAllProducts(input);
-			var Categories = await _categoryAppService.GetAllCategories();
-			var Suppliers = await _supplierAppService.GetAllSupplier();
-			var model = new ProductViewModel(output.Items);
-			model.Categories = Categories;
-			model.Suppliers = Suppliers;
-			return View(model);
-		}//Test
+		//public async Task<ActionResult> Index(ProductInput input)
+		//{
+		//	var output = await _productAppService.GetAllProducts(input);
+		//	var Categories = await _categoryAppService.GetAllCategories();
+		//	var Suppliers = await _supplierAppService.GetAllSupplier();
+		//	var model = new ProductViewModel(output.Items);
+		//	model.Categories = Categories;
+		//	model.Suppliers = Suppliers;
+		//	return View(model);
+		//}//Test
 
 		//[AbpMvcAuthorize(PermissionNames.Pages_Products_Edit)]
 		public async Task<ActionResult> EditModal(int productId)

@@ -218,5 +218,31 @@ namespace QLKho_NCKH.Products
 			};
 		}
 
+		public async Task<Dictionary<int, ProductListDto>> GetProductsByIds(List<int> productIds)
+		{
+			var products = await _productRepository.GetAllIncluding(x => x.Category, x => x.Supplier)
+					.Where(x => productIds.Contains(x.Id))
+					.ToListAsync();
+
+			return products.ToDictionary(
+					p => p.Id,
+					p => new ProductListDto
+					{
+						Id = p.Id,
+						Code = p.Code,
+						Name = p.Name,
+						Description = p.Description,
+						Image = p.Image,
+						CategoryId = p.CategoryId,
+						Barcode = p.Barcode,
+						Unit = p.Unit,
+						Weight = p.Weight,
+						Volume = p.Volume,
+						IsActive = p.IsActive,
+						SupplierId = p.SupplierId
+						// Thêm các trường khác nếu cần
+					});
+		}
+
 	}
 }

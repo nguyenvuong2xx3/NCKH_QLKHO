@@ -17,7 +17,7 @@ namespace QLKho_NCKH.InventoryItems.Dto
 
 		public DateTime? EndDate { get; set; }
 
-		public int CategoryId { get; set; }
+		public int? CategoryId { get; set; }
 		public int? ProductId { get; set; }
 		public int? StorageLocationId { get; set; }
 		public int? Quantity { get; set; }
@@ -32,5 +32,16 @@ namespace QLKho_NCKH.InventoryItems.Dto
 				Sorting = "CreationTime DESC";
 			}
 		}
+	}
+
+	public class InventoryItemDto : EntityDto<long>
+	{
+		public int ProductId { get; set; }
+		public string ProductName { get; set; }
+		public string ProductCode { get; set; }
+		public decimal Price { get; set; }
+		public string ImageUrl { get; set; }
+		public int? CategoryId { get; set; }
+		// Thêm các trường khác
 	}
 }

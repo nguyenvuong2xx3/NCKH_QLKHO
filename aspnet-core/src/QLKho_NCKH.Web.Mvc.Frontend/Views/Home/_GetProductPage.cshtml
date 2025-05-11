@@ -1,53 +1,93 @@
-﻿
-
-@foreach (var product in Model.Products)
+﻿@foreach (var product in Model.Products)
 {
-	<div class="swiper-slide me-1" style="width: 220px; margin-right: 10px">
-		<div class="card mb-3">
-			<div class="card-body">
-				<!-- Hình ảnh sản phẩm -->
-				<div class="product-image text-center">
-					<img class="product-image btn-view-detail" style="width: 160px; height: 160px;"
-							 src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)"
-							 alt="@product.Name"
-					data-id="@product.Id">
-				</div>
+  <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
+    <!-- Responsive grid -->
+    <div class="card product-card h-100 border-0 shadow-sm">
+      <!-- Product Image -->
+      <div class="card-img-top text-center p-3">
+        <img class="img-fluid product-image"
+             style="max-height: 160px; width: auto; object-fit: contain;"
+             src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)"
+             alt="@product.Name"
+             data-id="@product.Id">
+      </div>
 
-				<!-- Tên sản phẩm -->
-				<div class="product-name">
-					<h6 class="card-title">@product.Name</h6>
-				</div>
+      <!-- Card Body -->
+      <div class="card-body pt-0 d-flex flex-column">
+        <!-- Product Name -->
+        <h6 class="card-title mb-2 text-truncate-2" title="@product.Name">@product.Name</h6>
 
-				<!-- Giá sản phẩm -->
-				<p class="card-text product_price text-danger fw-bold text-center">
-					@* @String.Format("{0:N0} đ", product.Price) *@1000000
-				</p>
+        <!-- Price -->
+        <div class="mb-2 text-center">
+          <span class="text-danger fw-bold fs-5">@product.Price.ToString("N0") đ</span>
+        </div>
 
-				<!-- Giảm giá SMember -->
-				<div class="block-smem-price text-center">
-					Smember giảm thêm đến <span class="text-danger">10%</span>
-				</div>
+        <!-- Stock -->
+        <div class="mb-2 text-center">
+          <span class="badge bg-light text-dark">
+            <i class="fas fa-box-open me-1"></i> @product.StockQuantity
+          </span>
+        </div>
 
-				<!-- Khu vực đánh giá và yêu thích -->
-				<div class="bottom-div d-flex justify-content-between align-items-center mt-2">
-					<!-- Đánh giá -->
-					<div class="product-rating">
-						<i class="fas fa-star text-warning"></i>
-						<i class="fas fa-star text-warning"></i>
-						<i class="fas fa-star text-warning"></i>
-						<i class="fas fa-star text-warning"></i>
-						<i class="fas fa-star text-warning"></i>
-					</div>
+        <!-- Discount Badge -->
+        <div class="text-center mb-3">
+          <span class="badge bg-danger bg-opacity-10 text-danger">
+            <i class="fas fa-tag me-1"></i> Giảm 10%
+          </span>
+        </div>
+      </div>
 
-					<!-- Nút yêu thích -->
-					<div>
-						<a href="#" class="favorite-btn text-decoration-none">
-							Yêu thích
-						</a>
-						<i class="far fa-heart text-danger"></i>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+      <!-- Card Footer -->
+      <div class="card-footer bg-white border-top-0 pt-0 pb-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <!-- Rating -->
+          <div class="product-rating text-warning">
+            @for (int i = 0; i < 5; i++)
+            {
+              <i class="fas fa-star small"></i>
+            }
+          </div>
+
+          <!-- Favorite Button -->
+          <button class="btn btn-sm favorite-btn p-0" title="Yêu thích">
+            <i class="far fa-heart text-danger"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 }
+
+<style>
+  /* Custom styles */
+  .product-card {
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+
+  .product-image {
+    transition: transform 0.3s ease;
+  }
+
+    .product-image:hover {
+      transform: scale(1.05);
+    }
+
+  .text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 48px;
+  }
+
+  .card-footer {
+    margin-top: auto;
+  }
+</style>

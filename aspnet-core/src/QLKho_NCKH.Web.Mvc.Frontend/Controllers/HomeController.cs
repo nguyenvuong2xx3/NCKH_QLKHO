@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using QLKho_NCKH.Categories;
 using QLKho_NCKH.InventoryItems;
 using QLKho_NCKH.InventoryItems.Dto;
+using Abp.Application.Services.Dto;
+using Microsoft.Data.SqlClient;
 
 namespace QLKho_NCKH.Web.Controllers
 {
@@ -162,6 +164,83 @@ namespace QLKho_NCKH.Web.Controllers
 			return View(model);
 		}
 
+		public async Task<IActionResult> PageAllProduct(int? categoryId, int page = 1, int pageSize = 20)
+		{
+			// Lấy thông tin category nếu có categoryId
+			string categoryName = "Tất cả sản phẩm";
+			if (categoryId.HasValue)
+			{
+				var category = await _categoryAppService.GetCategoryById(categoryId.Value);
+				if (category != null)
+				{
+					categoryName = category.Name;
+				}
+			}
+
+			// Lấy danh sách sản phẩm từ Inventory với filter theo category
+			var inventoryItems = await _inventoryItemAppService.GetInventoryItems(new GetInventoryItemsInput
+			{
+				CategoryId = categoryId,
+				MaxResultCount = pageSize,
+				SkipCount = (page - 1) * pageSize,
+				Sorting = "CreationTime DESC"
+			});
+
+			// 3. Lấy danh sách ID sản phẩm từ inventory
+			var productIds = inventoryItems.Items.Select(i => i.ProductId).Distinct().ToList();
+
+			// 4. Lấy thông tin đầy đủ các sản phẩm
+			var productsDict = await _productAppService.GetProductsByIds(productIds);
+			// Lấy tổng số sản phẩm để phân trang
+			var totalCount = inventoryItems.TotalCount;
+			// Tạo view model
+			// 5. Kết hợp thông tin Inventory + Product
+			var viewProducts = inventoryItems.Items.Select(inventoryItem =>
+			{
+				if (productsDict.TryGetValue(inventoryItem.ProductId, out var product))
+				{
+					return new ProductDisplayDto
+					{
+						// Thông tin từ Inventory
+						InventoryId = inventoryItem.Id,
+						Price = inventoryItem.UnitPrice,
+						StockQuantity = inventoryItem.Quantity,
+
+						// Thông tin từ Product
+						Id = product.Id,
+						Name = product.Name,
+						Code = product.Code,
+						Description = product.Description,
+						Image = product.Image,
+						CategoryId = product.CategoryId,
+						Barcode = product.Barcode,
+						Unit = product.Unit,
+						Weight = product.Weight,
+						Volume = product.Volume,
+						IsActive = product.IsActive,
+						SupplierId = product.SupplierId
+						// Thêm các trường khác nếu cần
+					};
+				}
+				return null;
+			}).Where(p => p != null).ToList();
+
+			// 6. Tạo view model
+			var model = new ProductViewModel
+			{
+				Products = viewProducts,
+				CategoryId = categoryId,
+				CategoryName = categoryName,
+				CurrentPage = page,
+				PageSize = pageSize,
+				TotalCount = totalCount,
+				TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
+				//SortOrder = sortOrder
+			};
+
+			return View("_AllProducts", model);
+		}
+
 		public async Task<IActionResult> SearchProducts(string keyword)
 		{
 
@@ -207,21 +286,21 @@ namespace QLKho_NCKH.Web.Controllers
 			return PartialView("_DetailProductWeb", model);
 		}
 
-		public async Task<IActionResult> LoadMoreProducts(int page, int pageSize = 10)
-		{
-			var result = await _productAppService.GetAllProducts(new ProductInput
-			{
-				MaxResultCount = pageSize,
-				SkipCount = (page - 1) * pageSize,
-				Sorting = "CreationTime DESC"
-			});
+		//public async Task<IActionResult> LoadMoreProducts(int page, int pageSize = 10)
+		//{
+		//	var result = await _productAppService.GetAllProducts(new ProductInput
+		//	{
+		//		MaxResultCount = pageSize,
+		//		SkipCount = (page - 1) * pageSize,
+		//		Sorting = "CreationTime DESC"
+		//	});
 
-			if (result.Items.Any())
-			{
-				return PartialView("_ProductListPartial", new ProductViewModel(result.Items.ToList()));
-			}
+		//	if (result.Items.Any())
+		//	{
+		//		return PartialView("_ProductListPartial", new ProductViewModel(result.Items.ToList()));
+		//	}
 
-			return NoContent();
-		}
+		//	return NoContent();
+		//}
 	}
 }
