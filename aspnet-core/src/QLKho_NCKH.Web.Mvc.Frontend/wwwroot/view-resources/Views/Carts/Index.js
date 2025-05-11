@@ -130,45 +130,8 @@
   $("#btnCheckout").on("click", function (e) {
     e.preventDefault();
 
-		console.log(quantityInput)
-
-		bool = true;
-		_cartService.addToCart(
-			productId, quantityInput, bool
-		).done(function () {
-			abp.notify.success("Thêm vào giỏ hàng thành công");
-		});
-	});
     const userId = $(this).data("userid");
     const nameUser = $(this).data("nameuser");
-
-    //let orderItems = [];
-    //$(".cart-item").each(function () {
-    //  const productId = $(this).find(".btn-reduce").data("id");
-    //  const quantity = parseInt($(this).find(".quantity-input").val()) || 0;
-    //  const unitPriceText = $(this).find(".product-price").data("unit-price");
-    //  const unitPrice = parseFloat(unitPriceText.replace(/,/g, "")) || 0;
-
-    //  orderItems.push({
-    //    ProductId: productId,
-    //    Quantity: quantity,
-    //    UnitPrice: unitPrice,
-    //    DiscountPrice: 0
-    //  });
-    //});
-
-    //const totalAmount = orderItems.reduce((sum, item) => sum + (item.UnitPrice * item.Quantity), 0);
-
-    //const orderData = {
-    //  UserId: userId,
-    //  NameUser: nameUser,
-    //  TotalAmount: totalAmount,
-    //  DiscountAmount: 0,
-    //  PaymentMethod: 0,
-    //  Items: orderItems
-    //};
-
-    //console.log("Dữ liệu gửi đi:", orderData);
 
     let details = [];
     $(".cart-item").each(function () {
@@ -179,16 +142,15 @@
         storageLocationId: 0 // Cần xác định storageLocationId phù hợp
       });
     });
-		console.log("Chi tiết đơn hàng:", details);
+    
+    console.log("Chi tiết đơn hàng:", details);
+    
     function generateTransactionCode() {
       const now = new Date();
       const pad = (n) => n.toString().padStart(2, '0');
 
       // Format: NK_DDMMYY_HHMMSS (18 ký tự)
       return `NK${pad(now.getDate())}${pad(now.getMonth() + 1)}${now.getFullYear().toString().slice(-2)}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
-
-      // Hoặc format ngắn hơn nếu cần (NK_DDMM_HHMM - 11 ký tự)
-      // return `NK${pad(now.getDate())}${pad(now.getMonth() + 1)}_${pad(now.getHours())}${pad(now.getMinutes())}`;
     }
 
     var exportRequest = {
@@ -203,7 +165,7 @@
     _stockTransactionService.createExportRequest(exportRequest)
       .done(function () {
         abp.notify.info('Tạo phiếu xuất kho thành công');
-        window.location.href = "/Order/Success";
+        //window.location.href = "/Orders/Success";
       })
       .fail(function (error) {
         abp.notify.error(error.message || 'Có lỗi xảy ra khi tạo phiếu xuất kho');
