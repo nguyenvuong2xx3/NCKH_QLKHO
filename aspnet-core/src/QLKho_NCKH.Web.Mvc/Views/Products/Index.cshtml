@@ -1,8 +1,10 @@
 ﻿@* @using QLKho_NCKH.Authorization *@
+@using QLKho_NCKH.Authorization
 @using QLKho_NCKH.Web.Startup
 @using QLKho_NCKH.Web.Models.Products
 @model ProductViewModel
 @{
+	// ViewBag.CurrentPageName = PermissionNames.;
 	ViewBag.Title = L("Products");
 	ViewBag.CurrentPageName = PageNames.Products;
 }
@@ -33,11 +35,12 @@
 						@L("Create")
 					</a>
 				} *@
-
+				@if (IsGranted(PermissionNames.Pages_Products_Create)){
 				<a href="javascript:;" class="btn bg-blue float-sm-right">
 					<i class="fa fa-plus-square"></i>
 					@L("Create")
 				</a>
+				}
 			</div>
 		</div>
 	</div>

@@ -18,7 +18,7 @@ using Abp.Extensions;
 using Abp.Authorization;
 namespace QLKho_NCKH.Products
 {
-	//[AbpMvcAuthorize(PermissionNames.Pages_Products)]
+	[AbpMvcAuthorize(PermissionNames.Pages_Products)]
 
 	public class ProductAppService : ApplicationService, IProductAppService
 	{
@@ -33,7 +33,7 @@ namespace QLKho_NCKH.Products
 			_env = env;
 		}
 
-		//[AbpAuthorize(PermissionNames.Pages_Products_Create)]
+		[AbpAuthorize(PermissionNames.Pages_Products_Create)]
 		public async Task<ProductListDto> Create(CreateProductDto input)
 		{
 			var product = new Product
@@ -80,7 +80,7 @@ namespace QLKho_NCKH.Products
 			throw new NotImplementedException();
 		}
 
-		//[AbpAuthorize(PermissionNames.Pages_Products_Edit)]
+		[AbpAuthorize(PermissionNames.Pages_Products_Edit)]
 		public async Task<ProductListDto> Update(UpdateProductDto input)
 		{
 			var product = await _productRepository.GetAsync(input.Id);
@@ -124,7 +124,7 @@ namespace QLKho_NCKH.Products
 			throw new NotImplementedException();
 		}
 
-		//[AbpAuthorize(PermissionNames.Pages_Products_Delete)]
+		[AbpAuthorize(PermissionNames.Pages_Products_Delete)]
 		public async Task Delete(EntityDto<int> input)
 		{
 			var product = _productRepository.GetAll().FirstOrDefault(x => x.Id == input.Id);

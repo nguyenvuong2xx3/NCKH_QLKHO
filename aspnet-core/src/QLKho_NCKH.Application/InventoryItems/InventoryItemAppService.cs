@@ -151,8 +151,9 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 
 	public async Task<InventoryItemEditDto> GetInventoryItem(int productId)
 	{
-		var productDetails = _inventoryItemRepository.GetAll().Include(x => x.Product).ToList();
-				productDetails.WhereIf(productId != 0, x => x.ProductId == productId);
+		var productDetails = _inventoryItemRepository.GetAll().Include(x => x.Product)
+		.WhereIf(productId != 0, x => x.ProductId == productId)
+		.ToList();
 		return new InventoryItemEditDto
 		{
 

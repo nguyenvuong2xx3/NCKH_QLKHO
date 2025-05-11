@@ -10,13 +10,13 @@ using QLKho_NCKH.Products;
 using QLKho_NCKH.Web.Models.Products;
 using QLKho_NCKH.Categories;
 using QLKho_NCKH.Suppliers;
-//using Abp.Application.Services.Dto;
-//using QLKho_NCKH.Authorization;
-//using Abp.AspNetCore.Mvc.Authorization;
+using Abp.Application.Services.Dto;
+using QLKho_NCKH.Authorization;
+using Abp.AspNetCore.Mvc.Authorization;
 
 namespace QLKho_NCKH.Web.Controllers
 {
-	//[AbpMvcAuthorize(PermissionNames.Pages_Products)]
+	[AbpMvcAuthorize(PermissionNames.Pages_Products)]
 
 	public class ProductsController : QLKho_NCKHControllerBase
 	{
@@ -40,7 +40,7 @@ namespace QLKho_NCKH.Web.Controllers
 			return View(model);
 		}//Test
 
-		//[AbpMvcAuthorize(PermissionNames.Pages_Products_Edit)]
+		[AbpMvcAuthorize(PermissionNames.Pages_Products_Edit)]
 		public async Task<ActionResult> EditModal(int productId)
 		{
 			var product = await _productAppService.GetProductById(productId);
