@@ -22,6 +22,7 @@ using QLKho_NCKH.StockTransactions;
 using QLKho_NCKH.Categories;
 using Abp.Collections.Extensions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Abp.Timing;
 
 namespace QLKho_NCKH.InventoryItems;
 
@@ -289,6 +290,133 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 		{
 			Items = result,
 			TotalCount = totalCount
+		};
+
+
+	}
+	public async Task DeleteInventoryItem(DeleteInventoryItemInput input)
+	{
+		// Validate input
+		if (input.ProductId <= 0 || input.StorageLocationId <= 0)
+		{
+			throw new UserFriendlyException("Thông tin sản phẩm hoặc vị trí kho không hợp lệ!");
+		}
+
+		// Check if the item exists
+		var inventoryItem = await _inventoryItemRepository.FirstOrDefaultAsync(
+				x => x.ProductId == input.ProductId &&
+						 x.StorageLocationId == input.StorageLocationId);
+
+		if (inventoryItem == null)
+		{
+			throw new UserFriendlyException("Không tìm thấy tồn kho cần xóa!");
+		}
+
+		// Check if there's any reserved quantity (prevent deletion if items are reserved)
+		if (inventoryItem.ReservedQuantity > 0)
+		{
+			throw new UserFriendlyException(
+					"Không thể xóa tồn kho khi có số lượng đã được đặt trước. Vui lòng giải phóng số lượng đặt trước trước khi xóa.");
+		}
+
+		// Additional business validation can be added here
+
+		await _inventoryItemRepository.DeleteAsync(inventoryItem);
+	}
+	public async Task<InventoryItemListDto> UpdateInventoryItem(UpdateInventoryItemInput input)
+	{
+		// Validate input
+		if (input.ProductId <= 0 || input.StorageLocationId <= 0)
+		{
+			throw new UserFriendlyException("Thông tin sản phẩm hoặc vị trí kho không hợp lệ!");
+		}
+
+		// Check if the item exists
+		var inventoryItem = await _inventoryItemRepository.FirstOrDefaultAsync(
+				x => x.ProductId == input.ProductId &&
+						 x.StorageLocationId == input.StorageLocationId);
+
+		if (inventoryItem == null)
+		{
+			throw new UserFriendlyException("Không tìm thấy tồn kho cần cập nhật!");
+		}
+
+		// Validate quantity changes
+		if (input.Quantity < 0)
+		{
+			throw new UserFriendlyException("Số lượng tồn kho không thể âm!");
+		}
+
+		//if (input.ReservedQuantity < 0)
+		//{
+		//	throw new UserFriendlyException("Số lượng đặt trước không thể âm!");
+		//}
+
+		//if (input.ReservedQuantity > input.Quantity)
+		//{
+		//	throw new UserFriendlyException("Số lượng đặt trước không thể lớn hơn số lượng tồn kho!");
+		//}
+
+		// Check if the new quantity is less than current reserved quantity
+		if (input.Quantity < inventoryItem.ReservedQuantity)
+		{
+			throw new UserFriendlyException(
+					$"Số lượng tồn kho mới ({input.Quantity}) không thể nhỏ hơn số lượng đã đặt trước ({inventoryItem.ReservedQuantity})");
+		}
+
+		if (input.UnitPrice != null)
+		{
+			inventoryItem.UnitPrice = input.UnitPrice.Value;
+		}
+		// Update fields
+		inventoryItem.Quantity = input.Quantity;
+		//inventoryItem.ReservedQuantity = input.ReservedQuantity;
+		inventoryItem.LastModificationTime = Clock.Now;
+		inventoryItem.LastModifierUserId = AbpSession.UserId;
+
+		// Additional fields can be updated here
+
+		await _inventoryItemRepository.UpdateAsync(inventoryItem);
+
+		// Return updated DTO
+		return new InventoryItemListDto
+		{
+			ProductId = inventoryItem.ProductId,
+			StorageLocationId = inventoryItem.StorageLocationId,
+			Quantity = inventoryItem.Quantity,
+			ReservedQuantity = inventoryItem.ReservedQuantity,
+			UnitPrice = inventoryItem.UnitPrice,
+			// Include any other fields you need
+		};
+	}
+	public async Task<GetInventoryItemForEditInput> GetInventoryItemForEdit(GetInventoryItemForEditInput input)
+	{
+		// Get the inventory item with all related data
+		var inventoryItem = await _inventoryItemRepository.GetAll()
+				.Include(x => x.Product)
+				.Include(x => x.StorageLocation)
+				.ThenInclude(x => x.Warehouse)
+				.Where(x => x.ProductId == input.ProductId && x.StorageLocationId == input.StorageLocationId)
+				.FirstOrDefaultAsync();
+
+		if (inventoryItem == null)
+		{
+			throw new UserFriendlyException("Không tìm thấy tồn kho!");
+		}
+
+		// Map to DTO
+		return new GetInventoryItemForEditInput
+		{
+			ProductId = inventoryItem.ProductId,
+			ProductCode = inventoryItem.Product.Code,
+			ProductName = inventoryItem.Product.Name,
+			ProductBarcode = inventoryItem.Product.Barcode,
+			StorageLocationId = inventoryItem.StorageLocationId,
+			StorageLocationCode = inventoryItem.StorageLocation.Code,
+			WarehouseName = inventoryItem.StorageLocation.Warehouse.Name,
+			Quantity = inventoryItem.Quantity,
+			ReservedQuantity = inventoryItem.ReservedQuantity,
+			UnitPrice = inventoryItem.UnitPrice
 		};
 	}
 }

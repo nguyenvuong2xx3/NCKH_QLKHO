@@ -249,6 +249,31 @@ namespace QLKho_NCKH.Web.Controllers
 				return Json(new { success = false, message = "Đã xảy ra lỗi khi xóa ảnh. Vui lòng thử lại." });
 			}
 		}
+		// Thêm vào ProductsController.cs
+		[HttpPost]
+		[HttpPost]
+		public async Task<FileResult> ExportToExcel([FromBody] ProductInput input)
+		{
+			var excelBytes = await _productAppService.ExportProductsToExcel(input);
+			return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Danh_sach_san_pham.xlsx");
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> ImportFromExcel(IFormFile file)
+		{
+			if (file == null || file.Length == 0)
+			{
+				return Json(new { success = false, message = "Vui lòng chọn file Excel để import" });
+			}
+
+			var results = await _productAppService.ImportProductsFromExcel(file);
+			return Json(new
+			{
+				success = results.All(r => r.IsSuccess),
+				message = "Import hoàn tất",
+				results
+			});
+		}
 
 	}
 }

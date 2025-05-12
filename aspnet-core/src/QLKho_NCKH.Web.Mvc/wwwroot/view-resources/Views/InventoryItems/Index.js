@@ -62,18 +62,6 @@
         {
           data: 'quantity',
           title: 'Số lượng tồn',
-          className: 'text-right',
-          render: function (data) {
-            return data.toLocaleString();
-          }
-        },
-        {
-          data: 'reservedQuantity',
-          title: 'Số lượng đặt trước',
-          className: 'text-right',
-          render: function (data) {
-            return data.toLocaleString();
-          }
         },
         {
           data: 'unitPrice',
@@ -92,10 +80,10 @@
                             <button class="btn btn-sm btn-primary edit-item" data-product-id="${data.productId}" data-location-id="${data.storageLocationId}">
                                 <i class="fa fa-edit"></i> Sửa
                             </button>
-                            <button class="btn btn-sm btn-danger delete-item" data-product-id="${data.productId}" data-location-id="${data.storageLocationId}">
+                            <button class="btn btn-sm btn-danger delete-item" data-produtc-name="${data.productName}"  data-product-id="${data.productId}" data-location-id="${data.storageLocationId}">
                                 <i class="fa fa-trash"></i> Xóa
                             </button>
-                        `;
+            `;
           }
         }
       ],
@@ -110,19 +98,77 @@
           // Open edit modal
           // You'll need to implement this based on your modal system
         });
+        // Edit button handler (update your existing code)
+        //$('.edit-item').click(function () {
+        //  var productId = $(this).data('product-id');
+        //  var locationId = $(this).data('location-id');
 
+        //  // Open edit modal with current data
+        //  var row = $(this).closest('tr');
+        //  var rowData = dataTable.row(row).data();
+
+        //  var modal = new app.ModalManager({
+        //    viewUrl: abp.appPath + 'Inventory/EditInventoryItemModal',
+        //    scriptUrl: abp.appPath + 'view-resources/Areas/Inventory/Views/Inventory/_EditInventoryItemModal.js',
+        //    modalClass: 'EditInventoryItemModal'
+        //  });
+
+        //  modal.open({
+        //    productId: productId,
+        //    storageLocationId: locationId,
+        //    currentQuantity: rowData.quantity,
+        //    currentReservedQuantity: rowData.reservedQuantity,
+        //    currentUnitPrice: rowData.unitPrice
+        //    // Pass any other data you need
+        //  }, function (result) {
+        //    if (result) {
+        //      abp.notify.success('Cập nhật tồn kho thành công!');
+        //      refreshTable();
+        //    }
+        //  });
+        //});
+        // In your index page JavaScript file
+        $('.edit-item').click(function () {
+          var productId = $(this).data('product-id');
+          var locationId = $(this).data('location-id');
+
+          console.log("Opening edit modal for", productId, locationId); // Debug log
+
+          var modal = new app.ModalManager({
+            viewUrl: abp.appPath + 'InventoryItems/EditInventoryItemModal',
+            scriptUrl: abp.appPath + 'view-resources/Views/InventoryItems/_EditModal.js',
+            modalClass: 'EditInventoryItemModal'
+          });
+
+          modal.open({
+            productId: productId,
+            storageLocationId: locationId
+          }
+            ,
+            function (result) {
+            if (result) {
+              abp.notify.success('Cập nhật tồn kho thành công!');
+              refreshTable();
+            }
+          });
+        });
+
+        // Delete button handler (already implemented in previous code)
+        // No changes needed as it already uses the correct service
         // Handle delete button click
         $('.delete-item').click(function () {
           var productId = $(this).data('product-id');
           var locationId = $(this).data('location-id');
+          var productName = $(this).data('produtc-name');
+
 
           abp.message.confirm(
-            'Bạn có chắc chắn muốn xóa tồn kho này?',
+            `Bạn có chắc chắn muốn xóa tồn kho của sản phẩm '${productName}'?`,
             'Xác nhận xóa',
             function (confirmed) {
               if (confirmed) {
                 abp.ui.setBusy();
-                _inventoryItemService.delete({
+                _inventoryItemService.deleteInventoryItem({
                   productId: productId,
                   storageLocationId: locationId
                 }).done(function () {

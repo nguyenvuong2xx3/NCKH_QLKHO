@@ -1,0 +1,80 @@
+﻿@using QLKho_NCKH.Web.Models.Common.Modals  
+@using QLKho_NCKH.Web.Models.inventoryItems  
+@model EditInventoryItemViewModel  
+
+@{  
+ Layout = null;  
+}  
+
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditInventoryItem")))  
+
+<form name="InventoryItemEditForm" role="form" class="form-horizontal">  
+ <input type="hidden" name="ProductId" value="@Model.InventoryItem.ProductId" />  
+ <input type="hidden" name="StorageLocationId" value="@Model.InventoryItem.StorageLocationId" />  
+
+ <div class="modal-body">  
+   <div class="form-group row">  
+     <label class="col-md-4 col-form-label">@L("ProductCode")</label>  
+     <div class="col-md-8">
+        <input type="text" class="form-control" value="@Model.InventoryItem.ProductCode" readonly>
+      </div>  
+   </div>  
+
+   <div class="form-group row">  
+     <label class="col-md-4 col-form-label">@L("ProductName")</label>  
+     <div class="col-md-8">  
+       <input type="text" class="form-control" value="@Model.InventoryItem.ProductName" readonly>  
+     </div>  
+   </div>  
+
+   <div class="form-group row">  
+     <label class="col-md-4 col-form-label">@L("StorageLocation")</label>  
+     <div class="col-md-8">  
+       <input type="text" class="form-control" value="@Model.InventoryItem.StorageLocationCode" readonly>  
+     </div>  
+   </div>  
+
+   <div class="form-group row">  
+     <label class="col-md-4 col-form-label">@L("Warehouse")</label>  
+     <div class="col-md-8">  
+       <input type="text" class="form-control" value="@Model.InventoryItem.WarehouseName" readonly>  
+     </div>  
+   </div>  
+
+   <div class="form-group row required">  
+     <label class="col-md-4 col-form-label">@L("Quantity")</label>  
+     <div class="col-md-8">  
+       <input type="number" class="form-control" name="Quantity" value="@Model.InventoryItem.Quantity" required min="0">  
+     </div>  
+   </div>  
+
+   @* <div class="form-group row required">   *@
+   @*   <label class="col-md-4 col-form-label">@L("ReservedQuantity")</label>   *@
+   @*   <div class="col-md-8">   *@
+   @*     <input type="number" class="form-control" name="ReservedQuantity" value="@Model.InventoryItem.ReservedQuantity" required min="0" max="@Model.InventoryItem.Quantity">   *@
+   @*   </div>   *@
+   @* </div>   *@
+
+   <div class="form-group row">  
+     <label class="col-md-4 col-form-label">@L("UnitPrice")</label>  
+     <div class="col-md-8">
+        <input type="text" class="form-control" name="UnitPrice" value="@(Model.InventoryItem.UnitPrice % 1 == 0 ? ((int)Model.InventoryItem.UnitPrice).ToString() : Model.InventoryItem.UnitPrice.ToString("0.##"))">
+      </div>  
+   </div>  
+ </div>  
+
+ @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")  
+</form>  
+
+<style>  
+ .has-error .form-control {  
+   border-color: #d9534f;  
+ }  
+
+ .error {  
+   color: #d9534f;  
+   font-size: 0.875em;  
+   margin-top: 0.25rem;  
+ }  
+</style>  
+<script src="~/view-resources/Views/InventoryItems/_EditModal.js" asp-append-version="true"></script>
