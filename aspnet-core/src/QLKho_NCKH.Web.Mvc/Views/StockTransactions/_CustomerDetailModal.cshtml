@@ -1,0 +1,26 @@
+﻿@using QLKho_NCKH.Web.Models.Users
+@using QLKho_NCKH.Web.Models.Common.Modals
+@using QLKho_NCKH.Web.Models.storageLocations
+@model UserViewModel
+
+@{
+	Layout = null;
+}
+<div class="tab-content mt-4">
+	@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("DetailCustomer")))
+
+	<div role="tabpanel" class="tab-pane container active" id="edit-user-details">
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="username">@L("FullName")</label>
+			<div class="col-md-9">
+				<input id="username" type="text" class="form-control" name="UserName" value="@Model.FullName" minlength="2" readonly>
+			</div>
+		</div>
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="name">@L("EmailAddress")</label>
+			<div class="col-md-9">
+				<input id="name" type="text" class="form-control" name="Name" value="@Model.EmailAddress" readonly>
+			</div>
+		</div>
+	</div>
+</div>

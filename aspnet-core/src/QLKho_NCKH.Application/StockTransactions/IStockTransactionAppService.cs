@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using QLKho_NCKH.EnumCustom;
 using QLKho_NCKH.StockTransactions.Dtos;
+using QLKho_NCKH.Users.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,5 +24,6 @@ namespace QLKho_NCKH.StockTransactions
 		Task Update(StockTransactionUpdateInput input);
 
 		Task DeleteStockTransaction(int Id);
+		Task<UserDto> GetCustomerByIdStockTransaction(int stockTransactionId);
 	}
 }

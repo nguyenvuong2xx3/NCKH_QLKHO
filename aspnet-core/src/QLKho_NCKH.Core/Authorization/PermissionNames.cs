@@ -63,5 +63,8 @@
 		// Additional permissions
 		public const string Pages_Reports = "Pages.Reports";
 		public const string Pages_Dashboard = "Pages.Dashboard";
+
+		//InventoryItems
+		public const string Pages_InventoryItems = "Pages.InventoryItems";
 	}
 }

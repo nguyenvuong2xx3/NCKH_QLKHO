@@ -150,7 +150,7 @@
       const pad = (n) => n.toString().padStart(2, '0');
 
       // Format: NK_DDMMYY_HHMMSS (18 ký tự)
-      return `NK${pad(now.getDate())}${pad(now.getMonth() + 1)}${now.getFullYear().toString().slice(-2)}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+      return `XK${pad(now.getDate())}${pad(now.getMonth() + 1)}${now.getFullYear().toString().slice(-2)}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
     }
 
     var exportRequest = {
@@ -165,7 +165,7 @@
     _stockTransactionService.createExportRequest(exportRequest)
       .done(function () {
         abp.notify.info('Tạo phiếu xuất kho thành công');
-        //window.location.href = "/Orders/Success";
+        window.location.href = "/Orders/Success";
       })
       .fail(function (error) {
         abp.notify.error(error.message || 'Có lỗi xảy ra khi tạo phiếu xuất kho');

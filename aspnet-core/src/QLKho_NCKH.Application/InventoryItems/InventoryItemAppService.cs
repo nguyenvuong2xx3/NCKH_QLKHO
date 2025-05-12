@@ -244,33 +244,54 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 			Description = productDetails.FirstOrDefault().Product.Description
 		};
 	}
+	public async Task<PagedResultDto<InventoryItemListDto>> GetAllInventoryItems(GetInventoryItemsInput input)
+	{
+		// Query all inventory items with related data
+		var query = _inventoryItemRepository.GetAll()
+				.Include(x => x.Product)
+				.Include(x => x.StorageLocation)
+				.ThenInclude(x => x.Warehouse)
+				.WhereIf(input.WarehouseId != 0, x => x.StorageLocation.WarehouseId == input.WarehouseId)
+				.WhereIf(!string.IsNullOrEmpty(input.Filter), x =>
+						x.Product.Name.Contains(input.Filter) ||
+						x.Product.Code.Contains(input.Filter) ||
+						x.Product.Barcode.Contains(input.Filter))
+				.WhereIf(input.CategoryId != 0, x => x.Product.CategoryId == input.CategoryId);
 
-		//}
+		// Get total count before pagination
+		var totalCount = await query.CountAsync();
 
-		//public async Task<InventoryItemEditDto> EditInventoryItem(InventoryItemEditDto input)
-		//{
-		//	var inventoryItem = await _inventoryItemRepository.GetAsync(input.Id);
-		//	inventoryItem.ProductId = input.ProductId;
-		//	inventoryItem.StorageLocationId = input.StorageLocationId;
-		//	inventoryItem.Quantity = input.Quantity;
-		//	inventoryItem.ReservedQuantity = input.ReservedQuantity;
-		//	inventoryItem.UnitPrice = input.UnitPrice;
+		// Apply sorting and pagination
+		var items = await query
+				.OrderBy(input.Sorting ?? "Product.Name")
+				.PageBy(input)
+				.ToListAsync();
 
+		// Map to DTO
+		var result = items.Select(item => new InventoryItemListDto
+		{
+			ProductId = item.ProductId,
+			ProductImage = item.Product.Image,
+			ProductCode = item.Product.Code,
+			Description = item.Product.Description,
+			StorageLocationId = item.StorageLocationId,
+			StorageLocationCode = item.StorageLocation.Code,
+			WarehouseName = item.StorageLocation.Warehouse.Name,
+			Quantity = item.Quantity,
+			ReservedQuantity = item.ReservedQuantity,
+			UnitPrice = item.UnitPrice,
+			ProductName = item.Product.Name,
+			ProductBarcode = item.Product.Barcode,
+			// Add any additional fields you need
+		}).ToList();
 
-
-		//	await CurrentUnitOfWork.SaveChangesAsync();
-
-		//	return ObjectMapper.Map<InventoryItemEditDto>(inventoryItem);
-		//}
-
-		// Permission??
-		//public async Task DeleteInventoryItem(int Id)
-		//{
-		//	await  _inventoryItemRepository.DeleteAsync(Id);
-		//}
-
-
+		return new PagedResultDto<InventoryItemListDto>
+		{
+			Items = result,
+			TotalCount = totalCount
+		};
 	}
+}
 ////InventoryItems AutoMapper
 //configuration.CreateMap<InventoryItem, InventoryItemEditDto>();
 //configuration.CreateMap<InventoryItem, InventoryItemListDto>();

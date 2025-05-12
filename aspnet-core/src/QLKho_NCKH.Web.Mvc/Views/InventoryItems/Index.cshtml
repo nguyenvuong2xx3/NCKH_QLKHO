@@ -1,0 +1,68 @@
+﻿<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="portlet light">
+        <div class="portlet-title">
+          <div class="caption">
+            <i class="fa fa-cubes"></i>
+            <span class="caption-subject bold uppercase">Quản lý tồn kho</span>
+          </div>
+          <div class="actions">
+            <button id="CreateNewInventoryItemButton" class="btn btn-primary">
+              <i class="fa fa-plus"></i> Thêm mới
+            </button>
+          </div>
+        </div>
+        <div class="portlet-body">
+          <div class="table-toolbar">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-inline">
+                  <div class="form-group">
+                    <input type="text" id="InventoryItemTableFilter" class="form-control" placeholder="Tìm kiếm...">
+                  </div>
+                  <button id="SearchButton" class="btn btn-default">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-inline pull-right">
+                  <div class="form-group">
+                    <select id="WarehouseIdFilter" class="form-control">
+                      <option value="0">Tất cả kho</option>
+                      <!-- Populate with warehouses -->
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <select id="CategoryIdFilter" class="form-control">
+                      <option value="0">Tất cả danh mục</option>
+                      <!-- Populate with categories -->
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <table id="InventoryItemsTable" class="table table-striped table-bordered table-hover">
+            <thead>
+              <tr>
+                <th width="50px"></th>
+                <th>Mã sản phẩm</th>
+                <th>Mã vạch</th>
+                <th>Tên sản phẩm</th>
+                <th>Kho</th>
+                <th>Vị trí</th>
+                <th>Số lượng tồn</th>
+                <th>Số lượng đặt trước</th>
+                <th>Đơn giá</th>
+                <th width="150px">Hành động</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

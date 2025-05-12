@@ -1,6 +1,8 @@
 ﻿using Abp.Application.Services.Dto;
 using QLKho_NCKH.EnumCustom;
+using QLKho_NCKH.StockTransactionDetails.Dto;
 using System;
+using System.Collections.Generic;
 
 namespace QLKho_NCKH.Web.Models.StockTransactions
 {
@@ -20,5 +22,7 @@ namespace QLKho_NCKH.Web.Models.StockTransactions
 		public string Note { get; set; }
 		public TransactionStatusEnum Status { get; set; }
 		public TransactionType TransactionType { get; set; }
+
+		public List<StockTransactionDetailEditDto> DetailProduct { get; set; }
 	}
 }

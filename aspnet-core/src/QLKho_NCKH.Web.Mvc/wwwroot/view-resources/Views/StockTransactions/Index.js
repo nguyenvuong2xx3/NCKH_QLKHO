@@ -152,6 +152,7 @@
 			}
 		})
 	});
+
 	function getStatusText(status) {
 		//console.log(status)
 		//switch (status) {

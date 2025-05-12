@@ -1,5 +1,6 @@
 ﻿using Abp.Application.Services.Dto;
 using QLKho_NCKH.EnumCustom;
+using QLKho_NCKH.StockTransactionDetails.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,8 @@ namespace QLKho_NCKH.StockTransactions.Dtos
 		public string? CustomerName { get; set; }
 
 		public int? SupplierId { get; set; }
+
+		public List<StockTransactionDetailEditDto> DetailProduct { get; set; }
 
 		public StockTransactionListDto()
 		{
