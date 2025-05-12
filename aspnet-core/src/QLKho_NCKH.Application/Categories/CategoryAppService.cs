@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
+using Abp.UI;
 using Microsoft.EntityFrameworkCore;
 using QLKho_NCKH.Authorization;
 using QLKho_NCKH.Categories.Dto;
+using QLKho_NCKH.Products;
 
 namespace QLKho_NCKH.Categories
 {
@@ -18,9 +21,11 @@ namespace QLKho_NCKH.Categories
 	public class CategoryAppService : QLKho_NCKHAppServiceBase, ICategoryAppService
 	{
 		private readonly IRepository<Category> _categoryRepository;
-		public CategoryAppService(IRepository<Category> categoryRepository)
+		private readonly IRepository<Product> _productRepository;
+		public CategoryAppService(IRepository<Category> categoryRepository, IRepository<Product> productRepository)
 		{
 			_categoryRepository = categoryRepository;
+			_productRepository = productRepository;
 		}
 
 		public async Task<PagedResultDto<CategoryListDto>> GetAllAsync(GetAllCategoriesInput input)
@@ -103,6 +108,11 @@ namespace QLKho_NCKH.Categories
 
 		public async Task Delete(int id)
 		{
+			var products = await _productRepository.GetAllListAsync(x => x.CategoryId == id);
+			if (products != null && products.Count > 0)
+			{
+				throw new UserFriendlyException("Không thể xóa danh mục vì vẫn còn sản phẩm thuộc danh mục này.");
+			}
 			var category = await _categoryRepository.GetAsync(id);
 			await _categoryRepository.DeleteAsync(category);
 		}
