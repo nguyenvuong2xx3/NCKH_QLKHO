@@ -61,7 +61,7 @@ namespace QLKho_NCKH.Web.Startup
 											new MenuItemDefinition(
 															"ProductManagement",
 															L("ProductManagement"),
-															icon: "fas fa-boxes"
+															icon: "fa fa-cogs"
 											).AddItem(
 															new MenuItemDefinition(
 																			PageNames.Products,
@@ -144,15 +144,15 @@ namespace QLKho_NCKH.Web.Startup
 							//				//permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Customers)
 							//				)
 							)
-							)
-							.AddItem(
-											new MenuItemDefinition(
-															PageNames.About,
-															L("About"),
-															url: "About",
-															icon: "fas fa-info-circle"
-											)
 							);
+							//.AddItem(
+							//				new MenuItemDefinition(
+							//								PageNames.About,
+							//								L("About"),
+							//								url: "About",
+							//								icon: "fas fa-info-circle"
+							//				)
+							//);
 		}
 
 		private static ILocalizableString L(string name)
