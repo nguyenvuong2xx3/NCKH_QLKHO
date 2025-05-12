@@ -1,17 +1,12 @@
-﻿using Abp.Application.Services.Dto;
-using Microsoft.AspNetCore.Mvc;
-using QLKho_NCKH.EnumCustom;
+﻿using Abp.Application.Services;
+using Abp.Application.Services.Dto;
 using QLKho_NCKH.StockTransactions.Dtos;
 using QLKho_NCKH.Users.Dto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace QLKho_NCKH.StockTransactions
 {
-	public interface IStockTransactionAppService
+	public interface IStockTransactionAppService : IApplicationService
 	{
 		Task<StockTransactionDto> CreateStockTransactionImport(CreateStockTransactionImportDto input);
 

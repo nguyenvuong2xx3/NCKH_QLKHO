@@ -14,6 +14,7 @@ using QLKho_NCKH.InventoryItems;
 using QLKho_NCKH.InventoryItems.Dto;
 using Abp.Application.Services.Dto;
 using Microsoft.Data.SqlClient;
+using QLKho_NCKH.Sliders;
 
 namespace QLKho_NCKH.Web.Controllers
 {
@@ -22,14 +23,20 @@ namespace QLKho_NCKH.Web.Controllers
 	{
 		private readonly IProductAppService _productAppService;
 		private readonly ICategoryAppService _categoryAppService;
+		private readonly ISliderAppService _sliderAppService;
 
 		private readonly IInventoryItemAppService _inventoryItemAppService;
 
-		public HomeController(IProductAppService productAppService, ICategoryAppService categoryAppService , IInventoryItemAppService inventoryItemAppService)
+		public HomeController(IProductAppService productAppService
+			, ICategoryAppService categoryAppService 
+			, IInventoryItemAppService inventoryItemAppService
+			, ISliderAppService sliderAppService
+			)
 		{
 			_productAppService = productAppService;
 			_categoryAppService = categoryAppService;
 			_inventoryItemAppService = inventoryItemAppService;
+			_sliderAppService = sliderAppService;
 		}
 
 		//public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
@@ -129,6 +136,7 @@ namespace QLKho_NCKH.Web.Controllers
 		public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
 		{
 			var categories = await _categoryAppService.GetAllCategories();
+			var sliders = await _sliderAppService.GetSliderByActive();
 
 			var categoryProducts = new List<CategoryProductViewModel>();
 
@@ -158,7 +166,8 @@ namespace QLKho_NCKH.Web.Controllers
 				TotalCount = allProducts.TotalCount,
 				ActiveCount = activeProducts,
 				CurrentPage = page,
-				TotalPages = (int)Math.Ceiling((double)allProducts.TotalCount / pageSize)
+				TotalPages = (int)Math.Ceiling((double)allProducts.TotalCount / pageSize),
+				sliderLists = sliders
 			};
 
 			return View(model);

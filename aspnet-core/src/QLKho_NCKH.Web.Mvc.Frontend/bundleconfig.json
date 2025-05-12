@@ -289,5 +289,11 @@
     "inputFiles": [
       "wwwroot/view-resources/Views/Carts/Index.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/view-resources/Views/Carts/History.min.js",
+    "inputFiles": [
+      "wwwroot/view-resources/Views/Carts/History.js"
+    ]
   }
 ]

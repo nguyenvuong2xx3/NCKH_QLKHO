@@ -133,6 +133,11 @@
     const userId = $(this).data("userid");
     const nameUser = $(this).data("nameuser");
 
+    // Định nghĩa enum tạm thời
+    const StatusEnum = {
+      Pending: 0 // Giá trị phải khớp với C#
+    };
+
     let details = [];
     $(".cart-item").each(function () {
       details.push({
@@ -165,7 +170,9 @@
     _stockTransactionService.createExportRequest(exportRequest)
       .done(function () {
         abp.notify.info('Tạo phiếu xuất kho thành công');
-        window.location.href = "/Orders/Success";
+        //window.location.href = "/Orders/Success";
+        const statusFilter = StatusEnum.Pending; // Hoặc status bạn muốn lọc
+        window.location.href = `/Orders/Success?userId=${userId}&status=${statusFilter}`;
       })
       .fail(function (error) {
         abp.notify.error(error.message || 'Có lỗi xảy ra khi tạo phiếu xuất kho');

@@ -20,9 +20,60 @@
 }
 
 <link href="/css/homeweb.css" rel="stylesheet" />
-@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
 
 <div class="container mt-4">
+
+  @if (Model.sliderLists != null && Model.sliderLists.Any())
+  {
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+      <!-- Indicators (Dấu chấm điều hướng) -->
+      <ol class="carousel-indicators">
+        @{
+          int index = 0;
+        }
+        @foreach (var slider in Model.sliderLists)
+        {
+          <li data-target="#carouselExampleIndicators" data-slide-to="@index" class="@(index == 0 ? "active" : "")"></li>
+          index++;
+        }
+      </ol>
+
+      <!-- Danh sách ảnh slider -->
+      <div class="carousel-inner">
+        @{
+          index = 0;
+        }
+        @foreach (var slider in Model.sliderLists)
+        {
+          <div class="carousel-item @(index == 0 ? "active" : "")">
+            <img class="d-block w-100" src="@slider.Image" alt="@slider.Title">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>@slider.Title</h5>
+              <p>@slider.Description</p>
+            </div>
+          </div>
+          index++;
+        }
+      </div>
+
+      <!-- Nút điều hướng -->
+      <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+  }
+  else
+  {
+    <p>Không có slider nào đang hoạt động.</p>
+  }
+
+
+
 
 
   <!-- Product List -->

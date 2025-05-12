@@ -1,5 +1,7 @@
 ﻿@{
   ViewBag.Title = "Đặt hàng thành công";
+  var userId = ViewBag.UserId;
+  var status = ViewBag.Status;
 }
 
 <div class="order-success-container">
@@ -20,7 +22,9 @@
 
     <div class="action-buttons">
       <a href="/" class="btn btn-continue">Tiếp tục mua sắm</a>
-      <a href="/Order/History" class="btn btn-track">Theo dõi đơn hàng</a>
+      @* <a href="/Order/OrderDetail" class="btn btn-track">Theo dõi đơn hàng</a> *@
+      <a href="@Url.Action("History", "Orders", new { userId = userId, status = status })"
+         class="btn btn-track">Theo dõi đơn hàng</a>
     </div>
   </div>
 </div>

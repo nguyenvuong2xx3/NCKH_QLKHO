@@ -13,7 +13,10 @@
 			<nav aria-label="breadcrumb">
 				<ol class="breadcrumb bg-light p-2 pr-0 rounded">
 					<li class="breadcrumb-item"><a href="/Home">Trang chủ</a></li>
-					<li class="breadcrumb-item"><a href="/Home">Tìm kiếm</a></li>
+					@* <li class="breadcrumb-item"><a href="/Home">Tìm kiếm</a></li> *@
+
+					<li class="breadcrumb-item active" aria-current="page">Kết quả tìm kiếm <span>"@Model.Keyword"</span></li> 
+
 					@* @if (Model.CategoryId.HasValue) *@
 					@* { *@
 					@* 		<li class="breadcrumb-item active" aria-current="page"> *@

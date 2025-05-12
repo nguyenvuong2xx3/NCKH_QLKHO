@@ -17,6 +17,7 @@ namespace QLKho_NCKH.StockTransactions.Dtos
 		public TransactionStatusEnum? Status { get; set; } // Thêm trường này
 		public DateTime? StartTime { get; set; }
 		public DateTime? EndTime { get; set; }
+		public long UserId { get; set; }
 
 		//public DateTime? StartDate { get; set; }
 

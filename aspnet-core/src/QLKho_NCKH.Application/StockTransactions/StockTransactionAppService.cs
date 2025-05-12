@@ -329,7 +329,10 @@ namespace QLKho_NCKH.StockTransactions
 					|| u.ReferenceNumber.Contains(input.Filter) || u.Note.Contains(input.Filter))
 					.WhereIf(input.Status.HasValue,
 						u => u.Status == input.Status.Value) // Thêm điều kiện lọc theo status
-					.WhereIf(input.StartTime.HasValue && input.EndTime.HasValue, u => u.CreationTime >= input.StartTime.Value && u.CreationTime <= input.EndTime.Value);
+					.WhereIf(input.StartTime.HasValue && input.EndTime.HasValue, u => u.CreationTime >= input.StartTime.Value && u.CreationTime <= input.EndTime.Value)
+					.WhereIf(input.UserId > 0, u => u.UserId == input.UserId);
+
+
 
 
 			var count = await query.CountAsync();

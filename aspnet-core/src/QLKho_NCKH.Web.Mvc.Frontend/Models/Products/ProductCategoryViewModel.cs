@@ -1,4 +1,5 @@
-﻿using QLKho_NCKH.Web.Models.Categories;
+﻿using QLKho_NCKH.Sliders.Dto;
+using QLKho_NCKH.Web.Models.Categories;
 using System.Collections.Generic;
 
 namespace QLKho_NCKH.Web.Models.Products
@@ -10,5 +11,6 @@ namespace QLKho_NCKH.Web.Models.Products
 		public int ActiveCount { get; set; }
 		public int CurrentPage { get; set; }
 		public int TotalPages { get; set; }
+		public List<SliderListDto> sliderLists { get; set; }
 	}
 }
