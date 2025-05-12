@@ -21,7 +21,13 @@ public class StockTransactionDetailCreatingInput {
 
 public class StockTransactionDetailEditDto: EntityDto<int> {
    public int StockTransactionId {get;set;}
-   public int ProductId {get;set;}
+    public decimal TotalPrice { get; set; }
+
+		public string ProductName { get; set; }
+    public string StorageLocationCode { get; set; }
+
+		public string ProductCode { get; set; }
+		public int ProductId {get;set;}
    public int StorageLocationId {get;set;}
    public int Quantity {get;set;}
    public decimal UnitPrice {get;set;}

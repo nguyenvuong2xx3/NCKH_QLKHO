@@ -38,11 +38,25 @@
 					</div>
 				</div>
 				<!--nhà cung cấp-->
-				<div class="form-group row">
+				@* <div class="form-group row"> *@
+				@* 	<label class="col-md-3 col-form-label">@L("CustomerName")</label> *@
+				@* 	<div class="col-md-9"> *@
+				@* 		<input type="text" class="form-control" value="@Model.CustomerName" readonly> *@
+				@* 		<input type="hidden" name="ToWarehouseId" value="@Model.CustomerId"> *@
+				@* 	</div> *@
+				@* </div> *@
+				<div class="form-group row required">
 					<label class="col-md-3 col-form-label">@L("CustomerName")</label>
 					<div class="col-md-9">
-						<input type="text" class="form-control" value="@Model.CustomerName" readonly>
-						<input type="hidden" name="ToWarehouseId" value="@Model.CustomerId">
+						<div class="input-group">
+							<input type="text" id="CustomerDetailDisplay" value="@Model.CustomerName" class="form-control" readonly required />
+							<div class="input-group-append">
+								<button type="button" id="CustomerDetailBtn" class="btn btn-success" title="@L("CustomerName")">
+									<i class="fa fa-id-card"></i> @L("Select")
+								</button>
+							</div>
+						</div>
+						<input type="hidden" id="CustomerDetail" name="CustomerDetail" />
 					</div>
 				</div>
 				<!-- Kho nguồn -->
@@ -89,6 +103,34 @@
 					<div class="col-md-9">
 						<input type="text" class="form-control" name="Status" value="@Model.Status" readonly>
 					</div>
+				</div>
+				<label class="col-md-3 col-form-label">@L("TableProductDetail")</label>
+				<div class="table-responsive">
+					<table id="StockTransactionsEditExportTable" class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>@L("Code")</th> 
+								<th>@L("Name")</th>
+								<th>@L("Quanity")</th>
+								<th>@L("UnitPrice")</th>
+								<th>@L("TotalPrice")</th>
+								<th>@L("StorageLocationCode")</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var item in Model.DetailProduct)
+							{
+								<tr>
+									 <td>@item.ProductCode</td> 
+									<td>@item.ProductName</td>
+									<td>@item.Quantity</td>
+									<td>@item.UnitPrice</td>
+									<td>@item.TotalPrice</td>
+									<td>@item.StorageLocationCode</td>
+								</tr>
+							}
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>

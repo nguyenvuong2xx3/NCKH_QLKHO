@@ -15,6 +15,13 @@ using System.Linq.Dynamic.Core;
 using QLKho_NCKH.Warehouses.Dto;
 using QLKho_NCKH.Inventory;
 using Abp.UI;
+using QLKho_NCKH.Carts;
+using Abp.Runtime.Session;
+using QLKho_NCKH.Carts.Dto;
+using QLKho_NCKH.Authorization.Users;
+using QLKho_NCKH.StockTransactionDetails.Dto;
+using QLKho_NCKH.Products;
+using QLKho_NCKH.Users.Dto;
 
 namespace QLKho_NCKH.StockTransactions
 {
@@ -24,6 +31,8 @@ namespace QLKho_NCKH.StockTransactions
 		private readonly IRepository<StockTransactionDetail, int> _stockTransactionDetailRepository;
 		private readonly IRepository<Warehouse, int> _warehouseRepository;
 		private readonly IRepository<InventoryItem, int> _inventoryItemRepository;
+		private readonly IRepository<CartItem> _cartItemRepository;
+
 
 
 		private readonly IUnitOfWorkManager _unitOfWorkManager;
@@ -31,12 +40,14 @@ namespace QLKho_NCKH.StockTransactions
 			IRepository<StockTransactionDetail, int> stockTransactionDetailRepository,
 			IUnitOfWorkManager unitOfWorkManager,
 			IRepository<Warehouse, int> warehouseRepository,
+			IRepository<CartItem> cartItemRepository,
 			IRepository<InventoryItem, int> inventoryItemRepository)
 		{
 			_stockTransactionRepository = stockTransactionRepository;
 			_stockTransactionDetailRepository = stockTransactionDetailRepository;
 			_unitOfWorkManager = unitOfWorkManager;
 			_warehouseRepository = warehouseRepository;
+			_cartItemRepository = cartItemRepository;
 			_inventoryItemRepository = inventoryItemRepository;
 		}
 		public async Task<StockTransactionDto> CreateStockTransactionImport(CreateStockTransactionImportDto input)
@@ -187,6 +198,12 @@ namespace QLKho_NCKH.StockTransactions
 				}
 
 				await _unitOfWorkManager.Current.SaveChangesAsync();
+			}
+			var userCartItems = await _cartItemRepository.GetAllListAsync(c => c.UserId == input.CustomerId);
+
+			foreach (var cartItem in userCartItems)
+			{
+				await _cartItemRepository.DeleteAsync(cartItem);
 			}
 		}
 		//public async Task CreateExportRequest(ExportInputDto input)
@@ -351,17 +368,44 @@ namespace QLKho_NCKH.StockTransactions
 			};
 		}
 		public async Task<StockTransactionListDto> GetStockTransaction(int id)
-		{
+		{ 
+					
 			var stockTransaction = await _stockTransactionRepository
 					.GetAll()
 					.Include(x => x.Supplier)
 					.Include(x => x.User)
 					.FirstOrDefaultAsync(x => x.Id == id);
 
+			var stockTransactionDetails = await _stockTransactionDetailRepository
+					.GetAll()
+					.Include(x => x.Product) // Bao gồm thông tin sản phẩm
+					.Include(x => x.StorageLocation) // Bao gồm thông tin vị trí lưu trữ
+					.Where(x => x.StockTransactionId == id) // Lọc theo StockTransactionId
+					.ToListAsync(); // Lấy tất cả các bản ghi dưới dạng danh sách
+
+			var stockTransactionDetailsDto = stockTransactionDetails
+		.Select(detail => new StockTransactionDetailEditDto
+		{
+			StockTransactionId = detail.StockTransactionId,
+			TotalPrice = detail.TotalPrice,
+			ProductCode = detail.Product.Code,
+			ProductId = detail.ProductId,
+			StorageLocationCode = detail.StorageLocation.Code,
+			ProductName = detail.Product.Name,
+			StorageLocationId = detail.StorageLocationId,
+			Quantity = detail.Quantity,
+			UnitPrice = detail.UnitPrice,
+			Note = detail.Note,
+			BatchNumber = detail.BatchNumber,
+			ExpiryDate = detail.ExpiryDate
+		})
+		.ToList();
+			// đang lấy product ra edit
 			var warehouses = await GetWarehousesByTransaction(id);
 
 			return new StockTransactionListDto
 			{
+				DetailProduct = stockTransactionDetailsDto,
 				Id = stockTransaction.Id,
 				TransactionCode = stockTransaction.TransactionCode,
 				TransactionType = stockTransaction.TransactionType,
@@ -469,6 +513,21 @@ namespace QLKho_NCKH.StockTransactions
 			await _stockTransactionRepository.DeleteAsync(Id);
 			var query = await _stockTransactionDetailRepository.FirstOrDefaultAsync(x => x.StockTransactionId == Id);
 			await _stockTransactionDetailRepository.DeleteAsync(query);
+		}
+		public async Task<UserDto> GetCustomerByIdStockTransaction(int stockTransactionId)
+		{
+			var stockTransaction = await _stockTransactionRepository.GetAll().Include(x => x.User).FirstOrDefaultAsync(x => x.Id == stockTransactionId);
+			//var stockTransaction = await _stockTransactionRepository.GetAsync(stockTransactionId).Include(x => x.Customer);
+			//var getcustomer = await UserManager.GetUserByIdAsync(stockTransaction.);
+			return new UserDto
+			{
+				Id = stockTransaction.Id,
+				Name = stockTransaction.User.FullName,
+				EmailAddress = stockTransaction.User.EmailAddress,
+				//EmailAddress = stockTransaction.,
+				//PhoneNumber = getcustomer.PhoneNumber,
+				// Add other properties as needed
+			};
 		}
 	}
 }

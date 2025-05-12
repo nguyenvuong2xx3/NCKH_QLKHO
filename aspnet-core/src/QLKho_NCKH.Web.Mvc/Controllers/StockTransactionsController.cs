@@ -7,6 +7,7 @@ using QLKho_NCKH.StockTransactionDetails;
 using QLKho_NCKH.StockTransactions;
 using QLKho_NCKH.StockTransactions.Dtos;
 using QLKho_NCKH.Web.Models.StockTransactions;
+using QLKho_NCKH.Web.Models.Users;
 using System.Threading.Tasks;
 
 namespace QLKho_NCKH.Web.Controllers
@@ -52,7 +53,8 @@ namespace QLKho_NCKH.Web.Controllers
 					FromWarehouseName = stockTransaction.Result.FromWarehouseName,
 					ToWarehouseName = stockTransaction.Result.ToWarehouseName,
 					SupplierName = stockTransaction.Result.SupplierName,
-					Status = stockTransaction.Result.Status
+					Status = stockTransaction.Result.Status,
+					DetailProduct = stockTransaction.Result.DetailProduct
 				};
 				return PartialView("_EditStockTransactionModal", viewmodel);
 			}
@@ -72,7 +74,9 @@ namespace QLKho_NCKH.Web.Controllers
 					FromWarehouseName = stockTransaction.Result.FromWarehouseName,
 					ToWarehouseName = stockTransaction.Result.ToWarehouseName,
 					SupplierName = stockTransaction.Result.SupplierName,
-					Status = stockTransaction.Result.Status
+					Status = stockTransaction.Result.Status,
+					DetailProduct = stockTransaction.Result.DetailProduct
+
 				};
 				return PartialView("_EditStockTransactionExportModal", viewmodel);
 			}
@@ -104,15 +108,19 @@ namespace QLKho_NCKH.Web.Controllers
 				data = (object)null // nếu có dữ liệu cần gửi về, thay thế null
 			});
 		}
-		//public async Task<IActionResult> UpdateExportStockTransactions([FromBody] StockTransactionUpdateInput input)
-		//{
-		//	UpdateExportStockTransactions
-		//	return Ok(new
-		//	{
-		//		success = true,
-		//		message = "Updated successfully",
-		//		data = (object)null // nếu có dữ liệu cần gửi về, thay thế null
-		//	});
-		//}
+		public async Task<IActionResult> GetCustomerByStockTransactions (int id)
+		{
+			var getuser = await _stockTransactionAppService.GetCustomerByIdStockTransaction(id);
+			var viewmodel = new UserViewModel
+			{
+				Id = getuser.Id,
+				FullName = getuser.Name,
+				EmailAddress = getuser.EmailAddress,
+				//PhoneNumber = getuser.Result.PhoneNumber,
+				//Address = getuser.Result.Address,
+				//CompanyName = getuser.Result.CompanyName,
+			};
+			return PartialView("_CustomerDetailModal", viewmodel);
+		}
 	}
 }

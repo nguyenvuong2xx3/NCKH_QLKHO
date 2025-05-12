@@ -7,10 +7,13 @@ using Abp.Domain.Uow;
 using Abp.UI;
 using AutoMapper.Internal.Mappers;
 using Castle.MicroKernel.Registration;
+using Microsoft.EntityFrameworkCore;
+using QLKho_NCKH.Authorization.Users;
 using QLKho_NCKH.Inventory;
 using QLKho_NCKH.StockTransactionDetails.Dto;
 using QLKho_NCKH.StockTransactions;
 using QLKho_NCKH.StockTransactions.Dtos;
+using QLKho_NCKH.Users.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,7 +106,6 @@ IUnitOfWorkManager unitOfWorkManager
 				BatchNumber = stockTransactionDetail.BatchNumber
 			};
 		}
-
 		
 	}
 }

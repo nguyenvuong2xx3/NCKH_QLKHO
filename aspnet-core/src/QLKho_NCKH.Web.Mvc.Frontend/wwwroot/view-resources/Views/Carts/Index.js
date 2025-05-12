@@ -150,7 +150,7 @@
       const pad = (n) => n.toString().padStart(2, '0');
 
       // Format: NK_DDMMYY_HHMMSS (18 ký tự)
-      return `NK${pad(now.getDate())}${pad(now.getMonth() + 1)}${now.getFullYear().toString().slice(-2)}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+      return `XK${pad(now.getDate())}${pad(now.getMonth() + 1)}${now.getFullYear().toString().slice(-2)}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
     }
 
     var exportRequest = {

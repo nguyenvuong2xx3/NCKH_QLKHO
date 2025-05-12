@@ -69,6 +69,7 @@ namespace QLKho_NCKH.InventoryItems.Dto
 	{
 		public string ProductName { get; set; }
 		public string ProductBarcode { get; set; }
+		public string WarehouseName { get; set; }
 		public int ProductId { get; set; }
 		public string ProductImage { get; set; }
 		public string Description { get; set; }

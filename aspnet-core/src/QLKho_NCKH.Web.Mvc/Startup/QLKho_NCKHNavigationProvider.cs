@@ -120,13 +120,30 @@ namespace QLKho_NCKH.Web.Startup
 															)
 											).AddItem(
 															new MenuItemDefinition(
-																			PageNames.Customers,
-																			L("Customers"),
-																			url: "Customers",
-																			icon: "fas fa-users"
-															//permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Customers)
+																			PageNames.InventoryItems,
+																			L("InventoryItems"),
+																			url: "InventoryItems",
+																			icon: "fas fa-exchange-alt",
+																			permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_InventoryItems)
 															)
-											)
+							//.AddItem(
+							//				new MenuItemDefinition(
+							//								PageNames.Customers,
+							//								L("Customers"),
+							//								url: "Customers",
+							//								icon: "fas fa-users"
+							//				//permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Customers)
+							//				)
+							//)
+							//).AddItem(
+							//				new MenuItemDefinition(
+							//								PageNames.Customers,
+							//								L("Customers"),
+							//								url: "Customers",
+							//								icon: "fas fa-users"
+							//				//permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Customers)
+							//				)
+							)
 							)
 							.AddItem(
 											new MenuItemDefinition(

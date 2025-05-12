@@ -15,5 +15,6 @@
 		    public const string StockTransactions = "StockTransactions";
 		    public const string Customers = "Customers";
 		    public const string Sliders = "Sliders";
+		    public const string InventoryItems = "InventoryItems";
 	}
 }

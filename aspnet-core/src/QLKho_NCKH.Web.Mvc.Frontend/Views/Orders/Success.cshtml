@@ -1,6 +1,5 @@
 ﻿@{
   ViewBag.Title = "Đặt hàng thành công";
-  Layout = "_Layout"; // Sử dụng layout chung của bạn
 }
 
 <div class="order-success-container">
@@ -15,7 +14,7 @@
     <p class="success-message">Cảm ơn bạn đã đặt hàng. Đơn hàng của bạn đang được xử lý.</p>
 
     <div class="order-details">
-      <p><strong>Mã đơn hàng:</strong> <span id="orderCode">@ViewBag.OrderCode</span></p>
+      @* <p><strong>Mã đơn hàng:</strong> <span id="orderCode">@ViewBag.OrderCode</span></p> *@
       <p><strong>Ngày đặt:</strong> <span id="orderDate">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span></p>
     </div>
 

@@ -69,6 +69,7 @@ namespace QLKho_NCKH.Authorization
 			// Các permission khác
 			context.CreatePermission(PermissionNames.Pages_Reports, L("Reports"));
 			context.CreatePermission(PermissionNames.Pages_Dashboard, L("Dashboard"));
+			context.CreatePermission(PermissionNames.Pages_InventoryItems, L("InventoryItems"));
 		}
 
 		private static ILocalizableString L(string name)
