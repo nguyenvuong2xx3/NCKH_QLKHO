@@ -398,30 +398,110 @@
     }
   });
 
+  //$('#ExportExcelBtn').click(function () {
+  //  var input = {
+  //    filter: $('#ProductsTableFilter').val(),
+  //    supplierId: $('#SupplierIdFilter').val(),
+  //    categoryId: $('#CategoryIdFilter').val()
+  //  };
+
+  //  fetch(abp.appPath + 'Products/ExportToExcel', {
+  //    method: 'POST',
+  //    headers: {
+  //      'Content-Type': 'application/json',
+  //      'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+  //    },
+  //    body: JSON.stringify(input)
+  //  })
+  //    .then(response => {
+  //      if (!response.ok) {
+  //        throw new Error('Xuất Excel thất bại: ' + response.statusText);
+  //      }
+  //      return response.blob();
+  //    })
+  //    .then(blob => {
+  //      var link = document.createElement('a');
+  //      link.href = window.URL.createObjectURL(blob);
+  //      link.download = 'Danh_sach_san_pham.xlsx';
+  //      link.click();
+  //    })
+  //    .catch(error => {
+  //      abp.notify.error(error.message);
+  //    });
+  //});
   $('#ExportExcelBtn').click(function () {
+    // Lấy các tham số filter từ form
     var input = {
       filter: $('#ProductsTableFilter').val(),
       supplierId: $('#SupplierIdFilter').val(),
-      categoryId: $('#CategoryIdFilter').val()
+      categoryId: $('#CategoryIdFilter').val(),
+      // Thêm các tham số khác nếu cần
     };
 
-    abp.ajax({
+    // Hiển thị loading
+    abp.ui.setBusy();
+
+    // Gọi API export
+    $.ajax({
       url: abp.appPath + 'Products/ExportToExcel',
       type: 'POST',
       data: JSON.stringify(input),
-      contentType: 'application/json'
-    }).done(function (result) {
-      // Tạo link tải file từ blob
-      var blob = new Blob([result], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      var link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'Danh_sach_san_pham.xlsx';
-      link.click();
-    }).fail(function (error) {
-      abp.notify.error('Xuất Excel thất bại: ' + error.message);
+      contentType: 'application/json',
+      headers: {
+        'RequestVerificationToken': abp.security.antiForgery.getToken()
+      },
+      xhrFields: {
+        responseType: 'blob' // QUAN TRỌNG: để nhận dữ liệu kiểu file
+      },
+      success: function (blob) {
+        var url = window.URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'Danh_sach_san_pham.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        abp.notify.success('Xuất Excel thành công');
+      },
+      error: function (xhr) {
+        abp.notify.error('Xuất Excel thất bại: ' + xhr.statusText);
+      },
+      complete: function () {
+        abp.ui.clearBusy();
+      }
     });
+
   });
+
   // Import Excel
+  //$('#ImportExcelForm').submit(function (e) {
+  //  e.preventDefault();
+  //  var formData = new FormData(this);
+
+  //  abp.ui.setBusy($('#ImportExcelModal'), abp.ajax({
+  //    url: abp.appPath + 'Products/ImportFromExcel',
+  //    type: 'POST',
+  //    data: formData,
+  //    processData: false,
+  //    contentType: false
+  //  }).done(function (result) {
+  //    if (result.success) {
+  //      abp.notify.success('Import thành công ' + result.results.length + ' sản phẩm');
+  //      $('#ImportExcelModal').modal('hide');
+  //      $('#ProductsTable').DataTable().ajax.reload();
+  //    } else {
+  //      var errorMsg = 'Import không thành công: <br>';
+  //      result.results.forEach(function (item) {
+  //        if (!item.IsSuccess) {
+  //          errorMsg += `Dòng ${item.RowNumber}: ${item.Message}<br>`;
+  //        }
+  //      });
+  //      abp.notify.error(errorMsg, { multiline: true });
+  //    }
+  //  }));
+  //});
   $('#ImportExcelForm').submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
@@ -434,14 +514,22 @@
       contentType: false
     }).done(function (result) {
       if (result.success) {
-        abp.notify.success('Import thành công ' + result.results.length + ' sản phẩm');
+        var successCount = result.results.filter(r => r.IsSuccess).length;
+        var errorCount = result.results.length - successCount;
+
+        var message = `Import thành công ${successCount} sản phẩm`;
+        if (errorCount > 0) {
+          message += `, có ${errorCount} lỗi`;
+        }
+
+        abp.notify.success(message);
         $('#ImportExcelModal').modal('hide');
         $('#ProductsTable').DataTable().ajax.reload();
       } else {
         var errorMsg = 'Import không thành công: <br>';
         result.results.forEach(function (item) {
           if (!item.IsSuccess) {
-            errorMsg += `Dòng ${item.RowNumber}: ${item.Message}<br>`;
+            errorMsg += `Dòng ${item.RowNumber} (Mã: ${item.Code || 'N/A'}): ${item.Message}<br>`;
           }
         });
         abp.notify.error(errorMsg, { multiline: true });

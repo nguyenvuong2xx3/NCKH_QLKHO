@@ -21,6 +21,8 @@ using OfficeOpenXml.Drawing;
 using System.Drawing;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using QLKho_NCKH.Suppliers;
+using QLKho_NCKH.Categories;
 
 namespace QLKho_NCKH.Products
 {
@@ -29,13 +31,19 @@ namespace QLKho_NCKH.Products
 	public class ProductAppService : ApplicationService, IProductAppService
 	{
 		private readonly IRepository<Product> _productRepository;
-		//private readonly IRepository<Category> _categoryRepository;
+		private readonly IRepository<Category> _categoryRepository;
+		private readonly IRepository<Supplier> _supplierRepository;
 		private readonly IWebHostEnvironment _env;
 
-		public ProductAppService(IRepository<Product> productRepository, IWebHostEnvironment env) // IRepository<Category> categoryRepository,
+		public ProductAppService(IRepository<Product> productRepository, 
+			IWebHostEnvironment env,
+			IRepository<Category> categoryRepository
+			, IRepository<Supplier> supplierRepository
+			) // IRepository<Category> categoryRepository,
 		{
 			_productRepository = productRepository;
-			//_categoryRepository = categoryRepository;
+			_categoryRepository = categoryRepository;
+			_supplierRepository = supplierRepository;
 			_env = env;
 		}
 
@@ -253,6 +261,7 @@ namespace QLKho_NCKH.Products
 		{
 			var products = await GetAllProducts(input);
 
+
 			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 			using (var package = new ExcelPackage())
@@ -323,8 +332,23 @@ namespace QLKho_NCKH.Products
 		}
 		public async Task<List<ImportProductResultDto>> ImportProductsFromExcel(IFormFile file)
 		{
+			var getAllCategories = await _categoryRepository.GetAllListAsync();
+			var getAllSuppliers = await _supplierRepository.GetAllListAsync();
+			// Thiết lập license
+			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
 			var results = new List<ImportProductResultDto>();
 			var uploadsFolder = @"E:\UploadImgKho\";
+
+			// Kiểm tra và tạo thư mục
+			Directory.CreateDirectory(uploadsFolder);
+
+			// Validate file
+			if (file == null || file.Length == 0)
+				throw new Exception("File không tồn tại");
+
+			if (!file.FileName.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+				throw new Exception("Chỉ hỗ trợ file Excel (.xlsx)");
 
 			using (var stream = new MemoryStream())
 			{
@@ -332,6 +356,9 @@ namespace QLKho_NCKH.Products
 
 				using (var package = new ExcelPackage(stream))
 				{
+					if (package.Workbook.Worksheets.Count == 0)
+						throw new Exception("File Excel không có sheet nào");
+
 					var worksheet = package.Workbook.Worksheets[0];
 					int rowCount = worksheet.Dimension?.Rows ?? 0;
 
@@ -346,31 +373,74 @@ namespace QLKho_NCKH.Products
 
 						try
 						{
+							var existingProduct = await _productRepository.FirstOrDefaultAsync(p => p.Code == result.Code);
+							if (existingProduct != null)
+							{
+								// Cập nhật thông tin sản phẩm
+								existingProduct.Name = worksheet.Cells[row, 2]?.Text?.Trim();
+								// ... các thông tin khác
+
+								await _productRepository.UpdateAsync(existingProduct);
+								result.IsSuccess = true;
+								result.Message = "Cập nhật sản phẩm thành công";
+								results.Add(result);
+								continue;
+							}
+								string categoryName = worksheet.Cells[row, 4]?.Text?.Trim();
+							string supplierName = worksheet.Cells[row, 9]?.Text?.Trim();
+							var category = getAllCategories
+											.FirstOrDefault(c => c.Name.Equals(categoryName, StringComparison.OrdinalIgnoreCase));
+
+							if (category == null)
+								throw new Exception($"Không tìm thấy danh mục: {categoryName}");
+
+							var supplier = getAllSuppliers
+									.FirstOrDefault(s => s.Name.Equals(supplierName, StringComparison.OrdinalIgnoreCase));
+
+							if (supplier == null)
+								throw new Exception($"Không tìm thấy nhà cung cấp: {supplierName}");
 							var productDto = new CreateProductDto
 							{
 								Code = result.Code,
 								Name = result.Name,
+								CategoryId = category.Id,
+								SupplierId = supplier.Id,
 								Description = worksheet.Cells[row, 3]?.Text?.Trim(),
 								Barcode = worksheet.Cells[row, 5]?.Text?.Trim(),
 								Unit = worksheet.Cells[row, 6]?.Text?.Trim(),
 								Weight = decimal.TryParse(worksheet.Cells[row, 7]?.Text, out var weight) ? weight : 0,
 								Volume = decimal.TryParse(worksheet.Cells[row, 8]?.Text, out var volume) ? volume : 0,
-								IsActive = worksheet.Cells[row, 10]?.Text?.Trim() == "Có"
+								//IsActive = worksheet.Cells[row, 10]?.Text?.Trim().Equals("Có", StringComparison.OrdinalIgnoreCase) ?? false
+								IsActive = bool.TryParse(worksheet.Cells[row, 10]?.Text, out var isActive) && isActive
 							};
 
-							// Xử lý ảnh nếu có
+							// Xử lý ảnh
+							//foreach (var drawing in worksheet.Drawings)
+							//{
+							//	if (drawing is ExcelPicture picture)
+							//	{
+							//		var imageName = $"{Guid.NewGuid()}.jpg"; // Mặc định là jpg
+							//		var imagePath = Path.Combine(uploadsFolder, imageName);
+
+							//		// Lưu trực tiếp bytes ra file
+							//		File.WriteAllBytes(imagePath, picture.Image.ImageBytes);
+
+							//		productDto.Image = $"/products/{imageName}";
+							//	}
+							//}
 							foreach (var drawing in worksheet.Drawings)
 							{
-								if (drawing is ExcelPicture picture && picture.Name.StartsWith($"img_{row - 2}"))
+								if (drawing is ExcelPicture picture)
 								{
-									var imageName = $"{Guid.NewGuid()}.png"; // Hoặc .jpg tùy bạn
-									var imagePath = Path.Combine(uploadsFolder, imageName);
+									// Ánh xạ hình vào đúng dòng
+									if (picture.From.Row + 1 == row)
+									{
+										var imageName = $"{Guid.NewGuid()}.jpg";
+										var imagePath = Path.Combine(uploadsFolder, imageName);
 
-									// Lưu từ mảng byte ra file ảnh
-									File.WriteAllBytes(imagePath, picture.Image.ImageBytes);
-
-									productDto.Image = $"/products/{imageName}";
-									break;
+										File.WriteAllBytes(imagePath, picture.Image.ImageBytes);
+										productDto.Image = $"/products/{imageName}";
+									}
 								}
 							}
 							await Create(productDto);
@@ -380,7 +450,7 @@ namespace QLKho_NCKH.Products
 						catch (Exception ex)
 						{
 							result.IsSuccess = false;
-							result.Message = ex.Message;
+							result.Message = $"Dòng {row}: {ex.Message}";
 						}
 
 						results.Add(result);
@@ -390,6 +460,5 @@ namespace QLKho_NCKH.Products
 
 			return results;
 		}
-
 	}
 }
