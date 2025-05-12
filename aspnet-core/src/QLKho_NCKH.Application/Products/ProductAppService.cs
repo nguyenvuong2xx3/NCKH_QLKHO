@@ -16,6 +16,12 @@ using Abp.Collections.Extensions;
 using Abp.AspNetCore.Mvc.Authorization;
 using Abp.Extensions;
 using Abp.Authorization;
+using OfficeOpenXml;
+using OfficeOpenXml.Drawing;
+using System.Drawing;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+
 namespace QLKho_NCKH.Products
 {
 	[AbpMvcAuthorize(PermissionNames.Pages_Products)]
@@ -242,6 +248,147 @@ namespace QLKho_NCKH.Products
 						SupplierId = p.SupplierId
 						// Thêm các trường khác nếu cần
 					});
+		}
+		public async Task<byte[]> ExportProductsToExcel(ProductInput input)
+		{
+			var products = await GetAllProducts(input);
+
+			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+			using (var package = new ExcelPackage())
+			{
+				var worksheet = package.Workbook.Worksheets.Add("Products");
+
+				// Tiêu đề cột
+				worksheet.Cells[1, 1].Value = "Mã sản phẩm";
+				worksheet.Cells[1, 2].Value = "Tên sản phẩm";
+				worksheet.Cells[1, 3].Value = "Mô tả";
+				worksheet.Cells[1, 4].Value = "Danh mục";
+				worksheet.Cells[1, 5].Value = "Barcode";
+				worksheet.Cells[1, 6].Value = "Đơn vị";
+				worksheet.Cells[1, 7].Value = "Trọng lượng";
+				worksheet.Cells[1, 8].Value = "Thể tích";
+				worksheet.Cells[1, 9].Value = "Nhà cung cấp";
+				worksheet.Cells[1, 10].Value = "Kích hoạt";
+				worksheet.Cells[1, 11].Value = "Ảnh sản phẩm";
+
+				// Đổ dữ liệu
+				for (int i = 0; i < products.Items.Count; i++)
+				{
+					var row = i + 2;
+					var product = products.Items[i];
+
+					worksheet.Cells[row, 1].Value = product.Code;
+					worksheet.Cells[row, 2].Value = product.Name;
+					worksheet.Cells[row, 3].Value = product.Description;
+					worksheet.Cells[row, 4].Value = product.CategoryName;
+					worksheet.Cells[row, 5].Value = product.Barcode;
+					worksheet.Cells[row, 6].Value = product.Unit;
+					worksheet.Cells[row, 7].Value = product.Weight;
+					worksheet.Cells[row, 8].Value = product.Volume;
+					worksheet.Cells[row, 9].Value = product.SupplierName;
+					worksheet.Cells[row, 10].Value = product.IsActive ? "Có" : "Không";
+
+					// Thêm ảnh nếu có
+					// Thêm ảnh nếu có
+					if (!string.IsNullOrEmpty(product.Image))
+					{
+						try
+						{
+							var imagePath = Path.Combine(@"E:\UploadImgKho\", Path.GetFileName(product.Image));
+							if (File.Exists(imagePath))
+							{
+								using var image = Image.FromFile(imagePath);
+								using var imageStream = new MemoryStream();
+								image.Save(imageStream, image.RawFormat);
+								imageStream.Position = 0;
+
+								var picture = worksheet.Drawings.AddPicture($"img_{i}", imageStream);
+								picture.SetPosition(row - 1, 0, 10, 0);
+								picture.SetSize(100, 100);
+							}
+						}
+						catch
+						{
+							// Bỏ qua nếu không load được ảnh
+						}
+					}
+				}
+
+				// AutoFit columns
+				worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+				return package.GetAsByteArray();
+			}
+		}
+		public async Task<List<ImportProductResultDto>> ImportProductsFromExcel(IFormFile file)
+		{
+			var results = new List<ImportProductResultDto>();
+			var uploadsFolder = @"E:\UploadImgKho\";
+
+			using (var stream = new MemoryStream())
+			{
+				await file.CopyToAsync(stream);
+
+				using (var package = new ExcelPackage(stream))
+				{
+					var worksheet = package.Workbook.Worksheets[0];
+					int rowCount = worksheet.Dimension?.Rows ?? 0;
+
+					for (int row = 2; row <= rowCount; row++)
+					{
+						var result = new ImportProductResultDto
+						{
+							RowNumber = row,
+							Code = worksheet.Cells[row, 1]?.Text?.Trim(),
+							Name = worksheet.Cells[row, 2]?.Text?.Trim()
+						};
+
+						try
+						{
+							var productDto = new CreateProductDto
+							{
+								Code = result.Code,
+								Name = result.Name,
+								Description = worksheet.Cells[row, 3]?.Text?.Trim(),
+								Barcode = worksheet.Cells[row, 5]?.Text?.Trim(),
+								Unit = worksheet.Cells[row, 6]?.Text?.Trim(),
+								Weight = decimal.TryParse(worksheet.Cells[row, 7]?.Text, out var weight) ? weight : 0,
+								Volume = decimal.TryParse(worksheet.Cells[row, 8]?.Text, out var volume) ? volume : 0,
+								IsActive = worksheet.Cells[row, 10]?.Text?.Trim() == "Có"
+							};
+
+							// Xử lý ảnh nếu có
+							foreach (var drawing in worksheet.Drawings)
+							{
+								if (drawing is ExcelPicture picture && picture.Name.StartsWith($"img_{row - 2}"))
+								{
+									var imageName = $"{Guid.NewGuid()}.png"; // Hoặc .jpg tùy bạn
+									var imagePath = Path.Combine(uploadsFolder, imageName);
+
+									// Lưu từ mảng byte ra file ảnh
+									File.WriteAllBytes(imagePath, picture.Image.ImageBytes);
+
+									productDto.Image = $"/products/{imageName}";
+									break;
+								}
+							}
+							await Create(productDto);
+							result.IsSuccess = true;
+							result.Message = "Thành công";
+						}
+						catch (Exception ex)
+						{
+							result.IsSuccess = false;
+							result.Message = ex.Message;
+						}
+
+						results.Add(result);
+					}
+				}
+			}
+
+			return results;
 		}
 
 	}

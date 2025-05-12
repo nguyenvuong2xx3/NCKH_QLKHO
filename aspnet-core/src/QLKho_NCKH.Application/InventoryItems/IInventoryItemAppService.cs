@@ -16,6 +16,11 @@ namespace QLKho_NCKH.InventoryItems
 		Task<PagedResultDto<InventoryItemListDto>> GetInventoryItems(GetInventoryItemsInput input);
 		Task<InventoryItemEditDto> GetInventoryItem(int product);
 		Task<PagedResultDto<InventoryItemListDto>> GetAllInventoryItems(GetInventoryItemsInput input);
+
+		Task DeleteInventoryItem(DeleteInventoryItemInput input);
+
+		Task<InventoryItemListDto> UpdateInventoryItem(UpdateInventoryItemInput input);
+		Task<GetInventoryItemForEditInput> GetInventoryItemForEdit(GetInventoryItemForEditInput input);
 		//Task<InventoryItemEditDto> GetInventoryItem(int id);
 
 		//Task<InventoryItemEditDto> EditInventoryItem(InventoryItemEditDto input);
