@@ -16,13 +16,11 @@
     <p class="success-message">Cảm ơn bạn đã đặt hàng. Đơn hàng của bạn đang được xử lý.</p>
 
     <div class="order-details">
-      @* <p><strong>Mã đơn hàng:</strong> <span id="orderCode">@ViewBag.OrderCode</span></p> *@
       <p><strong>Ngày đặt:</strong> <span id="orderDate">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span></p>
     </div>
 
     <div class="action-buttons">
       <a href="/" class="btn btn-continue">Tiếp tục mua sắm</a>
-      @* <a href="/Order/OrderDetail" class="btn btn-track">Theo dõi đơn hàng</a> *@
       <a href="@Url.Action("History", "Orders", new { userId = userId, status = status })"
          class="btn btn-track">Theo dõi đơn hàng</a>
     </div>

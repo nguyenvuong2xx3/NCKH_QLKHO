@@ -5,30 +5,33 @@ using Abp.Extensions;
 
 namespace QLKho_NCKH.Authorization.Users
 {
-    public class User : AbpUser<User>
-    {
-        public const string DefaultPassword = "123qwe";
+	public class User : AbpUser<User>
+	{
 
-        public static string CreateRandomPassword()
-        {
-            return Guid.NewGuid().ToString("N").Truncate(16);
-        }
+		public string Image { get; set; }
+		public string PhoneNumber { get; set; }
+		public const string DefaultPassword = "123qwe";
 
-        public static User CreateTenantAdminUser(int tenantId, string emailAddress)
-        {
-            var user = new User
-            {
-                TenantId = tenantId,
-                UserName = AdminUserName,
-                Name = AdminUserName,
-                Surname = AdminUserName,
-                EmailAddress = emailAddress,
-                Roles = new List<UserRole>()
-            };
+		public static string CreateRandomPassword()
+		{
+			return Guid.NewGuid().ToString("N").Truncate(16);
+		}
 
-            user.SetNormalizedNames();
+		public static User CreateTenantAdminUser(int tenantId, string emailAddress)
+		{
+			var user = new User
+			{
+				TenantId = tenantId,
+				UserName = AdminUserName,
+				Name = AdminUserName,
+				Surname = AdminUserName,
+				EmailAddress = emailAddress,
+				Roles = new List<UserRole>()
+			};
 
-            return user;
-        }
-    }
+			user.SetNormalizedNames();
+
+			return user;
+		}
+	}
 }

@@ -37,7 +37,7 @@ namespace QLKho_NCKH.Authorization.Users
             AbpSession = NullAbpSession.Instance;
         }
 
-        public async Task<User> RegisterAsync(string name, string surname, string emailAddress, string userName, string plainPassword, bool isEmailConfirmed)
+        public async Task<User> RegisterAsync(string name, string surname, string emailAddress, string userName, string plainPassword, bool isEmailConfirmed, string phoneNumber, string Image)
         {
             CheckForTenant();
 
@@ -52,8 +52,10 @@ namespace QLKho_NCKH.Authorization.Users
                 IsActive = true,
                 UserName = userName,
                 IsEmailConfirmed = isEmailConfirmed,
-                Roles = new List<UserRole>()
-            };
+                Roles = new List<UserRole>(),
+								PhoneNumber = phoneNumber,
+                Image = Image,
+						};
 
             user.SetNormalizedNames();
            

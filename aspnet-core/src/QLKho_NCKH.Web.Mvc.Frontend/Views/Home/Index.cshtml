@@ -6,18 +6,17 @@
 }
 @model ProductCategoryViewModel
 
-@section scripts
-{
-   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+@* @section scripts *@
+@* { *@
 
-  <environment names="Development">
-    <script src="~/view-resources/Views/Home/Index.js" asp-append-version="true"></script>
-  </environment>
+@*   <environment names="Development"> *@
+@*   </environment> *@
 
-  <environment names="Staging,Production">
-    <script src="~/view-resources/Views/Home/Index.min.js" asp-append-version="true"></script>
-  </environment>
-}
+@* } *@
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script src="~/view-resources/Views/Home/Index.js" asp-append-version="true"></script>
+
 
 <link href="/css/homeweb.css" rel="stylesheet" />
 
