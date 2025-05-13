@@ -66,5 +66,8 @@
 
 		//InventoryItems
 		public const string Pages_InventoryItems = "Pages.InventoryItems";
+		public const string Pages_InventoryItems_Create = "Pages.InventoryItems.Create";
+		public const string Pages_InventoryItems_Edit = "Pages.InventoryItems.Edit";
+		public const string Pages_InventoryItems_Delete = "Pages.InventoryItems.Delete";
 	}
 }

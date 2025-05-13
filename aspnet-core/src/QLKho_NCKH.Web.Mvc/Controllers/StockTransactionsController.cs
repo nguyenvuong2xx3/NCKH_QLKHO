@@ -1,5 +1,7 @@
-﻿using Abp.Domain.Repositories;
+﻿using Abp.AspNetCore.Mvc.Authorization;
+using Abp.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using QLKho_NCKH.Authorization;
 using QLKho_NCKH.Controllers;
 using QLKho_NCKH.EnumCustom;
 using QLKho_NCKH.InventoryItems;
@@ -15,6 +17,7 @@ using System.Threading.Tasks;
 
 namespace QLKho_NCKH.Web.Controllers
 {
+	[AbpMvcAuthorize(PermissionNames.Pages_StockTransactions)]
 	public class StockTransactionsController : QLKho_NCKHControllerBase
 	{
 		private readonly IStockTransactionAppService _stockTransactionAppService;
@@ -41,6 +44,7 @@ namespace QLKho_NCKH.Web.Controllers
 			return PartialView("_CreateImportModal");
 		}
 
+		[AbpMvcAuthorize(PermissionNames.Pages_StockTransactions_Edit)]
 		public IActionResult Edit(int stockTransactionId)
 		{
 			var stockTransaction = _stockTransactionAppService.GetStockTransaction(stockTransactionId);

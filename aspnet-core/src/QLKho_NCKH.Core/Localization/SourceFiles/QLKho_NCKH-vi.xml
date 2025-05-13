@@ -140,6 +140,36 @@
 		<text name="Warehouses" value="Nhà kho" />
 		<text name="InventoryItems" value="Hàng tồn kho" />
 		<text name="NoMatchingRecordsFound" value="Không tìm thấy dữ liệu phù hợp" />
-
+		<text name="Activation" value="Kích hoạt" />
+		<text name="CreateCustomer" value="Tạo khách hàng" />
+		<text name="CreateStockTransaction" value="Tạo giao dịch kho" />
+		<text name="CreateSupplier" value="Tạo nhà cung cấp" />
+		<text name="Customers" value="Khách hàng" />
+		<text name="DeleteCategory" value="Xóa danh mục" />
+		<text name="DeleteProduct" value="Xóa sản phẩm" />
+		<text name="DeleteStockTransaction" value="Xóa giao dịch kho" />
+		<text name="DeleteSupplier" value="Xóa nhà cung cấp" />
+		<text name="DeleteWarehouse" value="Xóa kho" />
+		<text name="EditCustomer" value="Chỉnh sửa khách hàng" />
+		<text name="EditStockTransaction" value="Chỉnh sửa giao dịch kho" />
+		<text name="EditSupplier" value="Chỉnh sửa nhà cung cấp" />
+		<text name="Reports" value="Báo cáo" />
+		<text name="EditRole" value="Chỉnh sửa vai trò" />
+		<text name="CreateCategory" value="Tạo danh mục" />
+		<text name="CreateProduct" value="Tạo sản phẩm" />
+		<text name="CreateStorageLocation" value="Tạo vị trí lưu trữ" />
+		<text name="CreateWarehouse" value="Tạo kho" />
+		<text name="Dashboard" value="Bảng điều khiển" />
+		<text name="DeleteCustomer" value="Xóa khách hàng" />
+		<text name="DeleteRole" value="Xóa vai trò" />
+		<text name="DeleteStorageLocation" value="Xóa vị trí lưu trữ" />
+		<text name="DeleteUser" value="Xóa người dùng" />
+		<text name="EditCategory" value="Chỉnh sửa danh mục" />
+		<text name="EditProduct" value="Chỉnh sửa sản phẩm" />
+		<text name="EditStorageLocation" value="Chỉnh sửa vị trí lưu trữ" />
+		<text name="EditWarehouse" value="Chỉnh sửa kho" />
+		<text name="DanhMuc" value="Danh mục" />
+		<text name="EditUser" value="Chỉnh sửa người dùng" />
+		<text name="SliderList" value="Biển quảng cáo" />
 	</texts>
 </localizationDictionary>
