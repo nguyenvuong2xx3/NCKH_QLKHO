@@ -15,6 +15,9 @@ using QLKho_NCKH.InventoryItems.Dto;
 using Abp.Application.Services.Dto;
 using Microsoft.Data.SqlClient;
 using QLKho_NCKH.Sliders;
+using QLKho_NCKH.Users;
+using QLKho_NCKH.Web.Models.Users;
+using QLKho_NCKH.EnumCustom;
 
 namespace QLKho_NCKH.Web.Controllers
 {
@@ -24,6 +27,7 @@ namespace QLKho_NCKH.Web.Controllers
 		private readonly IProductAppService _productAppService;
 		private readonly ICategoryAppService _categoryAppService;
 		private readonly ISliderAppService _sliderAppService;
+		private readonly IUserAppService _userAppService;
 
 		private readonly IInventoryItemAppService _inventoryItemAppService;
 
@@ -31,12 +35,14 @@ namespace QLKho_NCKH.Web.Controllers
 			, ICategoryAppService categoryAppService 
 			, IInventoryItemAppService inventoryItemAppService
 			, ISliderAppService sliderAppService
+			, IUserAppService userAppService
 			)
 		{
 			_productAppService = productAppService;
 			_categoryAppService = categoryAppService;
 			_inventoryItemAppService = inventoryItemAppService;
 			_sliderAppService = sliderAppService;
+			_userAppService = userAppService;
 		}
 
 		//public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
@@ -313,5 +319,31 @@ namespace QLKho_NCKH.Web.Controllers
 
 		//	return NoContent();
 		//}
+
+		public async Task<IActionResult> InforUser()
+		{
+			var userId = AbpSession.UserId;
+			ViewBag.UserId = userId;
+			ViewBag.Status = TransactionStatusEnum.Pending;
+			if (userId != null)
+			{
+				var user = await _userAppService.GetAsync(new EntityDto<long> { Id = userId.Value });
+				var model = new UserViewModel
+				{
+					Id = user.Id,
+					FullName = user.FullName,
+					EmailAddress = user.EmailAddress,
+					PhoneNumber = user.PhoneNumber,
+					Address = user.Address,
+					Avatar = user.Avatar,
+					IsActive = user.IsActive,
+					CreationTime = user.CreationTime.ToString("dd/MM/yyyy")
+				};
+				return View(model);
+			
+			}
+
+			return View();
+		}
 	}
 }
