@@ -27,6 +27,8 @@
       $('#ProductCreateModal .modal-content').css('overflow-y', 'auto');
     }
   });
+
+
   function save() {
     if (!_$form.valid()) {
       return;

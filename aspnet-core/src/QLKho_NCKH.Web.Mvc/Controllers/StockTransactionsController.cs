@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Abp.Domain.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using QLKho_NCKH.Controllers;
 using QLKho_NCKH.EnumCustom;
 using QLKho_NCKH.InventoryItems;
@@ -8,6 +9,8 @@ using QLKho_NCKH.StockTransactions;
 using QLKho_NCKH.StockTransactions.Dtos;
 using QLKho_NCKH.Web.Models.StockTransactions;
 using QLKho_NCKH.Web.Models.Users;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace QLKho_NCKH.Web.Controllers
@@ -17,11 +20,15 @@ namespace QLKho_NCKH.Web.Controllers
 		private readonly IStockTransactionAppService _stockTransactionAppService;
 		private readonly IStockTransactionDetailAppService _stockTransactionDetailAppService;
 		private readonly IInventoryItemAppService _inventoryItemAppService;
+		private readonly IRepository<StockTransactionDetail, int> _stockTransactionDetailRepository;
+
 		public StockTransactionsController(IStockTransactionAppService stockTransactionAppService, 
-			IStockTransactionDetailAppService stockTransactionDetailAppService, 
+			IStockTransactionDetailAppService stockTransactionDetailAppService,
+			IRepository<StockTransactionDetail, int> stockTransactionDetailRepository,
 			IInventoryItemAppService inventoryItemAppService)
 		{
 			_stockTransactionAppService = stockTransactionAppService;
+			_stockTransactionDetailRepository = stockTransactionDetailRepository;
 			_stockTransactionDetailAppService = stockTransactionDetailAppService;
 			_inventoryItemAppService = inventoryItemAppService;
 		}
@@ -89,24 +96,41 @@ namespace QLKho_NCKH.Web.Controllers
 		}
 		public async Task<IActionResult> UpdateImportStockTransactions([FromBody] StockTransactionUpdateInput input)
 		{
-			 await _stockTransactionAppService.Update(input);
-			
-			//var query = await _stockTransactionAppService.GetStockTransaction(input.Id);
-			var querydetail = await _stockTransactionDetailAppService.GetStockTransactionDetail(input.Id);
-			var inventoryItemInput = new InventoryItemCreatingInput
+			try
 			{
-				ProductId = querydetail.ProductId,
-				StorageLocationId = querydetail.StorageLocationId,
-				Quantity = querydetail.Quantity,
-				UnitPrice = querydetail.UnitPrice
-			};
-			await _inventoryItemAppService.CreateInventoryItem(inventoryItemInput);
-			return Ok(new
+				// 1. Cập nhật giao dịch
+				await _stockTransactionAppService.Update(input);
+
+				// 2. Lấy TẤT CẢ chi tiết giao dịch
+				var transactionDetails = await _stockTransactionDetailRepository
+						.GetAllListAsync(x => x.StockTransactionId == input.Id);
+
+				if (!transactionDetails.Any())
+				{
+					return Ok(new { success = true, message = "Updated successfully (no items to inventory)" });
+				}
+
+				// 3. Cập nhật inventory cho từng sản phẩm
+				foreach (var detail in transactionDetails)
+				{
+					var inventoryItemInput = new InventoryItemCreatingInput
+					{
+						ProductId = detail.ProductId,
+						StorageLocationId = detail.StorageLocationId,
+						Quantity = detail.Quantity,
+						UnitPrice = detail.UnitPrice
+					};
+
+					await _inventoryItemAppService.CreateInventoryItem(inventoryItemInput);
+				}
+
+				return Ok(new { success = true, message = "Updated and inventory updated successfully" });
+			}
+			catch (Exception ex)
 			{
-				success = true,
-				message = "Updated successfully",
-				data = (object)null // nếu có dữ liệu cần gửi về, thay thế null
-			});
+				// Ghi log lỗi ở đây
+				return StatusCode(500, new { success = false, message = ex.Message });
+			}
 		}
 		public async Task<IActionResult> GetCustomerByStockTransactions (int id)
 		{

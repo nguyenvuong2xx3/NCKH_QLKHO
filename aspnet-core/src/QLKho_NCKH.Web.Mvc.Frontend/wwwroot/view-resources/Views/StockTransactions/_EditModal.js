@@ -37,6 +37,8 @@
             _$modal.modal('hide');
             abp.notify.info(l('SavedSuccessfully'));
             abp.event.trigger('stockTransaction.edited', response.data);
+            // Sửa dòng này: Gọi DataTable() trên phần tử bảng
+            $('#StockTransactionsEditImportTableeeee').DataTable().ajax.reload();
           } else {
             abp.notify.error(response.message || l('AnErrorOccurred'));
           }

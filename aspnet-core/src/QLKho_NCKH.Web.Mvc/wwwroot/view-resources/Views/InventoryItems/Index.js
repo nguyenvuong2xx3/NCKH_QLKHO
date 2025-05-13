@@ -35,7 +35,7 @@
           orderable: false,
           render: function (data) {
             return data
-              ? `<img src="${data}" class="product-thumbnail" />`
+              ? `<img src="${data}" class="product-thumbnail" / style="max-width: 60px;">`
               : '<div class="no-image-placeholder"></div>';
           }
         },

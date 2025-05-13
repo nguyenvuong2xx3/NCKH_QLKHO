@@ -204,6 +204,7 @@
       });
     });
 
+   
     // Validate dữ liệu
     for (let detail of details) {
       if (!detail.quantity || detail.quantity <= 0) {
