@@ -200,7 +200,7 @@ namespace QLKho_NCKH.Web.Controllers
 			//string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
 			//string fullPath = Path.Combine(uploadsFolder, fileName.TrimStart('/')); // Loại bỏ dấu `/` đầu nếu có
 
-			string folderPath = @"E:\Uploads"; // Thư mục chứa ảnh
+			string folderPath = @"E:\UploadImgKho"; // Thư mục chứa ảnh
 			string fullPath = Path.Combine(folderPath, fileName); // Đường dẫn đầy đủ
 
 
