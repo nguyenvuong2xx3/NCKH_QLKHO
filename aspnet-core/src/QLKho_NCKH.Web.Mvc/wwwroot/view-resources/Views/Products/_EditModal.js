@@ -74,6 +74,10 @@
     return regex.test(value);
   }, "Mã vạch không hợp lệ. Chỉ cho phép từ 8 đến 13 ký tự số.");
 
+  jQuery.validator.methods.number = function (value, element) {
+    value = value.replace(',', '.'); // thay dấu phẩy thành dấu chấm
+    return this.optional(element) || !isNaN(value);
+  };
   // Khởi tạo validate cho form sản phẩm
   _$form.validate({
     rules: {
@@ -174,7 +178,12 @@
     if (!_$form.valid()) {
       return;
     }
-
+    $('#Weight').val(function (_, val) {
+      return val.replace(',', '.');
+    });
+    $('#Volume').val(function (_, val) {
+      return val.replace(',', '.');
+    });
     var formData = new FormData(_$form[0]);
 
     // Thêm file ảnh nếu có

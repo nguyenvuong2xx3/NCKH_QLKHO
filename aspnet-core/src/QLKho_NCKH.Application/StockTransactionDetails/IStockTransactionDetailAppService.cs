@@ -15,6 +15,7 @@ namespace QLKho_NCKH.StockTransactionDetails
 
 		Task<StockTransactionDetailCreatingInput> GetStockTransactionDetail(int id);
 
+
 		//Task<StockTransactionDetailEditDto> GetStockTransactionDetail(int id);
 
 		//Task<StockTransactionDetailEditDto> EditStockTransactionDetail(StockTransactionDetailEditDto input);

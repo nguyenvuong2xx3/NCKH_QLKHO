@@ -43,6 +43,22 @@
 		_selectedDateRange.EndTime = null;
 	});
 
+
+	// Đảm bảo cuộn nội dung trong modal con khi modal con được mở
+	$(document).on('hidden.bs.modal', '.modal', function () {
+		if ($('.modal.show').length) {
+			$('body').addClass('modal-open'); // Đảm bảo body không bị cuộn khi có modal khác đang mở
+		}
+	});
+
+
+	// Khôi phục khả năng cuộn sau khi đóng modal con
+	$(document).on('hidden.bs.modal', '.modal', function () {
+		if ($('#ProductCreateModal').hasClass('show')) {
+			$('#ProductCreateModal .modal-content').css('overflow-y', 'auto');
+		}
+	});
+
 	var _$stockTransactionTable = _$table.DataTable({
 		paging: true,
 		serverSide: true,
