@@ -1,0 +1,46 @@
+﻿@using QLKho_NCKH.Web.Models.Common.Modals
+@using QLKho_NCKH.Web.Models.Categories
+@model CategoryDetailViewModel
+
+@{
+	Layout = null;
+}
+
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("DetailCategory")))
+
+<form name="CategoryEditForm" role="form" class="form-horizontal">
+	<input type="hidden" name="Id" value="@Model.Category.Id" />
+
+	<div class="modal-body">
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="categoryName">@L("Name")</label>
+			<div class="col-md-9">
+				<input disabled id="Name" type="text" class="form-control" name="Name" value="@Model.Category.Name" required maxlength="250">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="categoryDescription">@L("Description")</label>
+			<div class="col-md-9">
+				<textarea disabled id="Description" class="form-control" name="Description" rows="3">@Model.Category.Description</textarea>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="categoryDescription">@L("CreationTime")</label>
+			<div class="col-md-9">
+				<textarea disabled id="CreationTime" class="form-control" name="CreationTime" rows="3">@Model.Category.CreateTime</textarea>
+			</div>
+		</div>
+
+	</div>
+
+	@* @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml") *@
+	<div class="modal-footer justify-content-end">
+		<button type="button" class="btn btn-default close-button" data-dismiss="modal">@L("Cancel")</button>
+	</div>
+
+
+</form>
+
+<script src="~/view-resources/Views/Categories/_EditModal.js" asp-append-version="true"></script>

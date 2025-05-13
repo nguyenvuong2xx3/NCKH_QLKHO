@@ -1,0 +1,92 @@
+﻿@using QLKho_NCKH.Web.Models.Common.Modals
+@using QLKho_NCKH.Web.Models.Customers
+@model CustomerViewModel
+
+@* @section scripts
+{
+  <environment names="Development">
+    <script src="~/view-resources/Views/Customers/Create.js" asp-append-version="true"></script>
+  </environment>
+} *@
+
+@{
+  Layout = null;
+}
+
+<div class="modal fade" id="CustomerCreateModal" tabindex="-1" role="dialog" aria-labelledby="CustomerCreateModalLabel" data-backdrop="static">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewCustomer")))
+
+      <form name="customerCreateForm" role="form" class="form-horizontal">
+        <div class="modal-body">
+          <div class="form-group row mb-3 required">
+            <label class="col-md-3 col-form-label fw-bold">@L("Code")</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" name="Code" required maxlength="50" placeholder="Nhập mã khách hàng (VD: KH-001)...">
+            </div>
+          </div>
+
+          <div class="form-group row mb-3 required">
+            <label class="col-md-3 col-form-label fw-bold">@L("Name")</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" name="Name" required maxlength="100" placeholder="Nhập tên khách hàng...">
+            </div>
+          </div>
+
+          <div class="form-group row mb-3 required">
+            <label class="col-md-3 col-form-label fw-bold">@L("Address")</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" name="Address" maxlength="200" placeholder="Nhập địa chỉ...">
+            </div>
+          </div>
+
+          <div class="form-group row mb-3 required">
+            <label class="col-md-3 col-form-label fw-bold">@L("PhoneNumber")</label>
+            <div class="col-md-9">
+              <input type="tel" class="form-control" name="PhoneNumber" maxlength="20" placeholder="Nhập số điện thoại...">
+            </div>
+          </div>
+
+          <div class="form-group row mb-3">
+            <label class="col-md-3 col-form-label fw-bold">@L("Email")</label>
+            <div class="col-md-9">
+              <input type="email" class="form-control" name="Email" maxlength="100" placeholder="Nhập email...">
+            </div>
+          </div>
+
+          <div class="form-group row mb-3 required">
+            <label class="col-md-3 col-form-label fw-bold">@L("TaxCode")</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" name="TaxCode" maxlength="20" placeholder="Nhập mã số thuế...">
+            </div>
+          </div>
+
+          <div class="form-group row mb-3 required">
+            <label class="col-md-3 col-form-label fw-bold">@L("IsActive")</label>
+            <div class="col-md-9">
+              <select class="form-control" name="IsActive" required>
+                <option value="true">Hoạt động</option>
+                <option value="false">Không hoạt động</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .has-error .form-control {
+    border-color: #d9534f;
+  }
+
+  .error {
+    color: #d9534f;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+  }
+</style>

@@ -50,7 +50,7 @@
 			<div class="input-group">
 				<input type="text" id="CategoryDisplayEdit" class="form-control" value="@Model.Category?.Name" readonly required />
 				<button type="button" id="EditCategoryBtn" class="btn btn-success btn-sm" title="@L("Category")">
-					<i class="fa fa-id-card"></i>
+					<i class="fa fa-list"></i>
 				</button>
 			</div>
 			<input type="hidden" id="CategoryIdEdit" name="CategoryId" value="@Model.Product.CategoryId" />
@@ -66,14 +66,14 @@
 		<div class="form-group row mb-3">
 			<label class="col-md-3 col-form-label fw-bold">@L("Weight")</label>
 			<div class="col-md-9">
-				<input type="number" class="form-control" name="Weight" value="@Model.Product.Weight" step="0.01" placeholder="Nhập trọng lượng...">
+				<input type="text" class="form-control" name="Weight" value="@Model.Product.Weight" step="0.01" placeholder="Nhập trọng lượng...">
 			</div>
 		</div>
 
 		<div class="form-group row mb-3">
 			<label class="col-md-3 col-form-label fw-bold">@L("Volume")</label>
 			<div class="col-md-9">
-				<input type="number" class="form-control" name="Volume" value="@Model.Product.Volume" step="0.01" placeholder="Nhập thể tích...">
+				<input type="text" class="form-control" name="Volume" value="@Model.Product.Volume" step="0.01" placeholder="Nhập thể tích...">
 			</div>
 		</div>
 
@@ -93,7 +93,7 @@
 			<div class="input-group">
 				<input type="text" id="SupplierDisplayEdit" class="form-control" value="@Model.Supplier?.Name" readonly required />
 				<button type="button" id="EditSupplierBtn" class="btn btn-success btn-sm" title="@L("Supplier")">
-					<i class="fa fa-id-card"></i>
+					<i class="fa fa-users"></i>
 				</button>
 			</div>
 			<input type="hidden" id="SupplierIdEdit" name="SupplierId" value="@Model.Product.SupplierId" />
@@ -146,4 +146,16 @@
 		overflow: hidden !important;
 	}
 
+	.has-error .form-control {
+		border-color: #d9534f;
+	}
+
+	.error {
+		color: #d9534f;
+		font-size: 0.875em;
+		margin-top: 0.25rem;
+	}
+
+
 </style>
+

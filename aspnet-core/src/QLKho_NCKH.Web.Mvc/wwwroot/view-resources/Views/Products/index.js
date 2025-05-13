@@ -173,6 +173,121 @@
     ]
   });
 
+  // Phương thức kiểm tra tùy chỉnh cho số điện thoại (giữ nguyên)
+  $.validator.addMethod("phoneNumber", function (value, element) {
+    return this.optional(element) || /^[0-9\+\-\(\)\s]*$/.test(value);
+  }, "Số điện thoại không hợp lệ.");
+
+  // Phương thức kiểm tra tùy chỉnh cho mã vạch (barcode)
+  $.validator.addMethod("barcode", function (value, element) {
+    // Nếu trường không bắt buộc và không có giá trị, bỏ qua kiểm tra
+    if (this.optional(element)) {
+      return true;
+    }
+
+    // Kiểm tra mã vạch chỉ chứa số và có độ dài từ 8 đến 13 ký tự
+    var regex = /^[0-9]{8,13}$/;
+    return regex.test(value);
+  }, "Mã vạch không hợp lệ. Chỉ cho phép từ 8 đến 13 ký tự số.");
+
+  // Khởi tạo validate cho form sản phẩm
+  _$form.validate({
+    rules: {
+      Name: {
+        required: true,
+        maxlength: 256
+      },
+      Code: {
+        required: true,
+        maxlength: 256
+      },
+      Description: {
+        required: true,
+        maxlength: 500
+      },
+      CategoryIdCreate: {
+        required: true
+      },
+      SupplierIdCreate: {
+        required: true
+      },
+      Barcode: {
+        required: true,
+        barcode: true,
+        maxlength: 20
+      },
+      Unit: {
+        required: true,
+        maxlength: 50
+      },
+      Weight: {
+        required: true,
+        number: true,
+        maxlength: 20
+      },
+      Volume: {
+        required: true,
+        number: true,
+        maxlength: 20
+      },
+      Image: {
+        required: true // Kiểm tra nếu có hình ảnh
+      }
+    },
+    messages: {
+      Name: {
+        required: "Tên sản phẩm là bắt buộc.",
+        maxlength: "Tên sản phẩm không được vượt quá 256 ký tự."
+      },
+      Code: {
+        required: "Mã sản phẩm là bắt buộc.",
+        maxlength: "Mã sản phẩm không được vượt quá 256 ký tự."
+      },
+      Description: {
+        required: "Mô tả sản phẩm là bắt buộc.",
+        maxlength: "Mô tả sản phẩm không được vượt quá 500 ký tự."
+      },
+      CategoryIdCreate: {
+        required: "Danh mục sản phẩm là bắt buộc."
+      },
+      SupplierIdCreate: {
+        required: "Nhà cung cấp là bắt buộc."
+      },
+      Barcode: {
+        required: "Mã vạch là bắt buộc.",
+        barcode: "Mã vạch không hợp lệ. Chỉ cho phép từ 8 đến 13 ký tự số."
+      },
+      Unit: {
+        required: "Đơn vị tính là bắt buộc.",
+        maxlength: "Đơn vị tính không được vượt quá 50 ký tự."
+      },
+      Weight: {
+        required: "Trọng lượng là bắt buộc.",
+        number: "Trọng lượng phải là một số hợp lệ.",
+        maxlength: "Trọng lượng không được vượt quá 20 ký tự."
+      },
+      Volume: {
+        required: "Thể tích là bắt buộc.",
+        number: "Thể tích phải là một số hợp lệ.",
+        maxlength: "Thể tích không được vượt quá 20 ký tự."
+      },
+      Image: {
+        required: "Ảnh sản phẩm là bắt buộc."
+      }
+    },
+    errorPlacement: function (error, element) {
+      error.insertAfter(element);
+    },
+    highlight: function (element) {
+      $(element).closest('.form-group').addClass('has-error');
+    },
+    unhighlight: function (element) {
+      $(element).closest('.form-group').removeClass('has-error');
+    }
+  });
+
+
+
   // Xử lý lưu sản phẩm
   _$form.find('.save-button').on('click', function (e) {
     e.preventDefault();
@@ -218,7 +333,7 @@
       dataType: 'html',
       success: function (content) {
         $('#ProductEditModal div.modal-content').html(content);
-        $('#ProductEditModal').modal('show'); // Show modal
+        //$('#ProductEditModal').modal('show'); // Show modal
       }
     });
   });
@@ -281,5 +396,144 @@
       previewImage.src = '';
       previewImage.style.display = 'none';
     }
+  });
+
+  //$('#ExportExcelBtn').click(function () {
+  //  var input = {
+  //    filter: $('#ProductsTableFilter').val(),
+  //    supplierId: $('#SupplierIdFilter').val(),
+  //    categoryId: $('#CategoryIdFilter').val()
+  //  };
+
+  //  fetch(abp.appPath + 'Products/ExportToExcel', {
+  //    method: 'POST',
+  //    headers: {
+  //      'Content-Type': 'application/json',
+  //      'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+  //    },
+  //    body: JSON.stringify(input)
+  //  })
+  //    .then(response => {
+  //      if (!response.ok) {
+  //        throw new Error('Xuất Excel thất bại: ' + response.statusText);
+  //      }
+  //      return response.blob();
+  //    })
+  //    .then(blob => {
+  //      var link = document.createElement('a');
+  //      link.href = window.URL.createObjectURL(blob);
+  //      link.download = 'Danh_sach_san_pham.xlsx';
+  //      link.click();
+  //    })
+  //    .catch(error => {
+  //      abp.notify.error(error.message);
+  //    });
+  //});
+  $('#ExportExcelBtn').click(function () {
+    // Lấy các tham số filter từ form
+    var input = {
+      filter: $('#ProductsTableFilter').val(),
+      supplierId: $('#SupplierIdFilter').val(),
+      categoryId: $('#CategoryIdFilter').val(),
+      // Thêm các tham số khác nếu cần
+    };
+
+    // Hiển thị loading
+    abp.ui.setBusy();
+
+    // Gọi API export
+    $.ajax({
+      url: abp.appPath + 'Products/ExportToExcel',
+      type: 'POST',
+      data: JSON.stringify(input),
+      contentType: 'application/json',
+      headers: {
+        'RequestVerificationToken': abp.security.antiForgery.getToken()
+      },
+      xhrFields: {
+        responseType: 'blob' // QUAN TRỌNG: để nhận dữ liệu kiểu file
+      },
+      success: function (blob) {
+        var url = window.URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'Danh_sach_san_pham.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        abp.notify.success('Xuất Excel thành công');
+      },
+      error: function (xhr) {
+        abp.notify.error('Xuất Excel thất bại: ' + xhr.statusText);
+      },
+      complete: function () {
+        abp.ui.clearBusy();
+      }
+    });
+
+  });
+
+  // Import Excel
+  //$('#ImportExcelForm').submit(function (e) {
+  //  e.preventDefault();
+  //  var formData = new FormData(this);
+
+  //  abp.ui.setBusy($('#ImportExcelModal'), abp.ajax({
+  //    url: abp.appPath + 'Products/ImportFromExcel',
+  //    type: 'POST',
+  //    data: formData,
+  //    processData: false,
+  //    contentType: false
+  //  }).done(function (result) {
+  //    if (result.success) {
+  //      abp.notify.success('Import thành công ' + result.results.length + ' sản phẩm');
+  //      $('#ImportExcelModal').modal('hide');
+  //      $('#ProductsTable').DataTable().ajax.reload();
+  //    } else {
+  //      var errorMsg = 'Import không thành công: <br>';
+  //      result.results.forEach(function (item) {
+  //        if (!item.IsSuccess) {
+  //          errorMsg += `Dòng ${item.RowNumber}: ${item.Message}<br>`;
+  //        }
+  //      });
+  //      abp.notify.error(errorMsg, { multiline: true });
+  //    }
+  //  }));
+  //});
+  $('#ImportExcelForm').submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+
+    abp.ui.setBusy($('#ImportExcelModal'), abp.ajax({
+      url: abp.appPath + 'Products/ImportFromExcel',
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false
+    }).done(function (result) {
+      if (result.success) {
+        var successCount = result.results.filter(r => r.IsSuccess).length;
+        var errorCount = result.results.length - successCount;
+
+        var message = `Import thành công ${successCount} sản phẩm`;
+        if (errorCount > 0) {
+          message += `, có ${errorCount} lỗi`;
+        }
+
+        abp.notify.success(message);
+        $('#ImportExcelModal').modal('hide');
+        $('#ProductsTable').DataTable().ajax.reload();
+      } else {
+        var errorMsg = 'Import không thành công: <br>';
+        result.results.forEach(function (item) {
+          if (!item.IsSuccess) {
+            errorMsg += `Dòng ${item.RowNumber} (Mã: ${item.Code || 'N/A'}): ${item.Message}<br>`;
+          }
+        });
+        abp.notify.error(errorMsg, { multiline: true });
+      }
+    }));
   });
 })(jQuery);

@@ -5,7 +5,6 @@ using QLKho_NCKH.StockTransactions;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using YourProject.Domain.Transactions;
 
 namespace QLKho_NCKH.Suppliers
 {

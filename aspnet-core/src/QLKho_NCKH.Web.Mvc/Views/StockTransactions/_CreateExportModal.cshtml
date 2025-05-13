@@ -1,71 +1,170 @@
-﻿
-@using Abp.Authorization.Users
+﻿@using Abp.Authorization.Users
 @using QLKho_NCKH.Web.Models.Common.Modals
 @using QLKho_NCKH.Web.Models.storageLocations
 @model storageLocationListViewModel
 @{
-  Layout = null;
+	Layout = null;
 }
-<div class="modal fade" id="ExportModal" tabindex="-1" role="dialog" aria-labelledby="ImportModalLabel" data-backdrop="static">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewImportStorageLocation")))
-      <form name="StorageLocationCreateForm" role="form" class="form-horizontal">
-        <div class="modal-body">
-          <div class="tab-content mt-4">
-            <div role="tabpanel" class="tab-pane container active" id="create-supplier-details">
-              <div class="form-group row required">
-                <label class="col-md-3 col-form-label">@L("Code")</label>
-                <div class="col-md-9">
-                  <input type="text" class="form-control" name="Code" required maxlength="256">
-                </div>
-              </div>
-              <div class="form-group row required">
-                <label class="col-md-3 col-form-label">@L("WarehouseName")</label>
-                <div class="input-group">
-                  <input type="text" id="WarehouseDisplay" class="form-control" readonly required />
-                  <button type="button" id="CreateWarehouseBtn" class="btn btn-success btn-sm" title="@L("WarehouseName")">
-                    <i class="fa fa-id-card"></i>
-                  </button>
-                </div>
-                <input type="hidden" id="WarehouseIdCreate" name="WarehouseId" />
-              </div>
-              <!-- Số điện thoại -->
-              <div class="form-group row required">
-                <label class="col-md-3 col-form-label">@L("Capacity")</label>
-                <div class="col-md-9">
-                  <input type="number" class="form-control" name="Capacity" required maxlength="20">
-                </div>
-              </div>
+<div class="modal fade" id="ExportModal" tabindex="-1" role="dialog" aria-labelledby="ExportModalLabel" data-backdrop="static">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewExportStorageLocation")))
+			<form name="StorageLocationExportForm" role="form" class="form-horizontal">
+				<div class="modal-body">
+					<div class="tab-content mt-4">
+						<div role="tabpanel" class="tab-pane container active" id="create-supplier-details">
+							<div class="form-group row">
+								<label class="col-md-3 col-form-label">@L("TransactionCode ")</label>
+								<div class="col-md-9">
+									<input type="text" class="form-control" id="TransactionCodeExport" name="TransactionCode" maxlength="500">
+								</div>
+							</div>
+							<div class="form-group row required">
+								<label class="col-md-3 col-form-label">@L("WarehouseName")</label>
+								<div class="col-md-9">
+									<div class="input-group">
+										<input type="text" id="WarehouseExportDisplay" class="form-control" readonly required />
+										<div class="input-group-append">
+											<button type="button" id="CreateWarehouseExportBtn" class="btn btn-success" title="@L("WarehouseName")">
+												<i class="fas fa-warehouse"></i>
+											</button>
+										</div>
+									</div>
+									<input type="hidden" id="WarehouseIdExportCreate" name="FromWarehouseId" />
+								</div>
+							</div>
 
-              <!-- Email -->
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label">@L("CurrentVolume")</label>
-                <div class="col-md-9">
-                  <input type="number" class="form-control" name="CurrentVolume" maxlength="256">
-                </div>
-              </div>
-              <!-- Trạng thái hoạt động -->
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label">@L("IsAvailable")</label>
-                <div class="col-md-9">
-                  <input type="checkbox" name="IsAvailable" value="true" checked />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
-      </form>
-    </div>
-  </div>
+							<!-- Add this section where you want the customer selection to appear -->
+							<div class="form-group row required">
+								<label class="col-md-3 col-form-label">@L("Customer")</label>
+								<div class="col-md-9">
+									<div class="input-group">
+										<input type="text" id="CustomerDisplay" class="form-control" readonly required />
+										<div class="input-group-append">
+											<button type="button" id="SelectCustomerBtn" class="btn btn-success" title="@L("SelectCustomer")">
+												<i class="fa fa-user"></i>
+											</button>
+										</div>
+									</div>
+									<input type="hidden" id="CustomerId" name="CustomerId" />
+								</div>
+							</div>
+
+							<div class="form-group row required">
+								<label class="col-md-3 col-form-label">@L("Products")</label>
+								<div class="col-md-9">
+									<div class="input-group">
+										<input type="text" id="ProductsExportDisplay" class="form-control" readonly required />
+										<div class="input-group-append">
+											<button type="button" id="AddInventoryItemsBtn" class="btn btn-success" title="@L("Products")">
+												<i class="fa fa-cart-plus"></i>
+											</button>
+										</div>
+									</div>
+									<input type="hidden" id="ProductsIdExportCreate" name="ProductId" />
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<div class="col-md-12">
+									<div class="table-responsive" style="max-height: 400px; overflow-x: auto;">
+										<table id="productExportTable" class="table table-bordered table-hover" style="min-width: 1000px;">
+											<thead>
+												<tr>
+													<th style="min-width: 120px;">@L("ProductCode")</th>
+													<th style="min-width: 120px;">@L("ProductBarCode")</th>
+													<th style="min-width: 120px;">@L("ProductName")</th>
+													<th style="width: 30px;">@L("Quantity")</th>
+													<th style="width: 30px;">@L("UnitPrice")</th>
+													<th style="width: 50px;">@L("TotalPrice")</th>
+													<th>@L("StorageLocation")</th>
+													<th style="width: 80px;">@L("Actions")</th>
+												</tr>
+											</thead>
+											<tbody>
+												<!-- Sản phẩm sẽ được thêm vào đây bằng JavaScript -->
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+
+							<!-- Tổng tiền -->
+							<div class="form-group row">
+								<label class="col-md-3 col-form-label">@L("GrandTotal")</label>
+								<div class="col-md-9">
+									<div class="form-control-plaintext font-weight-bold" id="grandTotal">0</div>
+								</div>
+							</div>
+							<!-- Ghi chú -->
+							<div class="form-group row">
+								<label class="col-md-3 col-form-label">@L("Note")</label>
+								<div class="col-md-9">
+									<input type="text" class="form-control" id="NoteExport" name="Note" maxlength="500">
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-md-3 col-form-label">@L("ReferenceNumber")</label>
+								<div class="col-md-9">
+									<input type="text" class="form-control" id="ReferenceNumberExport" name="ReferenceNumber" maxlength="500">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+			</form>
+		</div>
+	</div>
 </div>
-<style>
-  .modal {
-    z-index: 1050 !important;
-  }
 
-  .modal-backdrop {
-    z-index: 1040 !important;
-  }
+<style>
+	.modal {
+		z-index: 1050 !important;
+	}
+
+	.modal-backdrop {
+		z-index: 1040 !important;
+	}
+
+	#productExportTable {
+		width: 100%;
+	}
+
+		#productExportTable th {
+			white-space: nowrap;
+		}
+
+	.input-group-append .btn {
+		border-radius: 0 4px 4px 0;
+	}
+
+	/* Modal sizing */
+	.modal-dialog.modal-lg {
+		max-width: 95%;
+		width: 1200px;
+	}
+
+	/* Table styling */
+	#productExportTable {
+		margin-bottom: 0;
+	}
+
+		#productExportTable th {
+			position: sticky;
+			top: 0;
+			background: white;
+			z-index: 10;
+		}
+
+	/* Scrollbar styling */
+	.table-responsive::-webkit-scrollbar {
+		height: 8px;
+		width: 8px;
+	}
+
+	.table-responsive::-webkit-scrollbar-thumb {
+		background: #ddd;
+		border-radius: 4px;
+	}
 </style>

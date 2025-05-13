@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using QLKho_NCKH.Products.Dtos;
 using QLKho_NCKH.Products.Dtos.YourNamespace.Products.Dtos;
+using Microsoft.AspNetCore.Http;
 
 namespace QLKho_NCKH.Products
 {
@@ -25,7 +26,10 @@ namespace QLKho_NCKH.Products
 		Task<PagedResultDto<ProductListDto>> SearchProducts(GetAllProductsInput input);
 
 		Task<ProductListDto> GetProductById(int productId);
+		Task<Dictionary<int, ProductListDto>> GetProductsByIds(List<int> productIds);
+		Task<List<ImportProductResultDto>> ImportProductsFromExcel(IFormFile file);
 
+		Task<byte[]> ExportProductsToExcel(ProductInput input);
 
 
 	}

@@ -1,0 +1,27 @@
+﻿@using QLKho_NCKH.Web.Models.Common.Modals
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(@L("SelectCategory")))
+
+<div class="modal-body">
+  <form>
+    <div class="input-group">
+      <input id="CategoryFilter" name="CategoryFilter" class="form-control add-category-filter-text"
+             placeholder="@L("SearchWithCategoryName")" type="text">
+      <button class="btn btn-primary add-category-filter-button" type="button">
+        <i class="fa fa-search" aria-label="@L("Search")"></i>
+      </button>
+    </div>
+  </form>
+  <table id="addCategoryModalTable" class="table align-middle table-row-dashed fs-6 gy-5 dataTable dtr-inline no-footer w-100">
+    <thead>
+      <tr>
+        <th>@L("Selection")</th>
+        <th>@L("Name")</th>
+        <th>@L("Description")</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")

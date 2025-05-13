@@ -1,0 +1,97 @@
+﻿@using QLKho_NCKH.Web.Startup
+@using QLKho_NCKH.Web.Models.inventoryItems
+
+@model EditInventoryItemViewModel
+@{
+  ViewBag.Title = L("InventoryItems");
+  ViewBag.CurrentPageName = PageNames.InventoryItems;
+}
+@section scripts
+{
+  <environment names="Development">
+    <script src="~/view-resources/Views/InventoryItems/Index.js" asp-append-version="true"></script>
+  </environment>
+
+  <environment names="Staging,Production">
+    <script src="~/view-resources/Views/InventoryItems/Index.min.js" asp-append-version="true"></script>
+  </environment>
+}
+
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+        <h1>@L("InventoryItems")</h1>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-md-6">
+                <!-- Có thể thêm các nút tác vụ hàng loạt ở đây -->
+              </div>
+              <div class="col-md-6">
+                <div class="form-inline float-right">
+                  <div class="form-group mr-2">
+                    <select id="WarehouseIdFilter" class="form-control form-control-sm">
+                      <option value="0">@L("AllWarehouses")</option>
+                      <!-- Populate with warehouses -->
+                    </select>
+                  </div>
+                  <div class="form-group mr-2">
+                    <select id="CategoryIdFilter" class="form-control form-control-sm">
+                      <option value="0">@L("AllCategories")</option>
+                      <!-- Populate with categories -->
+                    </select>
+                  </div>
+                  <div class="input-group">
+                    <input type="text" id="InventoryItemTableFilter" class="form-control form-control-sm" placeholder="@L("SearchPlaceholder")">
+                    <div class="input-group-append">
+                      <button id="SearchButton" class="btn btn-sm btn-default">
+                        <i class="fa fa-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table id="InventoryItemsTable" class="table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th width="100px"></th>
+                    <th>@L("ProductCode")</th>
+                    <th>@L("Barcode")</th>
+                    <th>@L("ProductName")</th>
+                    <th>@L("Warehouse")</th>
+                    <th>@L("Location")</th>
+                    <th>@L("Quantity")</th>
+                    <th>@L("UnitPrice")</th>
+                    <th width="150px">@L("Actions")</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="InventoryItemEditModal" tabindex="-1" role="dialog" aria-labelledby="InventoryItemEditModalLabel" data-backdrop="static">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>

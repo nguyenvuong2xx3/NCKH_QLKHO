@@ -1,7 +1,10 @@
-﻿@using QLKho_NCKH.Web.Startup
+﻿@* @using QLKho_NCKH.Authorization *@
+@using QLKho_NCKH.Authorization
+@using QLKho_NCKH.Web.Startup
 @using QLKho_NCKH.Web.Models.Products
 @model ProductViewModel
 @{
+	// ViewBag.CurrentPageName = PermissionNames.;
 	ViewBag.Title = L("Products");
 	ViewBag.CurrentPageName = PageNames.Products;
 }
@@ -12,9 +15,9 @@
 		<script src="~/view-resources/Views/Products/Index.js" asp-append-version="true"></script>
 	</environment>
 
-@* 	<environment names="Staging,Production">
+	<environment names="Staging,Production">
 		<script src="~/view-resources/Views/Products/Index.min.js" asp-append-version="true"></script>
-	</environment> *@
+	</environment> 
 }
 
 
@@ -24,11 +27,32 @@
 			<div class="col-sm-6">
 				<h1>@L("Products")</h1>
 			</div>
+			@* <div class="col-sm-6"> *@
+			@* 	@if (IsGranted(PermissionNames.Pages_Products_Create)){ *@
+			@* 		<a href="javascript:;" class="btn bg-blue float-sm-right" data-target="#ProductCreateModal" data-toggle="modal"> *@
+			@* 		<i class="fa fa-plus-square"></i> *@
+			@* 		@L("Create") *@
+			@* 	</a> *@
+			@* 	} *@
+			@* </div> *@
 			<div class="col-sm-6">
-				<a href="javascript:;" data-toggle="modal" data-target="#ProductCreateModal" class="btn bg-blue float-sm-right">
-					<i class="fa fa-plus-square"></i>
-					@L("Create")
-				</a>
+				@if (IsGranted(PermissionNames.Pages_Products_Create))
+				{
+					<div class="btn-group float-sm-right">
+						<button type="button" class="btn bg-green dropdown-toggle" data-toggle="dropdown">
+							<i class="fa fa-file-excel"></i> Excel
+						</button>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" href="javascript:;" id="ExportExcelBtn">Xuất Excel</a>
+							<a class="dropdown-item" href="javascript:;" data-toggle="modal" data-target="#ImportExcelModal">Nhập Excel</a>
+						</div>
+					</div>
+
+					<a href="javascript:;" class="btn bg-blue float-sm-right mr-2" data-target="#ProductCreateModal" data-toggle="modal">
+						<i class="fa fa-plus-square"></i>
+						@L("Create")
+					</a>
+				}
 			</div>
 		</div>
 	</div>
@@ -85,6 +109,36 @@
 <div class="modal fade" id="ProductEditModal" tabindex="-1" role="dialog" aria-labelledby="ProductEditModalLabel" data-backdrop="static">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
+		</div>
+	</div>
+</div>
+<!-- Thêm vào cuối file -->
+<div class="modal fade" id="ImportExcelModal" tabindex="-1" role="dialog" aria-labelledby="ImportExcelModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Nhập sản phẩm từ Excel</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<form id="ImportExcelForm" method="post" enctype="multipart/form-data">
+				<div class="modal-body">
+					<div class="form-group">
+						<label>File Excel</label>
+						<input type="file" name="file" class="form-control" accept=".xlsx" required />
+					</div>
+					<div class="form-group">
+						<a href="/templates/ProductImportTemplate.xlsx" class="btn btn-sm btn-info">
+							<i class="fa fa-download"></i> Tải file mẫu
+						</a>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+					<button type="submit" class="btn btn-primary">Nhập dữ liệu</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>

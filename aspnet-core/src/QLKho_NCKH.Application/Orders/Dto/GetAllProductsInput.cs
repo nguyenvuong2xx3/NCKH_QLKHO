@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Abp.Application.Services.Dto;
+using static QLKho_NCKH.Products.Product;
+
+namespace QLKho_NCKH.Orders.Dto
+{
+	public class GetAllOrdersInput : PagedAndSortedResultRequestDto
+	{
+		public long? orderId { get; set; }
+		public string? NameUser { get; set; }
+		public int? OrderStatus { get; set; }
+		public int? PaymentMethod { get; set; }
+	}
+}

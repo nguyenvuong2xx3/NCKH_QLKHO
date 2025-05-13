@@ -40,6 +40,7 @@ namespace QLKho_NCKH.Web.Controllers
 			return View(model);
 		}//Test
 
+		[AbpMvcAuthorize(PermissionNames.Pages_Products_Edit)]
 		public async Task<ActionResult> EditModal(int productId)
 		{
 			var product = await _productAppService.GetProductById(productId);
@@ -108,7 +109,8 @@ namespace QLKho_NCKH.Web.Controllers
 				}
 
 				// Đường dẫn thư mục lưu trữ ảnh trong dự án
-				string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "Products");
+				//string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "Products");
+				string uploadsFolder = @"E:\UploadImgKho\";
 				Directory.CreateDirectory(uploadsFolder); // Tạo thư mục nếu chưa có
 
 				// Tạo tên file duy nhất
@@ -122,13 +124,13 @@ namespace QLKho_NCKH.Web.Controllers
 				}
 
 				// Trả về đường dẫn để hiển thị trên giao diện
-				return "/img/Products/" + uniqueFileName;
+				return "/products/" + uniqueFileName;
 			}
 
-			return "/img/Products/default.png"; // Trả về ảnh mặc định nếu không có ảnh upload
+			return "/products/default.png"; // Trả về ảnh mặc định nếu không có ảnh upload
 		}
 
-		public async Task<IActionResult> EditAndUploadDeleteImage(UpdateProductDto model)
+		public async Task<IActionResult> EditAndUploadDeleteImage([FromForm] UpdateProductDto model)
 		{
 			try
 			{
@@ -195,8 +197,11 @@ namespace QLKho_NCKH.Web.Controllers
 		{
 			if (string.IsNullOrEmpty(fileName)) return; // Kiểm tra tên file hợp lệ
 
-			string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-			string fullPath = Path.Combine(uploadsFolder, fileName.TrimStart('/')); // Loại bỏ dấu `/` đầu nếu có
+			//string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+			//string fullPath = Path.Combine(uploadsFolder, fileName.TrimStart('/')); // Loại bỏ dấu `/` đầu nếu có
+
+			string folderPath = @"E:\UploadImgKho"; // Thư mục chứa ảnh
+			string fullPath = Path.Combine(folderPath, fileName); // Đường dẫn đầy đủ
 
 
 			if (System.IO.File.Exists(fullPath)) // Kiểm tra file có tồn tại không
@@ -243,6 +248,31 @@ namespace QLKho_NCKH.Web.Controllers
 			{
 				return Json(new { success = false, message = "Đã xảy ra lỗi khi xóa ảnh. Vui lòng thử lại." });
 			}
+		}
+		// Thêm vào ProductsController.cs
+		[HttpPost]
+		[HttpPost]
+		public async Task<FileResult> ExportToExcel([FromBody] ProductInput input)
+		{
+			var excelBytes = await _productAppService.ExportProductsToExcel(input);
+			return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Danh_sach_san_pham.xlsx");
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> ImportFromExcel(IFormFile file)
+		{
+			if (file == null || file.Length == 0)
+			{
+				return Json(new { success = false, message = "Vui lòng chọn file Excel để import" });
+			}
+
+			var results = await _productAppService.ImportProductsFromExcel(file);
+			return Json(new
+			{
+				success = results.All(r => r.IsSuccess),
+				message = "Import hoàn tất",
+				results
+			});
 		}
 
 	}

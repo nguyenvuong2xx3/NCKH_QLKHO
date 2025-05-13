@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
+using QLKho_NCKH.EnumCustom;
+
+
+namespace QLKho_NCKH.Web.Models.Carts
+{
+	public class CartViewModel
+	{
+		public long Id { get; set; }
+		public string Name { get; set; }
+		public string Description { get; set; }
+
+		public decimal UnitPrice;
+
+		public int ProductId { get; set; }
+		public decimal TotalPrice { get; set; }
+		public DateTime CreationTime { get; set; }
+
+		public ProductState State { get; set; }
+
+		public IFormFile ImageFile { get; set; }  // Thêm thuộc tính này
+		public string Image { get; set; }  // Lưu đường dẫn ảnh
+		public long Quantity { get; set; }
+
+	}
+	
+}

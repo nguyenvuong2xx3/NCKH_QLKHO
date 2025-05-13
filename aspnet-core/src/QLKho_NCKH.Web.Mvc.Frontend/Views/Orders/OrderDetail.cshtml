@@ -1,0 +1,143 @@
+﻿@using QLKho_NCKH.EnumCustom
+@using QLKho_NCKH.Web.Models
+@model OrderDetailViewModel
+
+@{
+	ViewBag.Title = "Chi tiết đơn hàng";
+}
+
+<div class="container py-5">
+	<div class="card">
+		<div class="card-header bg-primary text-white">
+			<h3 class="mb-0">Chi tiết đơn hàng</h3>
+		</div>
+
+		<div class="card-body">
+			<!-- Thông tin khách hàng -->
+			<div class="row mb-4">
+				<div class="col-md-6">
+					<h5>Thông tin khách hàng</h5>
+					<div class="border p-3 rounded">
+						<p><strong>Tên khách hàng:</strong> @Model.Customer.Name</p>
+						<p><strong>Email:</strong> @Model.Customer.EmailAddress</p>
+						@* <p><strong>Số điện thoại:</strong> @Model.Customer.PhoneNumber</p> *@
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<h5>Thông tin đơn hàng</h5>
+					<div class="border p-3 rounded">
+						<p><strong>Mã đơn hàng:</strong> @Model.Order.TransactionCode</p>
+						<p><strong>Ngày đặt:</strong> @Model.Order.CreationTime.ToString("dd/MM/yyyy HH:mm")</p>
+						<p>
+							<strong>Trạng thái:</strong>
+							<span class="badge @(Model.Order.Status == TransactionStatusEnum.Approved ? "bg-success" : "bg-warning")">
+								@Model.Order.Status
+							</span>
+						</p>
+						<p><strong>Kho xuất:</strong> @Model.Order.FromWarehouseName</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Chi tiết sản phẩm -->
+			<h5 class="mb-3">Danh sách sản phẩm</h5>
+			<div class="table-responsive">
+				<table class="table table-bordered table-hover">
+					<thead class="table-light">
+						<tr>
+							<th>STT</th>
+							<th>Sản phẩm</th>
+							<th>Mã sản phẩm</th>
+							<th>Số lượng</th>
+							<th>Đơn giá</th>
+							<th>Thành tiền</th>
+							<th>Vị trí kho</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model.OrderDetails.Select((value, index) => new { Index = index + 1, Value = value }))
+						{
+							<tr>
+								<td>@item.Index</td>
+								<td>@item.Value.ProductName</td>
+								<td>@item.Value.ProductCode</td>
+								<td>@item.Value.Quantity</td>
+								<td>@item.Value.UnitPrice.ToString("N0") đ</td>
+								<td>@((item.Value.Quantity * item.Value.UnitPrice).ToString("N0")) đ</td>
+								<td>@item.Value.StorageLocationCode</td>
+							</tr>
+						}
+					</tbody>
+					<tfoot>
+						<tr class="table-active">
+							<td colspan="5" class="text-end"><strong>Tổng cộng:</strong></td>
+							<td colspan="2">@Model.OrderDetails.Sum(x => x.Quantity * x.UnitPrice).ToString("N0") đ</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+
+			<!-- Nút điều hướng -->
+			<div class="d-flex justify-content-between mt-4">
+				<a href="/Order/History" class="btn btn-secondary">
+					<i class="fas fa-arrow-left me-2"></i>Quay lại
+				</a>
+				@if (Model.Order.Status != TransactionStatusEnum.Approved)
+				{
+					<button class="btn btn-danger">
+						<i class="fas fa-times me-2"></i>Hủy đơn hàng
+					</button>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Styles {
+	<style>
+		.badge {
+			font-size: 0.9rem;
+			padding: 0.35em 0.65em;
+		}
+
+		.table th {
+			white-space: nowrap;
+		}
+
+		.table td {
+			vertical-align: middle;
+		}
+
+		.order-detail-card {
+			box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+			border-radius: 0.5rem;
+			overflow: hidden;
+		}
+
+		.product-img-thumbnail {
+			width: 60px;
+			height: 60px;
+			object-fit: cover;
+			border-radius: 4px;
+		}
+
+		.status-badge {
+			padding: 0.35em 0.65em;
+			font-size: 0.875em;
+			font-weight: 600;
+		}
+
+		.bg-approved {
+			background-color: #d1e7dd;
+			color: #0f5132;
+		}
+
+		.bg-pending {
+			background-color: #fff3cd;
+			color: #664d03;
+		}
+	</style>
+
+
+}
