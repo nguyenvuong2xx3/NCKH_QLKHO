@@ -9,41 +9,55 @@ using QLKho_NCKH.Web.Models.Users;
 
 namespace QLKho_NCKH.Web.Controllers
 {
-    [AbpMvcAuthorize(PermissionNames.Pages_Users)]
-    public class UsersController : QLKho_NCKHControllerBase
+  [AbpMvcAuthorize(PermissionNames.Pages_Users)]
+  public class UsersController : QLKho_NCKHControllerBase
+  {
+    private readonly IUserAppService _userAppService;
+
+    public UsersController(IUserAppService userAppService)
     {
-        private readonly IUserAppService _userAppService;
-
-        public UsersController(IUserAppService userAppService)
-        {
-            _userAppService = userAppService;
-        }
-
-        public async Task<ActionResult> Index()
-        {
-            var roles = (await _userAppService.GetRoles()).Items;
-            var model = new UserListViewModel
-            {
-                Roles = roles
-            };
-            return View(model);
-        }
-
-        public async Task<ActionResult> EditModal(long userId)
-        {
-            var user = await _userAppService.GetAsync(new EntityDto<long>(userId));
-            var roles = (await _userAppService.GetRoles()).Items;
-            var model = new EditUserModalViewModel
-            {
-                User = user,
-                Roles = roles
-            };
-            return PartialView("_EditModal", model);
-        }
-
-        public ActionResult ChangePassword()
-        {
-            return View();
-        }
+      _userAppService = userAppService;
     }
+
+    public async Task<ActionResult> Index()
+    {
+      var roles = (await _userAppService.GetRoles()).Items;
+      var model = new UserListViewModel
+      {
+        Roles = roles
+      };
+      return View(model);
+    }
+
+    public async Task<ActionResult> EditModal(long userId)
+    {
+      var user = await _userAppService.GetAsync(new EntityDto<long>(userId));
+      var roles = (await _userAppService.GetRoles()).Items;
+      var model = new EditUserModalViewModel
+      {
+        User = user,
+        Roles = roles
+      };
+      return PartialView("_EditModal", model);
+    }
+
+    public ActionResult ChangePassword()
+    {
+      return View();
+    }
+
+    public async Task<ActionResult> EditProfile()
+    {
+      var userId = AbpSession.UserId.Value;
+			var user = await _userAppService.GetAsync(new EntityDto<long>(userId));
+
+			//var user = _userAppService.GetCurrentUser();
+      var model = new EditUserModalViewModel
+      {
+        User = user,
+        Roles = null // Assuming roles are not needed for profile edit
+      };
+      return View(model);
+    }
+  }
 }

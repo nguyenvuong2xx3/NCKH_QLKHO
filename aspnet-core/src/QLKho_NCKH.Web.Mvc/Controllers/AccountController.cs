@@ -186,8 +186,11 @@ namespace QLKho_NCKH.Web.Controllers
                     model.EmailAddress,
                     model.UserName,
                     model.Password,
-                    true // Assumed email address is always confirmed. Change this if you want to implement email confirmation.
-                );
+										true, // Assumed email address is always confirmed. Change this if you want to implement email confirmation.
+										model.PhoneNumber,
+                    model.Image
+
+								);
 
                 // Getting tenant-specific settings
                 var isEmailConfirmationRequiredForLogin = await SettingManager.GetSettingValueAsync<bool>(AbpZeroSettingNames.UserManagement.IsEmailConfirmationRequiredForLogin);
