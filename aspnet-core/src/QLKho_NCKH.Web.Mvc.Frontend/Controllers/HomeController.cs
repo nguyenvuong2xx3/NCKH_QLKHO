@@ -1,45 +1,44 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Abp.Application.Services.Dto;
 using Abp.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MyProject.Categories;
 using QLKho_NCKH.Controllers;
-using QLKho_NCKH.Products;
-using QLKho_NCKH.Products.Dtos;
-using System.Threading.Tasks;
-using System.Linq;
-using System;
-using QLKho_NCKH.Web.Models.Products;
-using QLKho_NCKH.Web.Models.Categories;
-using System.Collections.Generic;
-using QLKho_NCKH.Categories;
+using QLKho_NCKH.EnumCustom;
 using QLKho_NCKH.InventoryItems;
 using QLKho_NCKH.InventoryItems.Dto;
-using Abp.Application.Services.Dto;
-using Microsoft.Data.SqlClient;
+using QLKho_NCKH.Products;
+using QLKho_NCKH.Products.Dtos;
 using QLKho_NCKH.Sliders;
 using QLKho_NCKH.Users;
+using QLKho_NCKH.Web.Models.Categories;
+using QLKho_NCKH.Web.Models.Products;
 using QLKho_NCKH.Web.Models.Users;
-using QLKho_NCKH.EnumCustom;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QLKho_NCKH.Web.Controllers
 {
 	[AbpMvcAuthorize]
 	public class HomeController : QLKho_NCKHControllerBase
 	{
-		private readonly IProductAppService _productAppService;
-		private readonly ICategoryAppService _categoryAppService;
+		private readonly IProductFontendAppService _productFontendAppService;
+		private readonly ICategoryFontendAppService _categoryFontendAppService;
 		private readonly ISliderAppService _sliderAppService;
 		private readonly IUserAppService _userAppService;
 
 		private readonly IInventoryItemAppService _inventoryItemAppService;
 
-		public HomeController(IProductAppService productAppService
-			, ICategoryAppService categoryAppService 
+		public HomeController(IProductFontendAppService productFontendAppService
+			, ICategoryFontendAppService categoryFontendAppService
 			, IInventoryItemAppService inventoryItemAppService
 			, ISliderAppService sliderAppService
 			, IUserAppService userAppService
 			)
 		{
-			_productAppService = productAppService;
-			_categoryAppService = categoryAppService;
+			_productFontendAppService = productFontendAppService;
+			_categoryFontendAppService = categoryFontendAppService;
 			_inventoryItemAppService = inventoryItemAppService;
 			_sliderAppService = sliderAppService;
 			_userAppService = userAppService;
@@ -141,7 +140,7 @@ namespace QLKho_NCKH.Web.Controllers
 		//}
 		public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
 		{
-			var categories = await _categoryAppService.GetAllCategories();
+			var categories = await _categoryFontendAppService.GetAllCategories();
 			var sliders = await _sliderAppService.GetSliderByActive();
 
 			var categoryProducts = new List<CategoryProductViewModel>();
@@ -163,7 +162,7 @@ namespace QLKho_NCKH.Web.Controllers
 				});
 			}
 
-			var allProducts = await _productAppService.GetAllProducts(new ProductInput());
+			var allProducts = await _productFontendAppService.GetAllProducts(new ProductInput());
 			var activeProducts = allProducts.Items.Count(p => p.IsActive);
 
 			var model = new ProductCategoryViewModel
@@ -185,7 +184,7 @@ namespace QLKho_NCKH.Web.Controllers
 			string categoryName = "Tất cả sản phẩm";
 			if (categoryId.HasValue)
 			{
-				var category = await _categoryAppService.GetCategoryById(categoryId.Value);
+				var category = await _categoryFontendAppService.GetCategoryById(categoryId.Value);
 				if (category != null)
 				{
 					categoryName = category.Name;
@@ -205,7 +204,7 @@ namespace QLKho_NCKH.Web.Controllers
 			var productIds = inventoryItems.Items.Select(i => i.ProductId).Distinct().ToList();
 
 			// 4. Lấy thông tin đầy đủ các sản phẩm
-			var productsDict = await _productAppService.GetProductsByIds(productIds);
+			var productsDict = await _productFontendAppService.GetProductsByIds(productIds);
 			// Lấy tổng số sản phẩm để phân trang
 			var totalCount = inventoryItems.TotalCount;
 			// Tạo view model
@@ -340,7 +339,7 @@ namespace QLKho_NCKH.Web.Controllers
 					CreationTime = user.CreationTime.ToString("dd/MM/yyyy")
 				};
 				return View(model);
-			
+
 			}
 
 			return View();

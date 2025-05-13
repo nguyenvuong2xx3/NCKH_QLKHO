@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
@@ -15,6 +16,8 @@ namespace MyProject.Categories
 	public interface ICategoryFontendAppService
 	{
 		Task<PagedResultDto<CategoryListDto>> GetCategory(GetAllCategoriesInput input);
+		Task<List<CategoryListDto>> GetAllCategories();
+		Task<CategoryListDto> GetCategoryById(int? categoryId);
 	}
 
 	public class CategoryFontendAppService : QLKho_NCKHAppServiceBase, ICategoryFontendAppService
@@ -64,6 +67,36 @@ namespace MyProject.Categories
 				}
 
 			}
+		}
+
+		public async Task<List<CategoryListDto>> GetAllCategories()
+		{
+			var categories = await _categoryRepository.GetAllListAsync();
+			return categories.Select(c => new CategoryListDto
+			{
+				Id = c.Id,
+				Name = c.Name,
+				Description = c.Description,
+				CreateTime = c.CreationTime,
+			}).ToList();
+		}
+
+		public async Task<CategoryListDto> GetCategoryById(int? categoryId)
+		{
+			var category = _categoryRepository.FirstOrDefault(x => x.Id == categoryId);
+
+			if (category == null)
+			{
+				return null;
+			}
+
+			return new CategoryListDto
+			{
+				Id = category.Id,
+				Name = category.Name,
+				Description = category.Description,
+				CreateTime = category.CreationTime,
+			};
 		}
 
 	}
