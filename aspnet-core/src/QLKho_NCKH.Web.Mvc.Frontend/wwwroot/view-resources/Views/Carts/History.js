@@ -48,7 +48,9 @@
               $('#productList').html('<tr><td colspan="6">Không có sản phẩm nào.</td></tr>');
             }
 
-            $('#orderDetailsModal').modal('show');
+            //$('#orderDetailsModal').modal('show');
+            var modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+            modal.show();
           } else {
             alert('Dữ liệu đơn hàng không hợp lệ.');
           }

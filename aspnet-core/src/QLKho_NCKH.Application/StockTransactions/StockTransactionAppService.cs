@@ -22,6 +22,7 @@ using QLKho_NCKH.Authorization.Users;
 using QLKho_NCKH.StockTransactionDetails.Dto;
 using QLKho_NCKH.Products;
 using QLKho_NCKH.Users.Dto;
+using QLKho_NCKH.TestSendMail;
 
 namespace QLKho_NCKH.StockTransactions
 {
@@ -32,6 +33,7 @@ namespace QLKho_NCKH.StockTransactions
 		private readonly IRepository<Warehouse, int> _warehouseRepository;
 		private readonly IRepository<InventoryItem, int> _inventoryItemRepository;
 		private readonly IRepository<CartItem> _cartItemRepository;
+		private readonly ITestSendMailAppService _emailSender;
 
 
 
@@ -41,11 +43,13 @@ namespace QLKho_NCKH.StockTransactions
 			IUnitOfWorkManager unitOfWorkManager,
 			IRepository<Warehouse, int> warehouseRepository,
 			IRepository<CartItem> cartItemRepository,
+			ITestSendMailAppService emailSender,
 			IRepository<InventoryItem, int> inventoryItemRepository)
 		{
 			_stockTransactionRepository = stockTransactionRepository;
 			_stockTransactionDetailRepository = stockTransactionDetailRepository;
 			_unitOfWorkManager = unitOfWorkManager;
+			_emailSender = emailSender;
 			_warehouseRepository = warehouseRepository;
 			_cartItemRepository = cartItemRepository;
 			_inventoryItemRepository = inventoryItemRepository;
@@ -107,6 +111,8 @@ namespace QLKho_NCKH.StockTransactions
 		}
 		public async Task CreateExportRequest(ExportInputDto input)
 		{
+			var createdTransactions = new List<StockTransaction>();
+			var createdTransactionDetails = new List<StockTransactionDetail>();
 			// Kiểm tra đầu vào
 			if (input.ExportRequestDetails == null || !input.ExportRequestDetails.Any())
 			{
@@ -167,7 +173,9 @@ namespace QLKho_NCKH.StockTransactions
 				};
 
 				await _stockTransactionRepository.InsertAsync(stockTransaction);
-				await _unitOfWorkManager.Current.SaveChangesAsync();
+				await _unitOfWorkManager.Current.SaveChangesAsync(); // Đảm bảo có Id
+
+				createdTransactions.Add(stockTransaction); // Lưu lại Id
 
 				// Thêm chi tiết sản phẩm cho đơn hàng (StockTransactionDetail)
 				foreach (var detail in groupedDetails)
@@ -195,6 +203,7 @@ namespace QLKho_NCKH.StockTransactions
 					};
 
 					await _stockTransactionDetailRepository.InsertAsync(transactionDetail);
+					createdTransactionDetails.Add(transactionDetail);
 				}
 
 				await _unitOfWorkManager.Current.SaveChangesAsync();
@@ -205,6 +214,8 @@ namespace QLKho_NCKH.StockTransactions
 			{
 				await _cartItemRepository.DeleteAsync(cartItem);
 			}
+			await _emailSender.SendMailOrder();
+
 		}
 		//public async Task CreateExportRequest(ExportInputDto input)
 		//{

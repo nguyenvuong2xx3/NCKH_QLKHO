@@ -167,11 +167,31 @@
     };
 
     abp.ui.setBusy($('#checkoutModal'));
+
     _stockTransactionService.createExportRequest(exportRequest)
       .done(function () {
         abp.notify.info('Tạo phiếu xuất kho thành công');
-        //window.location.href = "/Orders/Success";
-        const statusFilter = StatusEnum.Pending; // Hoặc status bạn muốn lọc
+
+        // Gửi email sau khi tạo phiếu thành công
+        //abp.services.app.testSendMail.sendMailOrder(userId)
+        //  .done(function (result) {
+        //    console.log("Kết quả trả về:", result);
+
+        //    // Điều hướng sau khi gửi email thành công
+        //    const statusFilter = StatusEnum.Pending;
+        //    window.location.href = `/Orders/Success?userId=${userId}&status=${statusFilter}`;
+        //  })
+        //  .fail(function (error) {
+        //    console.error("Đã xảy ra lỗi khi gửi email:", error);
+
+        //    // Vẫn chuyển trang dù gửi email lỗi (tuỳ bạn quyết định)
+        //    const statusFilter = StatusEnum.Pending;
+        //    window.location.href = `/Orders/Success?userId=${userId}&status=${statusFilter}`;
+        //  });
+
+
+        // Điều hướng sau khi tạo xong
+        const statusFilter = StatusEnum.Pending;
         window.location.href = `/Orders/Success?userId=${userId}&status=${statusFilter}`;
       })
       .fail(function (error) {
@@ -180,6 +200,7 @@
       .always(function () {
         abp.ui.clearBusy($('#checkoutModal'));
       });
+
   });
 
   $(document).ready(function () {

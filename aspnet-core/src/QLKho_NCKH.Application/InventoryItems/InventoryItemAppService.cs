@@ -171,13 +171,22 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 	//}
 	public async Task<PagedResultDto<InventoryItemListDto>> GetInventoryItems(GetInventoryItemsInput input)
 	{
-		// Bước 1: truy vấn dữ liệu đã lọc
+		if (input.CategoryId != 0)
+		{
+			var getallcategory = await _categoryRepository.GetAllAsync();
+			var categoryList = getallcategory.ToList();
+		}
+
 		var query = _inventoryItemRepository.GetAll()
-			.Include(x => x.Product)
-			.Include(x => x.StorageLocation)
-			.WhereIf(input.WarehouseId != 0, x => x.StorageLocation.WarehouseId == input.WarehouseId)
-			.WhereIf(!string.IsNullOrEmpty(input.Filter), x => x.Product.Name.Contains(input.Filter))
-			.WhereIf(input.CategoryId != 0, x => x.Product.CategoryId == input.CategoryId);
+				.Include(x => x.Product)
+				.Include(x => x.StorageLocation)
+				.WhereIf(input.WarehouseId != 0, x => x.StorageLocation.WarehouseId == input.WarehouseId)
+				.WhereIf(input.Filter != null, x => x.Product.Name.Contains(input.Filter));
+
+		if (input.CategoryId != 0)
+		{
+			query = query.WhereIf(input.CategoryId != null, x => x.Product.CategoryId == input.CategoryId);
+		}
 
 		// Bước 2: đưa vào bộ nhớ (ToListAsync)
 		var allItems = await query.ToListAsync();
