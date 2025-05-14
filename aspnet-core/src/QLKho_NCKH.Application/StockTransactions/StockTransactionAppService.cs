@@ -22,10 +22,14 @@ using QLKho_NCKH.Authorization.Users;
 using QLKho_NCKH.StockTransactionDetails.Dto;
 using QLKho_NCKH.Products;
 using QLKho_NCKH.Users.Dto;
-using QLKho_NCKH.TestSendMail;
+using QLKho_NCKH.SendMail;
+using Abp.AspNetCore.Mvc.Authorization;
+using QLKho_NCKH.Authorization;
 
 namespace QLKho_NCKH.StockTransactions
 {
+	[AbpMvcAuthorize(PermissionNames.Pages_StockTransactions)]
+
 	public class StockTransactionAppService : IStockTransactionAppService, IApplicationService
 	{
 		private readonly IRepository<StockTransaction, int> _stockTransactionRepository;
@@ -54,6 +58,8 @@ namespace QLKho_NCKH.StockTransactions
 			_cartItemRepository = cartItemRepository;
 			_inventoryItemRepository = inventoryItemRepository;
 		}
+		[AbpMvcAuthorize(PermissionNames.Pages_StockTransactions_Create)]
+
 		public async Task<StockTransactionDto> CreateStockTransactionImport(CreateStockTransactionImportDto input)
 		{
 			var stockTransaction = new StockTransaction
@@ -109,6 +115,7 @@ namespace QLKho_NCKH.StockTransactions
 				await _stockTransactionDetailRepository.InsertAsync(detail);
 			}
 		}
+
 		public async Task CreateExportRequest(ExportInputDto input)
 		{
 			var createdTransactions = new List<StockTransaction>();

@@ -112,7 +112,6 @@
 		<text name="Status" value="Trạng thái" />
 		<text name="AllStatuses" value="Tất cả trạng thái" />
 		<text name="SearchPlaceholder" value="Tìm kiếm..." />
-		<text name="TransactionCode" value="Mã giao dịch" />
 		<text name="TransactionType" value="Loại giao dịch" />
 		<text name="FromWarehouse" value="Từ kho" />
 		<text name="ToWarehouse" value="Đến kho" />
@@ -171,5 +170,23 @@
 		<text name="DanhMuc" value="Danh mục" />
 		<text name="EditUser" value="Chỉnh sửa người dùng" />
 		<text name="SliderList" value="Biển quảng cáo" />
+		<text name="SelectDateRange" value="Chọn khoảng thời gian" />
+		<text name="CreateExportStockTransaction" value="Tạo giao dịch xuất kho" />
+		<text name="CreateImportStockTransaction" value="Tạo giao dịch nhập kho" />
+		<text name="CreateInventoryItem" value="Tạo vật phẩm tồn kho" />
+		<text name="CreateSlider" value="Tạo thanh trượt" />
+		<text name="DeleteInventoryItem" value="Xóa vật phẩm tồn kho" />
+		<text name="DeleteSlider" value="Xóa thanh trượt" />
+		<text name="EditInventoryItem" value="Sửa vật phẩm tồn kho" />
+		<text name="EditSlider" value="Sửa thanh trượt" />
+		<text name="CreateNewSupplier" value="Tạo nhà cung cấp mới" />
+		<text name="CreateNewWarehouse" value="Tạo kho hàng mới" />
+		<text name="Location" value="Vị trí" />
+		<text name="TotalArea" value="Tổng diện tích" />
+		<text name="Sliders" value="Bảng điều khiển" />
+		<text name="Permissions" value="Quyền" />
+		<text name="RoleDescription" value="Mô tả vai trò" />
+		<text name="TransactionCode" value="Mã giao dịch" />
+		<text name="Note" value="Ghi chú" />
 	</texts>
 </localizationDictionary>

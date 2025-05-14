@@ -18,37 +18,103 @@
     modalClass: 'AddCategoryModal',
   });
 
-  // Xử lý sự kiện tạo danh mục
-  $('#EditCategoryBtn').on('click', function () {
-    _addCategoryEditModal.open({}, function (result) {
-      if (result) {
-        $('#CategoryDisplayEdit').val(result.categoryName.trim());
-        $('#CategoryIdEdit').val(result.categoryId);
-        $('.AddCategoryModal').modal('hide'); 
+  function initializeEditModalEvents() {
+    // Xóa các sự kiện cũ trước khi gắn mới
+    $('#EditCategoryBtn').off('click.edit');
+    $('#EditSupplierBtn').off('click.edit');
+    $('#deleteImageBtn').off('click.edit');
+    _$form.find('input').off('keypress.edit');
+    _$modal.off('click.edit', '.save-button');
+    $('#newImage').off('change.edit');
+
+    // Xử lý sự kiện tạo danh mục
+    $('#EditCategoryBtn').on('click.edit', function () {
+      _addCategoryEditModal.open({}, function (result) {
+        if (result) {
+          $('#CategoryDisplayEdit').val(result.categoryName.trim());
+          $('#CategoryIdEdit').val(result.categoryId);
+          $('.AddCategoryModal').modal('hide');
+        }
+      });
+    });
+
+    // Xử lý sự kiện thêm nhà cung cấp
+    $('#EditSupplierBtn').on('click.edit', function () {
+      _addSupplierEditModal.open({}, function (result) {
+        if (result) {
+          $('#SupplierDisplayEdit').val(result.supplierName.trim());
+          $('#SupplierIdEdit').val(result.supplierId);
+          $('.AddSupplierModal').modal('hide');
+        }
+      });
+    });
+
+    // Xử lý sự kiện xóa ảnh sản phẩm
+    $('#deleteImageBtn').on('click.edit', function () {
+      abp.message.confirm(
+        "Bạn có chắc chắn muốn xóa ảnh này?",
+        "Xác nhận",
+        function (isConfirmed) {
+          if (isConfirmed) {
+            abp.ui.setBusy();
+            $.ajax({
+              url: abp.appPath + 'Products/DeleteImage',
+              type: 'POST',
+              data: { productId: $('input[name="Id"]').val() },
+              success: function (response) {
+                if (response.success) {
+                  $('#productImage').attr('src', '/img/products/default_image.png');
+                  abp.notify.info("Ảnh sản phẩm đã được xóa thành công.");
+                  abp.event.trigger('product.edited', response);
+                } else {
+                  abp.notify.error(response.message);
+                }
+              },
+              error: function () {
+                abp.notify.error("Đã có lỗi xảy ra, vui lòng thử lại.");
+              },
+              complete: function () {
+                abp.ui.clearBusy();
+              }
+            });
+          }
+        }
+      );
+    });
+
+    // Enter key handler
+    _$form.find('input').on('keypress.edit', function (e) {
+      if (e.which === 13) {
+        e.preventDefault();
+        save();
       }
     });
-  });
 
-  // Xử lý sự kiện thêm nhà cung cấp
-  $('#EditSupplierBtn').on('click', function () {
-    _addSupplierEditModal.open({}, function (result) {
-      if (result) {
-        $('#SupplierDisplayEdit').val(result.supplierName.trim());
-        $('#SupplierIdEdit').val(result.supplierId);
-        //_addSupplierEditModal.close(); // Đóng modal con
-        $('.AddSupplierModal').modal('hide');
+    // Bind sự kiện click cho nút Save
+    _$modal.on('click.edit', '.save-button', function (e) {
+      e.preventDefault();
+      save();
+    });
+
+    // Xem trước ảnh mới khi chọn file
+    $('#newImage').on('change.edit', function (event) {
+      var file = event.target.files[0];
+      if (file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          $('#productImage').attr('src', e.target.result);
+        };
+        reader.readAsDataURL(file);
       }
     });
-  });
-
+  }
 
   // Đảm bảo cuộn nội dung trong modal con khi modal con được mở
   $(document).on('hidden.bs.modal', '.modal', function () {
     if ($('.modal.show').length) {
-      $('body').addClass('modal-open'); // Đảm bảo body không bị cuộn khi có modal khác đang mở
+      $('body').addClass('modal-open');
     }
   });
-
 
   // Khôi phục khả năng cuộn sau khi đóng modal con
   $(document).on('hidden.bs.modal', '.modal', function () {
@@ -57,27 +123,25 @@
     }
   });
 
-  // Phương thức kiểm tra tùy chỉnh cho số điện thoại (giữ nguyên)
+  // Phương thức kiểm tra tùy chỉnh cho số điện thoại
   $.validator.addMethod("phoneNumber", function (value, element) {
     return this.optional(element) || /^[0-9\+\-\(\)\s]*$/.test(value);
   }, "Số điện thoại không hợp lệ.");
 
   // Phương thức kiểm tra tùy chỉnh cho mã vạch (barcode)
   $.validator.addMethod("barcode", function (value, element) {
-    // Nếu trường không bắt buộc và không có giá trị, bỏ qua kiểm tra
     if (this.optional(element)) {
       return true;
     }
-
-    // Kiểm tra mã vạch chỉ chứa số và có độ dài từ 8 đến 13 ký tự
     var regex = /^[0-9]{8,13}$/;
     return regex.test(value);
   }, "Mã vạch không hợp lệ. Chỉ cho phép từ 8 đến 13 ký tự số.");
 
   jQuery.validator.methods.number = function (value, element) {
-    value = value.replace(',', '.'); // thay dấu phẩy thành dấu chấm
+    value = value.replace(',', '.');
     return this.optional(element) || !isNaN(value);
   };
+
   // Khởi tạo validate cho form sản phẩm
   _$form.validate({
     rules: {
@@ -119,7 +183,7 @@
         maxlength: 20
       },
       Image: {
-        required: true // Kiểm tra nếu có hình ảnh
+        required: true
       }
     },
     messages: {
@@ -186,7 +250,6 @@
     });
     var formData = new FormData(_$form[0]);
 
-    // Thêm file ảnh nếu có
     var imageFile = $('#newImage')[0].files[0];
     if (imageFile) {
       formData.append('ImageFile', imageFile);
@@ -220,70 +283,20 @@
     });
   }
 
-  // Xử lý sự kiện xóa ảnh sản phẩm
-  $('#deleteImageBtn').on('click', function () {
-    abp.message.confirm(
-      "Bạn có chắc chắn muốn xóa ảnh này?",
-      "Xác nhận",
-      function (isConfirmed) {
-        if (isConfirmed) {
-          abp.ui.setBusy();
-          $.ajax({
-            url: abp.appPath + 'Products/DeleteImage',
-            type: 'POST',
-            data: { productId: $('input[name="Id"]').val() },
-            success: function (response) {
-              if (response.success) {
-                $('#productImage').attr('src', '/img/products/default_image.png'); // Hiển thị ảnh mặc định
-                abp.notify.info("Ảnh sản phẩm đã được xóa thành công."); // Cập nhật thông báo
-                abp.event.trigger('product.edited', response);
-              } else {
-                abp.notify.error(response.message);
-              }
-            },
-            error: function () {
-              abp.notify.error("Đã có lỗi xảy ra, vui lòng thử lại.");
-            },
-            complete: function () {
-              abp.ui.clearBusy();
-            }
-          });
-        }
-      }
-    );
-  });
-
-  // Enter key handler
-  _$form.find('input').on('keypress', function (e) {
-    if (e.which === 13) {
-      e.preventDefault();
-      save();
-    }
-  });
-
-  // Focus first input when modal shown
+  // Khởi tạo sự kiện khi modal được mở
   _$modal.on('shown.bs.modal', function () {
+    initializeEditModalEvents();
     _$form.find('input[type=text]:first').focus();
   });
 
-  // 1. Bind sự kiện click cho nút Save
-  _$modal.on('click', '.save-button', function (e) {
-    e.preventDefault();
-    save();
+  // Dọn dẹp sự kiện khi modal đóng
+  _$modal.on('hidden.bs.modal', function () {
+    // Xóa các sự kiện đã gắn
+    $('#EditCategoryBtn').off('click.edit');
+    $('#EditSupplierBtn').off('click.edit');
+    $('#deleteImageBtn').off('click.edit');
+    _$form.find('input').off('keypress.edit');
+    _$modal.off('click.edit', '.save-button');
+    $('#newImage').off('change.edit');
   });
-
-
-  // Xem trước ảnh mới khi chọn file
-  $('#newImage').on('change', function (event) {
-    var file = event.target.files[0];
-    if (file) {
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        $('#productImage').attr('src', e.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-
 })(jQuery);
-

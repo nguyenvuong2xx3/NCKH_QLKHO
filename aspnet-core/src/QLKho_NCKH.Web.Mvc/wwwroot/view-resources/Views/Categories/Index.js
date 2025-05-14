@@ -38,20 +38,20 @@
 				data: 'description',
 				sortable: false
 			},
+			//{
+			//	targets: 2,
+			//	data: 'parentId',
+			//	sortable: false,
+			//	render: function (data, type, row) {
+			//		if (data == null) {
+			//			return '<span class="text-success">Danh mục gốc</span>';
+			//		} else {
+			//			return '<span class="text-secondary">Danh mục con</span>';
+			//		}
+			//	}
+			//},
 			{
 				targets: 2,
-				data: 'parentId',
-				sortable: false,
-				render: function (data, type, row) {
-					if (data == null) {
-						return '<span class="text-success">Danh mục gốc</span>';
-					} else {
-						return '<span class="text-secondary">Danh mục con</span>';
-					}
-				}
-			},
-			{
-				targets: 3,
 				data: null,
 				sortable: false,
 				autoWidth: false,

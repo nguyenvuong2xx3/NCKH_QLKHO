@@ -15,7 +15,7 @@ using QLKho_NCKH.StockTransactions.Dtos;
 using Microsoft.AspNetCore.Identity;
 using QLKho_NCKH.Authorization.Users;
 
-namespace QLKho_NCKH.TestSendMail
+namespace QLKho_NCKH.SendMail
 {
 	public interface ITestSendMailAppService
 	{

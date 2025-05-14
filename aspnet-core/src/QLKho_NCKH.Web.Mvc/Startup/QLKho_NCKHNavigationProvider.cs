@@ -53,7 +53,9 @@ namespace QLKho_NCKH.Web.Startup
 										PageNames.Sliders,
 										L("SliderList"),
 										url: "Sliders",
-										icon: "fa fa-th-large"
+										icon: "fa fa-th-large",
+										permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Sliders)
+
 										)
 								)
 							// Product Management - Parent menu with always visible children

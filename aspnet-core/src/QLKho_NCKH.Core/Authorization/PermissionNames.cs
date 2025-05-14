@@ -51,6 +51,7 @@
 		// Stock transaction permissions
 		public const string Pages_StockTransactions = "Pages.StockTransactions";
 		public const string Pages_StockTransactions_Create = "Pages.StockTransactions.Create";
+		public const string Pages_StockTransactions_Create_Export = "Pages.StockTransactions.Create.Export";
 		public const string Pages_StockTransactions_Edit = "Pages.StockTransactions.Edit";
 		public const string Pages_StockTransactions_Delete = "Pages.StockTransactions.Delete";
 
@@ -69,5 +70,12 @@
 		public const string Pages_InventoryItems_Create = "Pages.InventoryItems.Create";
 		public const string Pages_InventoryItems_Edit = "Pages.InventoryItems.Edit";
 		public const string Pages_InventoryItems_Delete = "Pages.InventoryItems.Delete";
+
+		//slider
+		public const string Pages_Sliders = "Pages.Sliders";
+		public const string Pages_Sliders_Create = "Pages.Sliders.Create";
+		public const string Pages_Sliders_Edit = "Pages.Sliders.Edit";
+		public const string Pages_Sliders_Delete = "Pages.Sliders.Delete";
+		// Product management permissions
 	}
 }

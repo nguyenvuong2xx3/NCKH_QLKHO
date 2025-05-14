@@ -141,13 +141,21 @@
 				defaultContent: '',
 				render: (data, type, row, meta) => {
 					return [
-						`   <button type="button" class="btn btn-sm bg-secondary edit-stockTransaction" data-stockTransaction-id="${row.id}" data-toggle="modal" data-target="#StockTransactionEditModal">`,
-						`       <i class="fas fa-pencil-alt"></i> ${l('Duyệt')}`,
-						'   </button>',
-						`   <button type="button" class="btn btn-sm bg-danger delete-stockTransaction" data-stockTransaction-id="${row.id}" data-stockTransaction-name="${row.name}">`,
-						`       <i class="fas fa-trash"></i> ${l('Delete')}`,
-						'   </button>',
-					].join('');
+						abp.auth.isGranted('Pages.StockTransactions.Edit') ?
+							`<button type="button" class="btn btn-sm bg-secondary edit-stockTransaction" 
+                data-stockTransaction-id="${row.id}" 
+                data-toggle="modal"  
+                data-target="#StockTransactionEditModal">
+            <i class="fas fa-pencil-alt"></i> ${l('Duyệt')}
+        </button>` : '',
+
+						abp.auth.isGranted('Pages.StockTransactions.Delete') ?
+							`<button type="button" class="btn btn-sm bg-danger delete-stockTransaction" 
+                data-stockTransaction-id="${row.id}" 
+                data-stockTransaction-name="${row.name}">
+            <i class="fas fa-trash"></i> ${l('Xóa')}
+        </button>` : ''
+					].filter(html => html !== '').join('');
 				}
 			}
 		]

@@ -139,20 +139,20 @@
         data: 'supplierName',
         sortable: false
       },
+      //{
+      //  targets: 10,
+      //  data: 'isActive',
+      //  sortable: false,
+      //  className: 'text-center',
+      //  render: function (data, type, row) {
+      //    return `<div class="d-flex justify-content-center align-items-center">
+      //                          <input type="checkbox" class="form-check-input is-active-toggle" 
+      //                                 data-id="${row.id}" ${data ? 'checked' : ''}>
+      //                      </div>`;
+      //  }
+      //},
       {
         targets: 10,
-        data: 'isActive',
-        sortable: false,
-        className: 'text-center',
-        render: function (data, type, row) {
-          return `<div class="d-flex justify-content-center align-items-center">
-                                <input type="checkbox" class="form-check-input is-active-toggle" 
-                                       data-id="${row.id}" ${data ? 'checked' : ''}>
-                            </div>`;
-        }
-      },
-      {
-        targets: 11,
         data: null,
         sortable: false,
         autoWidth: true,

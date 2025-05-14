@@ -389,7 +389,7 @@ namespace QLKho_NCKH.Web.Controllers
 
         public string GetAppHomeUrl()
         {
-            return Url.Action("Index", "About");
+            return Url.Action("Index", "Home");
         }
 
         #endregion

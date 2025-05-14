@@ -56,6 +56,7 @@ namespace QLKho_NCKH.Authorization
 
 			// Quản lý giao dịch kho
 			var stockTransactions = context.CreatePermission(PermissionNames.Pages_StockTransactions, L("StockTransactions"));
+			stockTransactions.CreateChildPermission(PermissionNames.Pages_StockTransactions_Create_Export, L("CreateExportStockTransaction"));
 			stockTransactions.CreateChildPermission(PermissionNames.Pages_StockTransactions_Create, L("CreateStockTransaction"));
 			stockTransactions.CreateChildPermission(PermissionNames.Pages_StockTransactions_Edit, L("EditStockTransaction"));
 			stockTransactions.CreateChildPermission(PermissionNames.Pages_StockTransactions_Delete, L("DeleteStockTransaction"));
@@ -66,10 +67,21 @@ namespace QLKho_NCKH.Authorization
 			customers.CreateChildPermission(PermissionNames.Pages_Customers_Edit, L("EditCustomer"));
 			customers.CreateChildPermission(PermissionNames.Pages_Customers_Delete, L("DeleteCustomer"));
 
+			/// tồn kho
+			var inventoryItems = context.CreatePermission(PermissionNames.Pages_InventoryItems, L("InventoryItems"));
+			inventoryItems.CreateChildPermission(PermissionNames.Pages_InventoryItems_Create, L("CreateInventoryItem"));
+			inventoryItems.CreateChildPermission(PermissionNames.Pages_InventoryItems_Edit, L("EditInventoryItem"));
+			inventoryItems.CreateChildPermission(PermissionNames.Pages_InventoryItems_Delete, L("DeleteInventoryItem"));
+
+			// slider
+			var sliders = context.CreatePermission(PermissionNames.Pages_Sliders, L("Sliders"));
+			sliders.CreateChildPermission(PermissionNames.Pages_Sliders_Create, L("CreateSlider"));
+			sliders.CreateChildPermission(PermissionNames.Pages_Sliders_Edit, L("EditSlider"));
+			sliders.CreateChildPermission(PermissionNames.Pages_Sliders_Delete, L("DeleteSlider"));
+
 			// Các permission khác
 			context.CreatePermission(PermissionNames.Pages_Reports, L("Reports"));
 			context.CreatePermission(PermissionNames.Pages_Dashboard, L("Dashboard"));
-			context.CreatePermission(PermissionNames.Pages_InventoryItems, L("InventoryItems"));
 		}
 
 		private static ILocalizableString L(string name)

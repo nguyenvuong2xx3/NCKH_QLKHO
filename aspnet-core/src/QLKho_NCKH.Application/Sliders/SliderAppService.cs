@@ -4,13 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
+using Abp.AspNetCore.Mvc.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Microsoft.EntityFrameworkCore;
+using QLKho_NCKH.Authorization;
 using QLKho_NCKH.Sliders.Dto;
 
 namespace QLKho_NCKH.Sliders
 {
+	[AbpMvcAuthorize(PermissionNames.Pages_Sliders)]
+
 	public class SliderAppService : QLKho_NCKHAppServiceBase, ISliderAppService
 	{
 		private readonly IRepository<Slider> _sliderRepository;
@@ -55,6 +59,7 @@ namespace QLKho_NCKH.Sliders
 			return new PagedResultDto<SliderListDto>(sliderCount, sliderDtos);
 		}
 
+		[AbpMvcAuthorize(PermissionNames.Pages_Sliders_Create)]
 		public async Task CreateSlider(CreateSliderDto input)
 		{
 			var slider = new Slider
@@ -70,6 +75,7 @@ namespace QLKho_NCKH.Sliders
 			//await CurrentUnitOfWork.SaveChangesAsync();
 
 		}
+		[AbpMvcAuthorize(PermissionNames.Pages_Sliders_Edit)]
 
 		public async Task UpdateSlider(UpdateSliderDto input)
 		{
@@ -88,6 +94,7 @@ namespace QLKho_NCKH.Sliders
 			slider.IsActive = !slider.IsActive;
 			await _sliderRepository.UpdateAsync(slider);
 		}
+		[AbpMvcAuthorize(PermissionNames.Pages_Products_Delete)]
 
 		public async Task DeleteSlider(EntityDto<int> input)
 		{

@@ -257,6 +257,17 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 	public async Task<PagedResultDto<InventoryItemListDto>> GetAllInventoryItems(GetInventoryItemsInput input)
 	{
 		// Query all inventory items with related data
+		//var query = _inventoryItemRepository.GetAll()
+		//		.Include(x => x.Product)
+		//		.Include(x => x.StorageLocation)
+		//		.ThenInclude(x => x.Warehouse)
+		//		.WhereIf(input.WarehouseId != 0, x => x.StorageLocation.WarehouseId == input.WarehouseId)
+		//		.WhereIf(!string.IsNullOrEmpty(input.Filter), x =>
+		//				x.Product.Name.Contains(input.Filter) ||
+		//				x.Product.Code.Contains(input.Filter) ||
+		//				x.Product.Barcode.Contains(input.Filter))
+		//		.WhereIf(input.CategoryId != 0, x => x.Product.CategoryId == input.CategoryId);
+
 		var query = _inventoryItemRepository.GetAll()
 				.Include(x => x.Product)
 				.Include(x => x.StorageLocation)
@@ -267,7 +278,6 @@ public class InventoryItemAppService : ApplicationService, IInventoryItemAppServ
 						x.Product.Code.Contains(input.Filter) ||
 						x.Product.Barcode.Contains(input.Filter))
 				.WhereIf(input.CategoryId != 0, x => x.Product.CategoryId == input.CategoryId);
-
 		// Get total count before pagination
 		var totalCount = await query.CountAsync();
 

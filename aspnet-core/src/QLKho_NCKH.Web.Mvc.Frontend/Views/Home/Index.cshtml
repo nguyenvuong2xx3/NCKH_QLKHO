@@ -100,7 +100,7 @@
                   <div class="product-name" style="width: 100%">
                     <h3 class="card-title ">@product.ProductName</h3>
                   </div>
-                  <p class="card-text product_price">@product.UnitPrice</p>
+                  <p class="card-text product_price">@product.UnitPrice.ToString("N0")</p>
 
                   <a href="@Url.Action("GetProductDetail", "Home", new { id = product.ProductId })" class="btn btn-info">Xem chi tiết</a>
                   <div class="block-smem-price">

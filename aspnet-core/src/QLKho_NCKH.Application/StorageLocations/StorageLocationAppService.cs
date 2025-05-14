@@ -1,9 +1,11 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Abp.AspNetCore.Mvc.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
 using Microsoft.EntityFrameworkCore;
+using QLKho_NCKH.Authorization;
 using QLKho_NCKH.StorageLocations.Dto;
 using QLKho_NCKH.Warehouses;
 using System;
@@ -13,6 +15,8 @@ using System.Threading.Tasks;
 
 namespace QLKho_NCKH.StorageLocations
 {
+	[AbpMvcAuthorize(PermissionNames.Pages_StorageLocations)]
+
 	public class StorageLocationAppService : IStorageLocationAppService, IApplicationService
 	{
 		private readonly IRepository<StorageLocation, int> _storageLocationRepository;
@@ -22,6 +26,7 @@ namespace QLKho_NCKH.StorageLocations
 			_storageLocationRepository = storageLocationRepository;
 			//_unitOfWorkManager = unitOfWorkManager;
 		}
+		[AbpMvcAuthorize(PermissionNames.Pages_StorageLocations_Create)]
 
 		public async Task<storageLocationDto> CreateAsync(CreateStorageLocationDto input)
 		{
@@ -106,6 +111,7 @@ namespace QLKho_NCKH.StorageLocations
 				IsAvailable = query.IsAvailable
 			};
 		}
+		[AbpMvcAuthorize(PermissionNames.Pages_StorageLocations_Edit)]
 
 		public async Task<StorageLocationListDto> UpdateAsync(UpdateStorageLocationDto input)
 		{
