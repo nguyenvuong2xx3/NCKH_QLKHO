@@ -313,6 +313,13 @@ namespace QLKho_NCKH.Products
 								imageStream.Position = 0;
 
 								var picture = worksheet.Drawings.AddPicture($"img_{i}", imageStream);
+
+
+
+
+								// Cố định chiều cao hàng hiện tại để vừa ảnh
+								worksheet.Row(row).Height = 100; // hoặc giá trị khác tùy ảnh
+
 								picture.SetPosition(row - 1, 0, 10, 0);
 								picture.SetSize(100, 100);
 							}
