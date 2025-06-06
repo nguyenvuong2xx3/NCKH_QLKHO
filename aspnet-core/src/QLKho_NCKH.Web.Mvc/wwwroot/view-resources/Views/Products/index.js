@@ -515,12 +515,10 @@
     }).done(function (result) {
       if (result.success) {
         var successCount = result.results.filter(r => r.IsSuccess).length;
-        var errorCount = result.results.length - successCount;
+        //var errorCount = result.results.length - successCount;
 
-        var message = `Import thành công ${successCount} sản phẩm`;
-        if (errorCount > 0) {
-          message += `, có ${errorCount} lỗi`;
-        }
+        var message = `nhập sản phẩm thành công sản phẩm`;
+       
 
         abp.notify.success(message);
         $('#ImportExcelModal').modal('hide');

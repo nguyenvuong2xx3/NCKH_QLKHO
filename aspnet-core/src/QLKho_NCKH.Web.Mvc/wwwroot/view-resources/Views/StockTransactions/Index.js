@@ -171,6 +171,8 @@
 			dataType: 'html',
 			success: function (content) {
 				$('#StockTransactionEditModal div.modal-content').html(content);
+				_stockTransactionService.ajax.reload();
+
 			},
 			error: function (e) {
 			}

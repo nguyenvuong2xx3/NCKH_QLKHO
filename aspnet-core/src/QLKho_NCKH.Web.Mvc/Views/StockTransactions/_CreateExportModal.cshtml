@@ -8,13 +8,13 @@
 <div class="modal fade" id="ExportModal" tabindex="-1" role="dialog" aria-labelledby="ExportModalLabel" data-backdrop="static">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
-			@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewExportStorageLocation")))
+			@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel("Tạo mới giao dịch xuất kho"))
 			<form name="StorageLocationExportForm" role="form" class="form-horizontal">
 				<div class="modal-body">
 					<div class="tab-content mt-4">
 						<div role="tabpanel" class="tab-pane container active" id="create-supplier-details">
 							<div class="form-group row">
-								<label class="col-md-3 col-form-label">@L("TransactionCode ")</label>
+								<label class="col-md-3 col-form-label">@L("TransactionCode")</label>
 								<div class="col-md-9">
 									<input type="text" class="form-control" id="TransactionCodeExport" name="TransactionCode" maxlength="500">
 								</div>
@@ -36,7 +36,7 @@
 
 							<!-- Add this section where you want the customer selection to appear -->
 							<div class="form-group row required">
-								<label class="col-md-3 col-form-label">@L("Customer")</label>
+								<label class="col-md-3 col-form-label">Khách hàng</label>
 								<div class="col-md-9">
 									<div class="input-group">
 										<input type="text" id="CustomerDisplay" class="form-control" readonly required />
@@ -71,13 +71,13 @@
 										<table id="productExportTable" class="table table-bordered table-hover" style="min-width: 1000px;">
 											<thead>
 												<tr>
-													<th style="min-width: 120px;">@L("ProductCode")</th>
-													<th style="min-width: 120px;">@L("ProductBarCode")</th>
-													<th style="min-width: 120px;">@L("ProductName")</th>
-													<th style="width: 30px;">@L("Quantity")</th>
-													<th style="width: 30px;">@L("UnitPrice")</th>
-													<th style="width: 50px;">@L("TotalPrice")</th>
-													<th>@L("StorageLocation")</th>
+													<th style="min-width: 120px;">Mã sản phẩm</th>
+													<th style="min-width: 120px;">Mã vạch</th>
+													<th style="min-width: 120px;">Tên sản phẩm</th>
+													<th style="width: 30px;">Số lượng</th>
+													<th style="width: 30px;">Giá đơn</th>
+													<th style="width: 50px;">Tổng giá</th>
+													<th>Vị trí lưu trữ</th>
 													<th style="width: 80px;">@L("Actions")</th>
 												</tr>
 											</thead>
@@ -91,7 +91,7 @@
 
 							<!-- Tổng tiền -->
 							<div class="form-group row">
-								<label class="col-md-3 col-form-label">@L("GrandTotal")</label>
+								<label class="col-md-3 col-form-label">Tổng giá đơn hàng</label>
 								<div class="col-md-9">
 									<div class="form-control-plaintext font-weight-bold" id="grandTotal">0</div>
 								</div>
